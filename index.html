@@ -216,6 +216,29 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .mlist li.late .tx small{color:var(--warn)}
 .mlist li.next{opacity:.7}
 .mlist .ic{--c:var(--accent)}
+/* врачи */
+.vbig{font-size:22px;font-weight:700;margin-top:6px}
+.nextv{cursor:pointer;border-color:color-mix(in srgb,var(--c-diaper) 45%,transparent);background:color-mix(in srgb,var(--c-diaper) 9%,var(--surface))}
+.qadd{display:flex;gap:8px;margin-top:10px}
+.qadd input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 12px;min-height:46px}
+.qadd .b{flex:none;width:50px;font-size:22px;padding:0}
+.qlist{list-style:none;margin:8px 0 0;padding:0}
+.qlist li{display:flex;align-items:center;gap:12px;padding:9px 2px;border-top:1px solid var(--line)}
+.qlist li:first-child{border-top:0}
+.qlist .tx{flex:1;min-width:0;cursor:pointer}
+.qlist .tx small{display:block;color:var(--muted);font-size:12.5px}
+.qlist li.ok .tx{color:var(--text-2)}
+.qlist button.vchk{background:transparent;padding:0;cursor:pointer}
+.qdone summary,.ckp summary{cursor:pointer;color:var(--text-2);font-size:14px;padding:8px 0 2px}
+details.ckp{border-top:1px solid var(--line);padding:4px 0 8px}
+details.ckp summary{display:flex;justify-content:space-between;align-items:baseline;gap:8px;list-style:none;color:var(--text);font-size:15px}
+details.ckp summary::-webkit-details-marker{display:none}
+details.ckp summary::before{content:'›';display:inline-block;width:12px;color:var(--muted);transition:transform .15s}
+details.ckp[open] summary::before{transform:rotate(90deg)}
+details.ckp summary b{flex:1}
+details.ckp.now .vdate{color:var(--warn);font-weight:600} details.ckp.soon .vdate{color:var(--accent);font-weight:600} details.ckp.done .vdate{color:var(--good);font-weight:600}
+.list small.rx{color:var(--c-diaper)}
+.list small.soon{color:var(--accent);font-weight:600}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -606,6 +629,9 @@ function evInfo(e) {
   if (e.t === 'pump') return { c: 'pump', ic: '🥛', tx: 'Сцеживание' + (e.ml ? ' ' + e.ml + ' мл' : ''), sub: '' };
   if (e.t === 'growth') return { c: '', ic: '📏', tx: 'Замер: ' + growthTxt(e), sub: '' };
   if (e.t === 'vax') { const v = VAX.find(x => x.id === e.vid); return { c: '', ic: '💉', tx: 'Прививка: ' + (v ? v.name : e.vid), sub: '' }; }
+  if (e.t === 'visit') return { c: '', ic: '🩺', tx: 'Врач: ' + (e.doc || '') + (e.concl ? ' — ' + e.concl : ''), sub: rxList(e.rx).join('; ') };
+  if (e.t === 'q') return { c: '', ic: '❓', tx: 'Вопрос к врачу: ' + e.text + (e.done ? ' (спросили)' : ''), sub: e.ans || '' };
+  if (e.t === 'check') { const c = CHECKS.find(x => x.id === e.cid); return { c: '', ic: '📋', tx: 'Осмотр ' + (c ? checkTitle(c) : e.cid) + ': отмечено ' + (e.done || []).length + (c ? ' из ' + checkItems(c).length : ''), sub: '' }; }
   if (e.t === 'mile') { const m = MILES.find(x => x.id === e.mid); return { c: '', ic: '⭐', tx: m ? m.name : e.mid, sub: '' }; }
   return { c: '', ic: '•', tx: e.t, sub: '' };
 }
@@ -828,8 +854,8 @@ function pctOf(k, e) {
 const growths = () => evs().filter(e => e.t === 'growth').sort((a, b) => a.s - b.s);
 
 function viewHealth() {
-  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост и вес'], ['vax', 'Прививки']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
-  return seg + (UI.health === 'vax' ? viewVax() : viewGrowth());
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост и вес'], ['vax', 'Прививки'], ['docs', 'Врачи']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.health === 'vax' ? viewVax() : UI.health === 'docs' ? viewDocs() : viewGrowth());
 }
 function needBirth(what) { return `<div class="card"><h3>Нужна дата рождения</h3><p class="hint">Чтобы ${what}, укажите дату рождения малыша.</p><div class="btns" style="margin-top:10px"><button class="b main" onclick="openSettings()">Открыть настройки</button></div></div>`; }
 function viewGrowth() {
@@ -1052,12 +1078,143 @@ function saveMile() {
 }
 function unMile() { const o = milesDone()[MEDIT]; if (o) upd(o, { del: true }); closeSheet(); render(); }
 
-// на главной: прививки, которые пора сделать
+/* ───────── врачи ─────────
+   Плановые осмотры до года — приказ Минздрава № 514н («Порядок профилактических осмотров несовершеннолетних»),
+   по опубликованным пересказам таблицы; в поликлинике список могут уточнить. Отметки осмотра — запись 'check'
+   с постоянным id 'chk:<id>' (у обоих родителей одна и та же запись), done — номера отмеченных пунктов.
+   Визит — 'visit' {s, doc, place, why: plan|ill|other, concl, rx, note}; будущий визит — тот же вид с s в будущем.
+   Вопрос к врачу — 'q' {text, done, vid (на каком визите спросили), ans}. */
+const CHECKS = [
+  { id: 'c0', age: 0, docs: ['Педиатр (патронаж)'], tests: ['Неонатальный скрининг (кровь из пяточки)', 'Аудиологический скрининг (проверка слуха)'] },
+  { id: 'c1', age: 1, docs: ['Педиатр', 'Невролог', 'Детский хирург', 'Офтальмолог', 'Детский стоматолог'],
+    tests: ['УЗИ органов брюшной полости', 'УЗИ почек', 'УЗИ тазобедренных суставов', 'УЗИ сердца (эхокардиография)', 'УЗИ головного мозга (нейросонография)', 'Проверка слуха — если не делали в роддоме'] },
+  { id: 'c2', age: 2, docs: ['Педиатр'], tests: [] },
+  { id: 'c3', age: 3, docs: ['Педиатр', 'Травматолог-ортопед'], tests: ['Общий анализ крови', 'Общий анализ мочи', 'Проверка слуха — если не делали'] },
+  ...[4, 5, 6, 7, 8, 9, 10, 11].map(m => ({ id: 'c' + m, age: m, docs: ['Педиатр'], tests: [] })),
+  { id: 'c12', age: 12, docs: ['Педиатр', 'Невролог', 'Детский хирург', 'ЛОР (оториноларинголог)', 'Травматолог-ортопед', 'Детский психиатр'], tests: ['Общий анализ крови', 'Общий анализ мочи', 'ЭКГ'] },
+];
+const DOCS = ['Педиатр', 'Невролог', 'Хирург', 'Ортопед', 'Офтальмолог', 'ЛОР', 'Стоматолог', 'Кардиолог', 'Аллерголог'];
+const WHY = { plan: 'Плановый осмотр', ill: 'Заболел', other: 'Другое' };
+const checkTitle = c => c.age === 0 ? 'Новорождённый' : c.age + ' ' + pl(c.age, 'месяц', 'месяца', 'месяцев');
+const checkDue = c => { const b = birthTs(); if (b == null) return null; const d = new Date(b); d.setMonth(d.getMonth() + c.age); return +d; };
+const checkRec = c => evById('chk:' + c.id);
+const checkItems = c => [...c.docs, ...c.tests];
+function checkState(c) { const r = checkRec(c), n = checkItems(c).length, k = r && !r.del ? (r.done || []).length : 0; return { k, n, all: k >= n }; }
+const visits = () => evs().filter(e => e.t === 'visit').sort(byStart);
+const qs = () => evs().filter(e => e.t === 'q');
+function viewDocs() {
+  if (!birthTs()) return needBirth('показывать плановые осмотры по возрасту');
+  const t = now(), vs = visits(), next = vs.filter(v => v.s > t).sort((a, b) => a.s - b.s)[0], open = qs().filter(q => !q.done).sort((a, b) => a.s - b.s), asked = qs().filter(q => q.done);
+  let h = '';
+  if (next) h += `<div class="card docs nextv" onclick="editVisit('${next.id}')"><h3>🩺 Следующий приём</h3><div class="vbig">${esc(visitWhen(next.s))}</div>
+    <div class="st" style="margin:2px 0 0">${esc([next.doc, next.place].filter(Boolean).join(' · '))}${open.length ? ` · вопросов: <b>${open.length}</b>` : ''}</div></div>`;
+  h += `<div class="card docs"><h3>❓ Вопросы к врачу</h3><p class="hint">Записывайте, что хотите спросить, — на приёме ничего не забудется.</p>
+    <div class="qadd"><input id="q_new" placeholder="Например: сколько давать витамин D?" autocomplete="off" onkeydown="if(event.key==='Enter')addQ()"><button class="b main" onclick="addQ()">+</button></div>
+    ${open.length ? `<ul class="qlist">${open.map(q => `<li><button class="vchk" onclick="askedQ('${q.id}')" aria-label="Спросили"></button><span class="tx" onclick="editQ('${q.id}')">${esc(q.text)}</span></li>`).join('')}</ul>` : '<p class="hint" style="margin-top:8px">Пока вопросов нет.</p>'}
+    ${asked.length ? `<details class="qdone"><summary>Уже спросили (${asked.length})</summary><ul class="qlist">${asked.sort((a, b) => b.u - a.u).map(q => `<li class="ok" onclick="editQ('${q.id}')"><span class="vchk on">✓</span><span class="tx">${esc(q.text)}${q.ans ? `<small>${esc(q.ans)}</small>` : ''}</span></li>`).join('')}</ul></details>` : ''}</div>`;
+  // плановые осмотры: ближайшие незакрытые — раскрыты, сделанные — свёрнуты
+  const am = monthsAt(t);
+  h += `<div class="card docs"><h3>📋 Плановые осмотры</h3><p class="hint">Какие врачи и обследования положены в каждом возрасте. Отмечайте пройденное.</p>`;
+  for (const c of CHECKS) {
+    const st = checkState(c), due = checkDue(c), open_ = !st.all && c.age <= Math.ceil(am) + 1 && c.age >= Math.floor(am) - 1;
+    const cls = st.all ? 'done' : due <= t ? 'now' : due <= t + 30 * 864e5 ? 'soon' : '';
+    const r = checkRec(c), done = new Set(r && !r.del ? r.done || [] : []);
+    h += `<details class="ckp ${cls}" ${open_ ? 'open' : ''}><summary><b>${checkTitle(c)}</b><span class="vdate">${st.all ? '✓ пройден' : (st.k ? st.k + ' из ' + st.n + ' · ' : '') + (due <= t ? 'пора' : 'с ' + dayShort(due))}</span></summary>
+      <ul class="vlist">${checkItems(c).map((x, i) => `<li class="all${done.has(i) ? ' ok' : ''}" onclick="toggleCheck('${c.id}',${i})"><span class="vchk">${done.has(i) ? '✓' : ''}</span><span class="tx"><div>${esc(x)}</div><small>${i < c.docs.length ? 'врач' : 'обследование'}</small></span></li>`).join('')}</ul></details>`;
+  }
+  h += `<p class="hint" style="margin-top:10px">По приказу Минздрава № 514н о профилактических осмотрах детей. Точный список и сроки уточняйте в своей поликлинике.</p></div>`;
+  h += `<div class="card docs"><div style="display:flex;align-items:center;justify-content:space-between"><h3>🗂 Визиты</h3><button class="link" style="padding:0" onclick="editVisit()">+ Записать</button></div>`;
+  h += vs.length ? `<ul class="list">${vs.map(v => `<li onclick="editVisit('${v.id}')"><span class="tm">${dayShort(v.s)}${v.s > t ? '<br><small class="soon">впереди</small>' : ''}</span><span class="ic" style="--c:var(--c-diaper)">🩺</span><span class="tx"><div>${esc(v.doc || 'Врач')}${v.why && v.why !== 'other' ? ' · ' + WHY[v.why].toLowerCase() : ''}</div><small>${esc(v.concl || v.place || (v.s > t ? hm(v.s) : ''))}</small>${rxList(v.rx).length ? `<small class="rx">💊 ${esc(rxList(v.rx).join(' · '))}</small>` : ''}</span></li>`).join('')}</ul>`
+    : `<div class="empty">Запишите приём — заключение и назначения врача будут под рукой</div>`;
+  return h + `</div>`;
+}
+const rxList = rx => String(rx || '').split('\n').map(s => s.trim()).filter(Boolean);
+function visitWhen(ts) {
+  const d = sod(ts), t = sod(now()), w = d === t ? 'Сегодня' : d === addDays(t, 1) ? 'Завтра' : dayShort(ts) + ', ' + WD[new Date(ts).getDay()];
+  return w + ' в ' + hm(ts);
+}
+function toggleCheck(cid, i) {
+  const c = CHECKS.find(x => x.id === cid), r = checkRec(c), done = new Set(r && !r.del ? r.done || [] : []);
+  if (done.has(i)) done.delete(i); else done.add(i);
+  const p = { done: [...done].sort((a, b) => a - b), del: false };
+  if (r) upd(r, p); else add(Object.assign({ id: 'chk:' + cid, t: 'check', cid, s: checkDue(c), e: checkDue(c) }, p));
+  buzz(); render();
+  if (checkState(c).all) toast('Осмотр ' + checkTitle(c).toLowerCase() + ' пройден 👍');
+}
+function addQ() {
+  const i = $('#q_new'), v = i.value.trim(); if (!v) return i.focus();
+  add({ t: 'q', s: now(), e: now(), text: v, done: false }); buzz(); render();
+  const n = $('#q_new'); if (n) n.focus();
+}
+function askedQ(id) { const q = evById(id); upd(q, { done: true }); buzz(); render(); toast('Отмечено: спросили', { label: 'Записать ответ', fn: () => editQ(id) }); }
+let QEDIT = null;
+function editQ(id) {
+  const q = evById(id); QEDIT = id;
+  openSheet(`<h2>❓ Вопрос к врачу</h2>
+    <label class="f"><span>Вопрос</span><textarea id="q_t">${esc(q.text)}</textarea></label>
+    <label class="chk"><input type="checkbox" id="q_d" ${q.done ? 'checked' : ''}> Уже спросили</label>
+    <label class="f"><span>Что ответил врач</span><textarea id="q_a" placeholder="Коротко, чтобы не забыть">${esc(q.ans || '')}</textarea></label>
+    <div class="acts"><button class="b del" onclick="delQ()">Удалить</button><button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveQ()">Сохранить</button></div>`);
+}
+function saveQ() {
+  const text = $('#q_t').value.trim(); if (!text) return;
+  const ans = $('#q_a').value.trim();
+  upd(evById(QEDIT), { text, done: $('#q_d').checked || !!ans, ans }); closeSheet(); render();
+}
+function delQ() { const q = evById(QEDIT); upd(q, { del: true }); closeSheet(); toast('Вопрос удалён', { label: 'Вернуть', fn: () => { upd(q, { del: false }); render(); } }); render(); }
+let VSEDIT = null;
+function editVisit(id) {
+  const v = id ? evById(id) : { t: 'visit', s: now(), why: 'plan', doc: 'Педиатр' }; if (!v) return; VSEDIT = id || null;
+  const past = v.s <= now() + 3600e3, open = qs().filter(q => !q.done || (id && q.vid === id));
+  openSheet(`<h2>🩺 ${id ? 'Визит к врачу' : 'Новый визит'}</h2>
+    <label class="f"><span>Когда</span><input id="vs_s" type="datetime-local" value="${toInput(v.s)}" onchange="visitPast()"></label>
+    <label class="f"><span>Врач</span><input id="vs_doc" value="${esc(v.doc || '')}" placeholder="Педиатр" autocomplete="off">${chipsHtml('doc', DOCS.map(d => [d, d]), v.doc)}</label>
+    <label class="f"><span>Где</span><input id="vs_place" value="${esc(v.place || '')}" placeholder="Поликлиника, кабинет" autocomplete="off"></label>
+    <div class="f"><span>Повод</span><input type="hidden" id="vs_why" value="${v.why || 'plan'}">${chipsHtml('why', Object.entries(WHY), v.why || 'plan')}</div>
+    <div id="vs_pastbox" ${past ? '' : 'hidden'}>
+      ${open.length ? `<div class="f"><span>Какие вопросы задали</span>${open.map(q => `<label class="chk"><input type="checkbox" data-q="${q.id}" ${q.done && id && q.vid === id ? 'checked' : ''}> ${esc(q.text)}</label>`).join('')}</div>` : ''}
+      <label class="f"><span>Заключение врача</span><textarea id="vs_concl" placeholder="Например: здоров, развивается по возрасту">${esc(v.concl || '')}</textarea></label>
+      <label class="f"><span>Назначения — каждое с новой строки</span><textarea id="vs_rx" placeholder="Витамин D — 1 капля утром&#10;Массаж — 10 сеансов">${esc(v.rx || '')}</textarea></label>
+      <label class="f"><span>Следующий приём (если назначили)</span><input id="vs_next" type="datetime-local"></label>
+    </div>
+    <label class="f"><span>Заметка</span><input id="vs_note" value="${esc(v.note || '')}" autocomplete="off"></label>
+    <div class="err" id="vs_err"></div>
+    <div class="acts">${id ? '<button class="b del" onclick="delVisit()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveVisit()">Сохранить</button></div>`);
+}
+// поля заключения и назначений — только для прошедшего визита
+function visitPast() { const s = fromInput($('#vs_s').value); $('#vs_pastbox').hidden = !(s != null && s <= now() + 3600e3); }
+function saveVisit() {
+  const err = m => { $('#vs_err').textContent = m; };
+  const s = fromInput($('#vs_s').value); if (s == null) return err('Укажите дату и время');
+  const doc = $('#vs_doc').value.trim(); if (!doc) return err('Какой врач?');
+  const past = !$('#vs_pastbox').hidden;
+  const p = { s, e: s, doc, place: $('#vs_place').value.trim(), why: $('#vs_why').value, note: $('#vs_note').value.trim() };
+  if (past) { p.concl = $('#vs_concl').value.trim(); p.rx = $('#vs_rx').value.trim(); }
+  const next = past ? fromInput($('#vs_next').value) : null;
+  if (next != null && next <= s) return err('Следующий приём — позже этого');
+  let v; if (VSEDIT) v = upd(evById(VSEDIT), p); else v = add(Object.assign({ t: 'visit' }, p));
+  if (past) for (const box of document.querySelectorAll('[data-q]')) {
+    const q = evById(box.dataset.q); if (!q) continue;
+    if (box.checked && !(q.done && q.vid === v.id)) upd(q, { done: true, vid: v.id });
+    else if (!box.checked && q.vid === v.id) upd(q, { done: false, vid: '' });
+  }
+  if (next != null) add({ t: 'visit', s: next, e: next, doc, place: p.place, why: 'plan' });
+  closeSheet(); buzz(); render();
+  if (next != null) toast('Следующий приём записан: ' + visitWhen(next));
+}
+function delVisit() { const v = evById(VSEDIT); upd(v, { del: true }); closeSheet(); toast('Визит удалён', { label: 'Вернуть', fn: () => { upd(v, { del: false }); render(); } }); render(); }
+
+// на главной: приём сегодня/завтра и прививки, которые пора сделать
 function homeHealth() {
   if (!birthTs()) return '';
-  const soon = vaxSoon(); if (!soon.length) return '';
-  const t = now(), due = vaxDue(soon[0].age), overdue = due <= t;
-  return `<div class="card vgrp ${overdue ? 'now' : 'soon'}" onclick="UI.health='vax';go('health')" style="cursor:pointer"><h3>💉 ${overdue ? 'Пора сделать прививки' : 'Скоро прививки'}</h3>
+  let h = '';
+  const t = now(), nv = visits().filter(v => v.s > t - 3600e3 && !v.concl && sod(v.s) <= addDays(sod(t), 1)).sort((a, b) => a.s - b.s)[0];
+  if (nv) { const nq = qs().filter(q => !q.done).length;
+    h += `<div class="card docs nextv" onclick="UI.health='docs';go('health')" style="cursor:pointer"><h3>🩺 ${esc(visitWhen(nv.s))} — ${esc(nv.doc)}</h3>
+      <p class="hint">${esc(nv.place || '')}${nq ? (nv.place ? ' · ' : '') + 'не забудьте спросить: ' + nq + ' ' + pl(nq, 'вопрос', 'вопроса', 'вопросов') : ''}</p></div>`; }
+  const soon = vaxSoon(); if (!soon.length) return h;
+  const due = vaxDue(soon[0].age), overdue = due <= t;
+  return h + `<div class="card vgrp ${overdue ? 'now' : 'soon'}" onclick="UI.health='vax';go('health')" style="cursor:pointer"><h3>💉 ${overdue ? 'Пора сделать прививки' : 'Скоро прививки'}</h3>
     <p class="st" style="margin:6px 0 0">${soon.slice(0, 4).map(v => esc(v.name)).join(', ')}${soon.length > 4 ? ' и ещё ' + (soon.length - 4) : ''}${overdue ? '' : ' — с ' + dayShort(due)}</p>
     <p class="hint">Отметьте, когда сделаете — нажмите сюда.</p></div>`;
 }
