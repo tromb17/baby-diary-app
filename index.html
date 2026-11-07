@@ -144,7 +144,7 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .norm tr.me td{font-weight:700;color:var(--accent)}
 
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:var(--surface);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:4px 8px calc(4px + env(safe-area-inset-bottom))}
-.tabs button{flex:1;border:0;background:transparent;padding:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--muted)}
+.tabs button{flex:1;min-width:0;border:0;background:transparent;padding:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--muted)}
 .tabs svg{width:24px;height:24px}
 .tabs button.on{color:var(--accent);font-weight:600}
 
@@ -171,6 +171,51 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:var(--text);color:var(--page);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);box-shadow:0 4px 18px rgba(0,0,0,.2)}
 .toast button{border:0;background:transparent;color:inherit;font-weight:700;text-decoration:underline;padding:4px}
 
+
+/* переключатель */
+.seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:13px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;border-radius:10px;padding:8px 4px;font-size:14px;color:var(--text-2)}
+.seg button.on{background:var(--solid);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+/* рост и вес */
+.gnow .v{font-size:30px;font-weight:700}
+.gnow .v small{font-size:15px;color:var(--muted);font-weight:500}
+.gnow .s{font-size:13px;color:var(--muted)}
+.pct{display:inline-block;margin-top:8px;font-size:13.5px;font-weight:600;padding:5px 10px;border-radius:10px;background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good)}
+.pct.low,.pct.high{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.gchart{margin-top:10px}
+.gchart svg{display:block;width:100%;height:auto}
+.gchart .grid{stroke:var(--line)} .gchart .ax{fill:var(--muted);font-size:11px}
+.gchart .b97{fill:color-mix(in srgb,var(--accent) 13%,transparent)} .gchart .b85{fill:color-mix(in srgb,var(--accent) 22%,transparent)}
+.gchart .p50{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 3}
+.gchart .today{stroke:var(--muted);stroke-dasharray:2 3}
+.gchart .me{fill:none;stroke:var(--c-feed);stroke-width:2.5;stroke-linejoin:round}
+.gchart .dot{fill:var(--c-feed);stroke:var(--solid);stroke-width:2}
+/* прививки: обязательные — сплошные, группы риска — серые, по желанию — пунктир и свой цвет */
+.vleg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.vtag{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap;flex:none}
+.vtag.all{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.vtag.risk{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.vtag.opt{color:var(--c-sleep);border:1.5px dashed color-mix(in srgb,var(--c-sleep) 60%,transparent);background:transparent}
+.vhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.vdate{font-size:13px;color:var(--muted);white-space:nowrap}
+.vgrp.now{border-color:color-mix(in srgb,var(--warn) 55%,transparent)} .vgrp.now .vdate{color:var(--warn);font-weight:600}
+.vgrp.soon .vdate{color:var(--accent);font-weight:600}
+.vgrp.done{opacity:.75} .vgrp.done .vdate{color:var(--good);font-weight:600}
+.vlist{list-style:none;margin:8px 0 0;padding:0}
+.vlist li{display:flex;align-items:center;gap:12px;padding:10px;margin-top:6px;border-radius:13px;cursor:pointer;background:var(--surface-2);border:1px solid transparent}
+.vlist li.all{border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
+.vlist li.opt{background:transparent;border:1.5px dashed color-mix(in srgb,var(--c-sleep) 45%,transparent)}
+.vlist li.risk{background:transparent;border:1px solid var(--line)} .vlist li.risk .tx div{color:var(--text-2);font-weight:500}
+.vlist .tx{flex:1;min-width:0} .vlist .tx div{font-weight:600} .vlist .tx small{color:var(--muted);font-size:12.5px;display:block}
+.vchk{width:24px;height:24px;border-radius:50%;flex:none;border:2px solid var(--line);display:grid;place-items:center;font-size:14px;font-weight:700;color:#fff}
+.vlist li.ok .vchk,.vchk.on{background:var(--good);border-color:var(--good)}
+.vlist li.ok .tx div{text-decoration:none;color:var(--text-2)}
+/* вехи */
+.mbar{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:12px 0 4px}
+.mbar i{display:block;height:100%;background:linear-gradient(90deg,#ffc36b,var(--c-feed),var(--c-sleep));border-radius:99px}
+.mlist li.late .tx small{color:var(--warn)}
+.mlist li.next{opacity:.7}
+.mlist .ic{--c:var(--accent)}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -231,7 +276,7 @@ const DEV = lsGet(DEVKEY) || (() => { const d = uid(); lsSet(DEVKEY, d); return 
 function normalize(s) {
   if (!s || typeof s !== 'object') s = {};
   s.v = 1;
-  s.baby = Object.assign({ name: '', birth: '', u: 0 }, s.baby || {});
+  s.baby = Object.assign({ name: '', birth: '', sex: '', u: 0 }, s.baby || {});
   s.devs = s.devs && typeof s.devs === 'object' ? s.devs : {};
   const old = now() - DEL_DAYS * 864e5;
   s.events = (Array.isArray(s.events) ? s.events : []).filter(e => e && e.id && e.t && isFinite(e.s) && !(e.del && e.u < old));
@@ -385,10 +430,12 @@ function applyNight() {
 }
 
 /* ───────── экраны ───────── */
-const UI = { tab: 'now', day: null };
+const UI = { tab: 'now', day: null, health: 'growth', gkind: 'w' };
 const TABS = [
   ['now', 'Сейчас', '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'],
   ['day', 'День', '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h8"/>'],
+  ['health', 'Здоровье', '<path d="M12 21s-7-4.5-9.3-9A5 5 0 0 1 12 6a5 5 0 0 1 9.3 6c-2.3 4.5-9.3 9-9.3 9z"/><path d="M8 12h2l1-2 2 4 1-2h2"/>'],
+  ['dev', 'Развитие', '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.4 6.8 19.2l1-5.9L3.5 9.2l5.9-.8z"/>'],
   ['tips', 'Советы', '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.6 1 2.5h6c0-.9.2-1.7 1-2.5A6 6 0 0 0 12 3z"/>'],
 ];
 function renderTabs() {
@@ -403,7 +450,7 @@ function render() {
   syncShow();
   renderTabs();
   const v = $('#view');
-  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewTips() : viewNow();
+  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewTips() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewMiles() : viewNow();
   tick();
 }
 
@@ -454,6 +501,7 @@ function viewNow() {
       <button class="b" onclick="diaper('both')"><span class="e">💧💩</span>Оба</button>
     </div></div>`;
 
+  h += homeHealth();
   // сегодня кратко
   const d = daySum(sod(now()));
   h += `<div class="card"><h3>Сегодня</h3>${sumGrid(d)}<button class="link" onclick="go('day')">Весь день →</button></div>`;
@@ -499,9 +547,10 @@ function saveWelcome() {
 }
 
 /* ───────── день ───────── */
+const DIARY = new Set(['feed', 'sleep', 'diaper', 'pump']); // остальное (замеры, прививки, вехи) — в своих разделах
 function dayEvents(day) {
   const a = day, b = addDays(day, 1), t = now();
-  return evs().filter(e => e.s < b && (e.e ?? t) >= a && (e.t === 'sleep' || e.s >= a)).sort(byStart);
+  return evs().filter(e => DIARY.has(e.t) && e.s < b && (e.e ?? t) >= a && (e.t === 'sleep' || e.s >= a)).sort(byStart);
 }
 function daySum(day) {
   const a = day, b = addDays(day, 1), t = now(), list = dayEvents(day);
@@ -555,6 +604,9 @@ function evInfo(e) {
   if (e.t === 'sleep') return { c: 'sleep', ic: '😴', tx: e.e == null ? 'Спит сейчас' : 'Сон ' + fmtMin(e.e - e.s), sub: e.e == null ? 'уже ' + fmtMin(t - e.s) : '' };
   if (e.t === 'diaper') return { c: 'diaper', ic: e.dirty ? '💩' : '💧', tx: diaperTxt(e), sub: '' };
   if (e.t === 'pump') return { c: 'pump', ic: '🥛', tx: 'Сцеживание' + (e.ml ? ' ' + e.ml + ' мл' : ''), sub: '' };
+  if (e.t === 'growth') return { c: '', ic: '📏', tx: 'Замер: ' + growthTxt(e), sub: '' };
+  if (e.t === 'vax') { const v = VAX.find(x => x.id === e.vid); return { c: '', ic: '💉', tx: 'Прививка: ' + (v ? v.name : e.vid), sub: '' }; }
+  if (e.t === 'mile') { const m = MILES.find(x => x.id === e.mid); return { c: '', ic: '⭐', tx: m ? m.name : e.mid, sub: '' }; }
   return { c: '', ic: '•', tx: e.t, sub: '' };
 }
 function rowHtml(e) {
@@ -669,6 +721,7 @@ function openSettings() {
     <div class="sec-t" style="margin-top:0">Малыш</div>
     <label class="f"><span>Имя</span><input id="s_name" value="${esc(S.baby.name)}" autocomplete="off"></label>
     <label class="f"><span>Дата рождения</span><input id="s_birth" type="date" value="${esc(S.baby.birth)}"></label>
+    <div class="f"><span>Пол — для норм роста и веса ВОЗ</span><input type="hidden" id="s_sex" value="${esc(S.baby.sex || '')}">${chipsHtml('sex', [['f', 'Девочка'], ['m', 'Мальчик']], S.baby.sex)}</div>
     <div class="sec-t">Ночной режим</div>
     <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
     <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать автоматически по расписанию</label>
@@ -692,7 +745,8 @@ function saveSettings() {
   if (auto && (hhmm(from) == null || hhmm(to) == null)) return err('Укажите, во сколько включать и выключать ночной режим');
   if (auto && from === to) return err('Время включения и выключения совпадает');
   const name = $('#s_name').value.trim();
-  if (name !== S.baby.name || b !== S.baby.birth) setBaby({ name, birth: b });
+  const sex = $('#s_sex').value;
+  if (name !== S.baby.name || b !== S.baby.birth || sex !== (S.baby.sex || '')) setBaby({ name, birth: b, sex });
   const meName = $('#s_me') ? $('#s_me').value.trim() : null;
   if (meName != null && meName !== devName(DEV)) setMe({ name: meName });
   const p = nightPref(); Object.assign(p, { auto, from: from || p.from, to: to || p.to }); delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
@@ -729,6 +783,283 @@ function wipeData() {
     : 'Удалить все записи дневника на этом устройстве? Вернуть их можно только из сохранённой копии.')) return;
   for (const e of evs()) upd(e, { del: true });
   closeSheet(); render();
+}
+
+/* ───────── рост и вес: нормы ВОЗ ─────────
+   WHO Child Growth Standards (2006), параметры LMS по месяцам 0–12 (вес — weight-for-age, рост — length-for-age).
+   Значение на перцентиле: M·(1+L·S·z)^(1/L); перцентиль замера — через z = ((x/M)^L − 1)/(L·S). Между месяцами — линейно. */
+const WHO = {
+  w: {
+    m: [[0.3487, 3.3464, 0.14602], [0.2297, 4.4709, 0.13395], [0.1970, 5.5675, 0.12385], [0.1738, 6.3762, 0.11727], [0.1553, 7.0023, 0.11316], [0.1395, 7.5105, 0.11080], [0.1257, 7.9340, 0.10958],
+      [0.1134, 8.2970, 0.10902], [0.1021, 8.6151, 0.10882], [0.0917, 8.9014, 0.10881], [0.0820, 9.1649, 0.10891], [0.0730, 9.4122, 0.10906], [0.0644, 9.6479, 0.10925]],
+    f: [[0.3809, 3.2322, 0.14171], [0.1714, 4.1873, 0.13724], [0.0962, 5.1282, 0.13000], [0.0402, 5.8458, 0.12619], [-0.0050, 6.4237, 0.12402], [-0.0430, 6.8985, 0.12274], [-0.0756, 7.2970, 0.12204],
+      [-0.1039, 7.6422, 0.12178], [-0.1288, 7.9487, 0.12181], [-0.1507, 8.2254, 0.12199], [-0.1700, 8.4800, 0.12223], [-0.1872, 8.7192, 0.12247], [-0.2024, 8.9481, 0.12268]],
+  },
+  h: {
+    m: [[1, 49.8842, 0.03795], [1, 54.7244, 0.03557], [1, 58.4249, 0.03424], [1, 61.4292, 0.03328], [1, 63.8860, 0.03257], [1, 65.9026, 0.03204], [1, 67.6236, 0.03165],
+      [1, 69.1645, 0.03139], [1, 70.5994, 0.03124], [1, 71.9687, 0.03117], [1, 73.2812, 0.03118], [1, 74.5388, 0.03125], [1, 75.7488, 0.03137]],
+    f: [[1, 49.1477, 0.03790], [1, 53.6872, 0.03640], [1, 57.0673, 0.03568], [1, 59.8029, 0.03520], [1, 62.0899, 0.03486], [1, 64.0301, 0.03463], [1, 65.7311, 0.03448],
+      [1, 67.2873, 0.03441], [1, 68.7498, 0.03440], [1, 70.1435, 0.03444], [1, 71.4818, 0.03452], [1, 72.7710, 0.03464], [1, 74.0150, 0.03479]],
+  },
+};
+const PCT = [[3, -1.8808], [15, -1.0364], [50, 0], [85, 1.0364], [97, 1.8808]];
+const GK = { w: { name: 'Вес', unit: 'кг', dec: 2 }, h: { name: 'Рост', unit: 'см', dec: 1 } };
+function lmsAt(k, sex, m) {
+  const t = WHO[k][sex], x = Math.max(0, Math.min(12, m)), i = Math.min(11, Math.floor(x)), f = x - i;
+  return t[i].map((v, j) => v + (t[i + 1][j] - v) * f);
+}
+const valAt = ([L, M, S], z) => L ? M * Math.pow(1 + L * S * z, 1 / L) : M * Math.exp(S * z);
+const zOf = (x, [L, M, S]) => L ? (Math.pow(x / M, L) - 1) / (L * S) : Math.log(x / M) / S;
+function phi(z) { const t = 1 / (1 + 0.2316419 * Math.abs(z)), d = 0.3989423 * Math.exp(-z * z / 2), p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return z > 0 ? 1 - p : p; }
+const birthTs = () => { const b = parseDay(S.baby.birth); return b ? +b : null; };
+const monthsAt = ts => { const b = birthTs(); return b == null ? null : (sod(ts) - b) / 864e5 / 30.4375; };
+const numRu = (v, d) => String(+(+v).toFixed(d)).replace('.', ',');
+const parseNum = v => { const n = parseFloat(String(v || '').replace(',', '.').replace(/[^\d.]/g, '')); return isFinite(n) ? n : null; };
+function growthTxt(e) { return [e.w ? numRu(e.w, 3) + ' кг' : '', e.h ? numRu(e.h, 1) + ' см' : '', e.hc ? 'голова ' + numRu(e.hc, 1) + ' см' : ''].filter(Boolean).join(', '); }
+// перцентиль замера и мягкая оценка
+function pctOf(k, e) {
+  const sex = S.baby.sex, m = monthsAt(e.s), x = e[k];
+  if (!sex || m == null || m < 0 || m > 12.5 || !x) return null;
+  const p = Math.round(phi(zOf(x, lmsAt(k, sex, m))) * 100);
+  const lvl = p < 3 ? 'low' : p > 97 ? 'high' : 'ok';
+  const txt = p < 3 ? 'ниже нормы ВОЗ — покажите педиатру' : p < 15 ? 'чуть ниже среднего, в пределах нормы' : p <= 85 ? 'в пределах нормы' : p <= 97 ? 'чуть выше среднего, в пределах нормы' : 'выше нормы ВОЗ — покажите педиатру';
+  return { p: Math.max(1, Math.min(99, p)), lvl, txt };
+}
+const growths = () => evs().filter(e => e.t === 'growth').sort((a, b) => a.s - b.s);
+
+function viewHealth() {
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост и вес'], ['vax', 'Прививки']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.health === 'vax' ? viewVax() : viewGrowth());
+}
+function needBirth(what) { return `<div class="card"><h3>Нужна дата рождения</h3><p class="hint">Чтобы ${what}, укажите дату рождения малыша.</p><div class="btns" style="margin-top:10px"><button class="b main" onclick="openSettings()">Открыть настройки</button></div></div>`; }
+function viewGrowth() {
+  if (!birthTs()) return needBirth('сравнивать рост и вес с нормами ВОЗ');
+  let h = '';
+  if (!S.baby.sex) h += `<div class="card"><h3>Девочка или мальчик?</h3><p class="hint">Нормы ВОЗ для девочек и мальчиков разные.</p>
+    <div class="btns" style="margin-top:10px"><button class="b" onclick="setBaby({sex:'f'});render()">👧 Девочка</button><button class="b" onclick="setBaby({sex:'m'});render()">👦 Мальчик</button></div></div>`;
+  const list = growths(), k = UI.gkind, last = [...list].reverse().find(e => e[k]);
+  h += `<div class="card"><div class="seg" style="margin-bottom:10px">${['w', 'h'].map(x => `<button class="${k === x ? 'on' : ''}" onclick="UI.gkind='${x}';render()">${GK[x].name}</button>`).join('')}</div>`;
+  if (last) {
+    const p = pctOf(k, last), prev = [...list].reverse().find(e => e[k] && e.s < last.s);
+    const diff = prev ? last[k] - prev[k] : null, days = prev ? Math.round((sod(last.s) - sod(prev.s)) / 864e5) : 0;
+    h += `<div class="gnow"><div class="v num">${numRu(last[k], k === 'w' ? 3 : 1)} <small>${GK[k].unit}</small></div>
+      <div class="s">${dayShort(last.s)}${diff != null && days > 0 ? ` · ${diff >= 0 ? '+' : '−'}${k === 'w' ? Math.round(Math.abs(diff) * 1000) + ' г' : numRu(Math.abs(diff), 1) + ' см'} за ${days} ${pl(days, 'день', 'дня', 'дней')}` : ''}</div>
+      ${p ? `<div class="pct ${p.lvl}">${p.p}-й перцентиль — ${p.txt}</div>` : ''}</div>`;
+  } else h += `<p class="hint" style="margin:0 0 6px">Добавьте первый замер — из роддома или с приёма у педиатра.</p>`;
+  if (S.baby.sex) h += growthChart(k, list);
+  h += `<div class="btns" style="margin-top:12px"><button class="b main" onclick="editGrowth()">+ Добавить замер</button></div></div>`;
+  if (list.length) h += `<div class="card"><h3>Замеры</h3><ul class="list">${[...list].reverse().map(e => `<li onclick="editGrowth('${e.id}')"><span class="tm">${dayShort(e.s)}</span><span class="ic" style="--c:var(--accent)">📏</span><span class="tx"><div>${esc(growthTxt(e))}</div><small>${esc([ageAt(e.s), e.note].filter(Boolean).join(' · '))}</small></span></li>`).join('')}</ul></div>`;
+  h += `<p class="hint" style="margin:0 0 12px">Коридор на графике — от 3-го до 97-го перцентиля: так растут 94 из 100 здоровых малышей; тёмная полоса — 15–85, линия — середина. Важнее не одна точка, а то, что малыш растёт вдоль своей линии. Источник: стандарты роста детей ВОЗ (WHO Child Growth Standards).</p>`;
+  return h;
+}
+function dayShort(ts) { const d = new Date(ts); return d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0, 3) + (d.getFullYear() !== new Date(now()).getFullYear() ? ' ' + d.getFullYear() : ''); }
+function ageAt(ts) {
+  const b = birthTs(); if (b == null) return '';
+  const days = Math.round((sod(ts) - b) / 864e5); if (days < 0) return '';
+  if (days < 31) return days + ' ' + pl(days, 'день', 'дня', 'дней');
+  const m = Math.floor(days / 30.4375), r = Math.round(days - m * 30.4375);
+  return m + ' мес.' + (r ? ' ' + r + ' дн.' : '');
+}
+function growthChart(k, list) {
+  const sex = S.baby.sex, W = 340, H = 230, L = 34, R = 8, T = 10, B = 24;
+  const pts = list.filter(e => e[k]).map(e => [monthsAt(e.s), e[k]]).filter(([m]) => m >= 0 && m <= 12.5);
+  const curve = z => { const o = []; for (let m = 0; m <= 12.001; m += 0.25) o.push([m, valAt(lmsAt(k, sex, m), z)]); return o; };
+  const c3 = curve(PCT[0][1]), c97 = curve(PCT[4][1]), c15 = curve(PCT[1][1]), c85 = curve(PCT[3][1]), c50 = curve(0);
+  let lo = Math.min(c3[0][1], ...pts.map(p => p[1])), hi = Math.max(c97[c97.length - 1][1], ...pts.map(p => p[1]));
+  const step = k === 'w' ? 2 : 5; lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+  const x = m => L + m / 12 * (W - L - R), y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  const path = a => a.map(([m, v], i) => (i ? 'L' : 'M') + x(m).toFixed(1) + ' ' + y(v).toFixed(1)).join('');
+  const band = (a, b) => path(a) + b.slice().reverse().map(([m, v]) => 'L' + x(m).toFixed(1) + ' ' + y(v).toFixed(1)).join('') + 'Z';
+  let g = '';
+  for (let v = lo; v <= hi; v += step) g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" class="ax">${v}</text>`;
+  for (let m = 0; m <= 12; m += 2) g += `<text x="${x(m)}" y="${H - 6}" text-anchor="middle" class="ax">${m}</text>`;
+  const am = monthsAt(now());
+  return `<div class="gchart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${GK[k].name} по нормам ВОЗ">${g}
+    <path d="${band(c3, c97)}" class="b97"/><path d="${band(c15, c85)}" class="b85"/><path d="${path(c50)}" class="p50"/>
+    ${am != null && am >= 0 && am <= 12 ? `<line x1="${x(am)}" x2="${x(am)}" y1="${T}" y2="${H - B}" class="today"/>` : ''}
+    ${pts.length > 1 ? `<path d="${path(pts)}" class="me"/>` : ''}${pts.map(([m, v]) => `<circle cx="${x(m)}" cy="${y(v)}" r="4.5" class="dot"/>`).join('')}
+    <text x="${W - R}" y="${T + 10}" text-anchor="end" class="ax">${GK[k].unit}</text><text x="${W - R}" y="${H - B - 4}" text-anchor="end" class="ax">мес.</text></svg></div>`;
+}
+let GEDIT = null;
+function editGrowth(id) {
+  const e = id ? evById(id) : { t: 'growth', s: now() }; if (!e) return; GEDIT = id || null;
+  const v = x => e[x] ? numRu(e[x], 3) : '';
+  openSheet(`<h2>📏 ${id ? 'Замер' : 'Новый замер'}</h2>
+    <label class="f"><span>Дата</span><input id="g_d" type="date" value="${toInput(e.s).slice(0, 10)}"></label>
+    <div class="two"><label class="f"><span>Вес, кг</span><input id="g_w" inputmode="decimal" placeholder="например 5,2" value="${v('w')}"></label>
+    <label class="f"><span>Рост, см</span><input id="g_h" inputmode="decimal" placeholder="например 58" value="${v('h')}"></label></div>
+    <label class="f"><span>Окружность головы, см (если мерили)</span><input id="g_hc" inputmode="decimal" value="${v('hc')}"></label>
+    <label class="f"><span>Заметка</span><input id="g_note" value="${esc(e.note || '')}" placeholder="Например: на приёме у педиатра"></label>
+    <div class="err" id="g_err"></div>
+    <div class="acts">${id ? '<button class="b del" onclick="delGrowth()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveGrowth()">Сохранить</button></div>`);
+}
+function saveGrowth() {
+  const err = m => { $('#g_err').textContent = m; };
+  const d = parseDay($('#g_d').value); if (!d) return err('Укажите дату');
+  const s = +d + 12 * 3600e3; if (sod(s) > sod(now())) return err('Эта дата ещё не наступила');
+  const w = parseNum($('#g_w').value), h = parseNum($('#g_h').value), hc = parseNum($('#g_hc').value);
+  if (w == null && h == null && hc == null) return err('Укажите вес или рост');
+  if (w != null && (w < 0.4 || w > 25)) return err('Вес — в килограммах, например 5,2');
+  if (h != null && (h < 25 || h > 120)) return err('Рост — в сантиметрах, например 58');
+  if (hc != null && (hc < 20 || hc > 60)) return err('Окружность головы — в сантиметрах, например 38');
+  const p = { s, e: s, w, h, hc, note: $('#g_note').value.trim() };
+  if (GEDIT) upd(evById(GEDIT), p); else add(Object.assign({ t: 'growth' }, p));
+  closeSheet(); buzz(); render();
+}
+function delGrowth() { const e = evById(GEDIT); upd(e, { del: true }); closeSheet(); toast('Замер удалён', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } }); render(); }
+
+/* ───────── прививки ─────────
+   Национальный календарь — приказ Минздрава России от 06.12.2021 № 1122н (ред. 12.12.2023), возраст — в днях/месяцах (age, мес.).
+   need: 'all' — всем по календарю, 'risk' — только группам риска (по решению врача), 'opt' — по желанию (платно, рекомендуют педиатры). */
+const VAX = [
+  { id: 'hb1', age: 0, name: 'Гепатит B — 1-я', dis: 'вирусный гепатит B', need: 'all', when: 'в первые 24 часа' },
+  { id: 'bcg', age: 0.1, name: 'БЦЖ', dis: 'туберкулёз', need: 'all', when: 'на 3–7-й день' },
+  { id: 'hb2', age: 1, name: 'Гепатит B — 2-я', dis: 'вирусный гепатит B', need: 'all' },
+  { id: 'pnc1', age: 2, name: 'Пневмококк — 1-я', dis: 'пневмококковая инфекция', need: 'all' },
+  { id: 'hb3r', age: 2, name: 'Гепатит B — 3-я (группы риска)', dis: 'вирусный гепатит B', need: 'risk', note: 'по схеме 0–1–2–12, если мама — носитель гепатита B и т. п.' },
+  { id: 'rota', age: 2, name: 'Ротавирус', dis: 'ротавирусная инфекция (тяжёлые кишечные инфекции)', need: 'opt', note: 'курс 2–3 дозы, начать с 6 недель, закончить до 8 месяцев' },
+  { id: 'menb', age: 2, name: 'Менингококк', dis: 'менингококковая инфекция (менингит)', need: 'opt', note: 'схема зависит от вакцины и возраста' },
+  { id: 'dtp1', age: 3, name: 'АКДС — 1-я', dis: 'дифтерия, коклюш, столбняк', need: 'all' },
+  { id: 'polio1', age: 3, name: 'Полиомиелит — 1-я', dis: 'полиомиелит', need: 'all' },
+  { id: 'hib1', age: 3, name: 'Гемофильная инфекция — 1-я', dis: 'гемофильная инфекция типа b', need: 'all' },
+  { id: 'dtp2', age: 4.5, name: 'АКДС — 2-я', dis: 'дифтерия, коклюш, столбняк', need: 'all' },
+  { id: 'polio2', age: 4.5, name: 'Полиомиелит — 2-я', dis: 'полиомиелит', need: 'all' },
+  { id: 'hib2', age: 4.5, name: 'Гемофильная инфекция — 2-я', dis: 'гемофильная инфекция типа b', need: 'all' },
+  { id: 'pnc2', age: 4.5, name: 'Пневмококк — 2-я', dis: 'пневмококковая инфекция', need: 'all' },
+  { id: 'dtp3', age: 6, name: 'АКДС — 3-я', dis: 'дифтерия, коклюш, столбняк', need: 'all' },
+  { id: 'hb3', age: 6, name: 'Гепатит B — 3-я', dis: 'вирусный гепатит B', need: 'all' },
+  { id: 'polio3', age: 6, name: 'Полиомиелит — 3-я', dis: 'полиомиелит', need: 'all' },
+  { id: 'hib3', age: 6, name: 'Гемофильная инфекция — 3-я', dis: 'гемофильная инфекция типа b', need: 'all' },
+  { id: 'flu', age: 6, name: 'Грипп', dis: 'грипп', need: 'all', when: 'с 6 месяцев, каждый год перед сезоном', note: 'в первый раз — две дозы с интервалом 4 недели' },
+  { id: 'mmr', age: 12, name: 'Корь, краснуха, паротит', dis: 'корь, краснуха, эпидемический паротит', need: 'all' },
+  { id: 'hb4r', age: 12, name: 'Гепатит B — 4-я (группы риска)', dis: 'вирусный гепатит B', need: 'risk' },
+  { id: 'vari', age: 12, name: 'Ветряная оспа', dis: 'ветряная оспа', need: 'opt', note: 'две дозы' },
+  { id: 'hepa', age: 12, name: 'Гепатит A', dis: 'вирусный гепатит A', need: 'opt', note: 'две дозы с интервалом 6–12 месяцев' },
+  { id: 'tbe', age: 12, name: 'Клещевой энцефалит', dis: 'клещевой энцефалит', need: 'opt', note: 'важно, если живёте или ездите в регионы с клещами' },
+  { id: 'pncr', age: 15, name: 'Пневмококк — ревакцинация', dis: 'пневмококковая инфекция', need: 'all' },
+  { id: 'dtpr', age: 18, name: 'АКДС — ревакцинация', dis: 'дифтерия, коклюш, столбняк', need: 'all' },
+  { id: 'polior', age: 18, name: 'Полиомиелит — 1-я ревакцинация', dis: 'полиомиелит', need: 'all' },
+  { id: 'hibr', age: 18, name: 'Гемофильная инфекция — ревакцинация', dis: 'гемофильная инфекция типа b', need: 'all' },
+];
+const VAX_AGE = a => a === 0 ? 'При рождении' : a < 1 ? '3–7 дней' : (a === 4.5 ? '4,5' : a) + ' ' + pl(Math.floor(a), 'месяц', 'месяца', 'месяцев');
+const NEED = { all: ['Обязательная', 'по национальному календарю'], risk: ['Группы риска', 'по решению врача'], opt: ['По желанию', 'платно, рекомендуют педиатры'] };
+const vaxDone = () => { const m = {}; for (const e of evs()) if (e.t === 'vax') m[e.vid] = e; return m; };
+const vaxDue = a => { const b = birthTs(); return b == null ? null : a < 1 ? b + (a === 0 ? 0 : 3 * 864e5) : +new Date(new Date(b).setMonth(new Date(b).getMonth() + Math.floor(a))) + (a % 1 ? 15 * 864e5 : 0); };
+// пора / скоро: обязательные, срок которых наступил (или через ≤ 14 дней) и которые не отмечены
+function vaxSoon() {
+  const done = vaxDone(), t = now();
+  return VAX.filter(v => v.need === 'all' && !done[v.id] && vaxDue(v.age) != null && vaxDue(v.age) <= t + 14 * 864e5);
+}
+function viewVax() {
+  if (!birthTs()) return needBirth('рассчитать даты прививок');
+  const done = vaxDone(), t = now(), ages = [...new Set(VAX.map(v => v.age))];
+  let h = `<div class="vleg"><span class="vtag all">Обязательная</span><span class="vtag risk">Группы риска</span><span class="vtag opt">По желанию</span></div>`;
+  for (const a of ages) {
+    const due = vaxDue(a), items = VAX.filter(v => v.age === a);
+    const allDone = items.filter(v => v.need === 'all').every(v => done[v.id]);
+    const st = allDone ? 'done' : due <= t ? 'now' : due <= t + 30 * 864e5 ? 'soon' : '';
+    h += `<div class="card vgrp ${st}"><div class="vhead"><h3>${VAX_AGE(a)}</h3><span class="vdate">${allDone ? '✓ всё сделано' : (due <= t ? 'пора · ' : 'с ') + dayShort(due)}</span></div><ul class="vlist">`;
+    for (const v of items) {
+      const d = done[v.id];
+      h += `<li class="${v.need}${d ? ' ok' : ''}" onclick="editVax('${v.id}')"><span class="vchk">${d ? '✓' : ''}</span><span class="tx"><div>${esc(v.name)}</div>
+        <small>${esc(v.dis)}${v.when ? ' · ' + esc(v.when) : ''}${d ? ' · сделана ' + dayShort(d.s) + (d.note ? ' · ' + esc(d.note) : '') : ''}</small></span>${v.need !== 'all' ? `<span class="vtag ${v.need}">${NEED[v.need][0]}</span>` : ''}</li>`;
+    }
+    h += `</ul></div>`;
+  }
+  h += `<p class="hint" style="margin:0 0 12px">Сроки — по национальному календарю прививок России (приказ Минздрава № 1122н). Если прививку отложили, следующие сдвигаются — точный график составит педиатр. Препараты и прививки «по желанию» — тоже вместе с ним.</p>`;
+  return h;
+}
+let VEDIT = null;
+function editVax(vid) {
+  const v = VAX.find(x => x.id === vid), d = vaxDone()[vid]; VEDIT = vid;
+  openSheet(`<h2>💉 ${esc(v.name)}</h2>
+    <p style="margin:0 0 6px;color:var(--text-2)">От чего: ${esc(v.dis)}.</p>
+    <p class="hint" style="margin:0 0 12px"><span class="vtag ${v.need}">${NEED[v.need][0]}</span> ${NEED[v.need][1]}. Срок: ${VAX_AGE(v.age).toLowerCase()}${v.when ? ' (' + esc(v.when) + ')' : ''}.${v.note ? ' ' + esc(v.note[0].toUpperCase() + v.note.slice(1)) + '.' : ''}</p>
+    <label class="f"><span>Когда сделали</span><input id="v_d" type="date" value="${toInput(d ? d.s : now()).slice(0, 10)}"></label>
+    <label class="f"><span>Заметка</span><input id="v_note" value="${esc(d ? d.note || '' : '')}" placeholder="Название вакцины, реакция, температура…"></label>
+    <div class="err" id="v_err"></div>
+    <div class="acts">${d ? '<button class="b del" onclick="unVax()">Снять отметку</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveVax()">${d ? 'Сохранить' : 'Сделана'}</button></div>`);
+}
+function saveVax() {
+  const d = parseDay($('#v_d').value); if (!d) return $('#v_err').textContent = 'Укажите дату';
+  const s = +d + 12 * 3600e3; if (sod(s) > sod(now())) return $('#v_err').textContent = 'Эта дата ещё не наступила';
+  const p = { s, e: s, note: $('#v_note').value.trim() }, old = vaxDone()[VEDIT];
+  if (old) upd(old, p); else add(Object.assign({ t: 'vax', vid: VEDIT }, p));
+  closeSheet(); buzz(); render();
+}
+function unVax() { const o = vaxDone()[VEDIT]; if (o) upd(o, { del: true }); closeSheet(); render(); }
+
+/* ───────── вехи развития ─────────
+   Двигательные — окна ВОЗ (WHO Multicentre Growth Reference Study, 2006: от 1-го до 99-го перцентиля);
+   остальные — CDC «Learn the Signs. Act Early» (2022: к этому возрасту умеют 3 из 4 малышей), диапазон «обычно».
+   [lo, hi] — месяцы. Если к концу диапазона навыка нет — повод спокойно обсудить с педиатром. */
+const MILES = [
+  { id: 'smile', name: 'Улыбается в ответ', lo: 1, hi: 3, src: 'CDC', ic: '😊' },
+  { id: 'headup', name: 'Поднимает голову, лёжа на животе', lo: 1, hi: 3, src: 'CDC', ic: '💪' },
+  { id: 'coo', name: 'Гулит — первое «агу»', lo: 2, hi: 4, src: 'CDC', ic: '🗣️' },
+  { id: 'head', name: 'Уверенно держит голову', lo: 3, hi: 4, src: 'CDC', ic: '🙂' },
+  { id: 'laugh', name: 'Смеётся вслух', lo: 3, hi: 6, src: 'CDC', ic: '😄' },
+  { id: 'grab', name: 'Тянется к игрушке и берёт её', lo: 3, hi: 6, src: 'CDC', ic: '🧸' },
+  { id: 'roll', name: 'Переворачивается со спины на живот', lo: 4, hi: 7, src: 'CDC', ic: '🔄' },
+  { id: 'sit', name: 'Сидит без поддержки', lo: 3.8, hi: 9.2, src: 'ВОЗ', ic: '🪑' },
+  { id: 'tooth', name: 'Первый зуб', lo: 4, hi: 12, src: 'AAP', ic: '🦷' },
+  { id: 'standh', name: 'Стоит с поддержкой', lo: 4.8, hi: 11.4, src: 'ВОЗ', ic: '🧍' },
+  { id: 'crawl', name: 'Ползает на четвереньках', lo: 5.2, hi: 13.5, src: 'ВОЗ', ic: '🐢', note: 'некоторые малыши пропускают ползание — это нормально' },
+  { id: 'walkh', name: 'Ходит, держась за руки или опору', lo: 5.9, hi: 13.7, src: 'ВОЗ', ic: '🤝' },
+  { id: 'babble', name: 'Лепечет слогами: «ма-ма», «ба-ба»', lo: 6, hi: 9, src: 'CDC', ic: '💬' },
+  { id: 'name', name: 'Откликается на имя', lo: 6, hi: 9, src: 'CDC', ic: '👂' },
+  { id: 'stand', name: 'Стоит сам', lo: 6.9, hi: 16.9, src: 'ВОЗ', ic: '🌟' },
+  { id: 'pincer', name: 'Берёт мелочь двумя пальцами', lo: 8, hi: 12, src: 'CDC', ic: '🤏' },
+  { id: 'walk', name: 'Первые шаги сам', lo: 8.2, hi: 17.6, src: 'ВОЗ', ic: '👣' },
+  { id: 'bye', name: 'Машет «пока»', lo: 9, hi: 12, src: 'CDC', ic: '👋' },
+  { id: 'word', name: 'Первое слово — «мама», «папа»', lo: 10, hi: 14, src: 'CDC', ic: '❤️' },
+];
+const mRu = v => numRu(v, 1).replace(',0', '');
+const milesDone = () => { const m = {}; for (const e of evs()) if (e.t === 'mile') m[e.mid] = e; return m; };
+function viewMiles() {
+  if (!birthTs()) return needBirth('показывать вехи по возрасту');
+  const done = milesDone(), am = monthsAt(now()), n = MILES.filter(x => done[x.id]).length;
+  let h = `<div class="card"><h3>⭐ Вехи развития</h3><p class="hint">Отмечайте, когда малыш научился новому, — получится история первого года. У каждого свой темп: диапазоны широкие, и это нормально.</p>
+    <div class="mbar"><i style="width:${Math.round(n / MILES.length * 100)}%"></i></div><div class="hint">${n} из ${MILES.length}</div></div>`;
+  const now_ = MILES.filter(x => !done[x.id] && am >= x.lo - 0.5 && am <= x.hi), later = MILES.filter(x => !done[x.id] && am < x.lo - 0.5), late = MILES.filter(x => !done[x.id] && am > x.hi);
+  const item = (x, st) => { const d = done[x.id];
+    return `<li class="${st}" onclick="editMile('${x.id}')"><span class="ic">${x.ic}</span><span class="tx"><div>${esc(x.name)}</div><small>${d ? '✓ ' + dayShort(d.s) + ' — в ' + esc(ageAt(d.s)) + (d.note ? ' · ' + esc(d.note) : '') : 'обычно ' + mRu(x.lo) + '–' + mRu(x.hi) + ' мес.' + (x.note ? ' · ' + esc(x.note) : '')}</small></span>${d ? '<span class="vchk on">✓</span>' : '<span class="vchk"></span>'}</li>`; };
+  const sec = (t, list, st, hint) => list.length ? `<div class="card"><h3>${t}</h3>${hint ? `<p class="hint">${hint}</p>` : ''}<ul class="list mlist">${list.map(x => item(x, st)).join('')}</ul></div>` : '';
+  h += sec('Сейчас самое время', now_, 'cur');
+  h += sec('Стоит обсудить с педиатром', late, 'late', 'Обычно к этому возрасту уже получается. Чаще всего это просто свой темп, но лучше спокойно рассказать врачу на ближайшем приёме.');
+  h += sec('Уже умеет', MILES.filter(x => done[x.id]).sort((a, b) => done[a.id].s - done[b.id].s), 'ok');
+  h += sec('Впереди', later, 'next');
+  h += `<p class="hint" style="margin:0 0 12px">Источники: окна двигательного развития ВОЗ (WHO Motor Development Study, 2006); вехи CDC «Learn the Signs. Act Early» (2022). Это не диагноз — при любых сомнениях обращайтесь к педиатру.</p>`;
+  return h;
+}
+let MEDIT = null;
+function editMile(mid) {
+  const x = MILES.find(m => m.id === mid), d = milesDone()[mid]; MEDIT = mid;
+  openSheet(`<h2>${x.ic} ${esc(x.name)}</h2>
+    <p class="hint" style="margin:0 0 12px">Обычно ${mRu(x.lo)}–${mRu(x.hi)} мес. (${x.src}).${x.note ? ' ' + esc(x.note[0].toUpperCase() + x.note.slice(1)) + '.' : ''}</p>
+    <label class="f"><span>Когда получилось впервые</span><input id="m_d" type="date" value="${toInput(d ? d.s : now()).slice(0, 10)}"></label>
+    <label class="f"><span>Пара слов на память</span><textarea id="m_note" placeholder="Где, как это было…">${esc(d ? d.note || '' : '')}</textarea></label>
+    <div class="err" id="m_err"></div>
+    <div class="acts">${d ? '<button class="b del" onclick="unMile()">Снять отметку</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveMile()">${d ? 'Сохранить' : 'Получилось!'}</button></div>`);
+}
+function saveMile() {
+  const d = parseDay($('#m_d').value); if (!d) return $('#m_err').textContent = 'Укажите дату';
+  const s = +d + 12 * 3600e3; if (sod(s) > sod(now())) return $('#m_err').textContent = 'Эта дата ещё не наступила';
+  if (birthTs() != null && s < birthTs()) return $('#m_err').textContent = 'Дата раньше дня рождения';
+  const p = { s, e: s, note: $('#m_note').value.trim() }, old = milesDone()[MEDIT];
+  if (old) upd(old, p); else { add(Object.assign({ t: 'mile', mid: MEDIT }, p)); toast('Ура! 🎉 Записали'); }
+  closeSheet(); buzz(); render();
+}
+function unMile() { const o = milesDone()[MEDIT]; if (o) upd(o, { del: true }); closeSheet(); render(); }
+
+// на главной: прививки, которые пора сделать
+function homeHealth() {
+  if (!birthTs()) return '';
+  const soon = vaxSoon(); if (!soon.length) return '';
+  const t = now(), due = vaxDue(soon[0].age), overdue = due <= t;
+  return `<div class="card vgrp ${overdue ? 'now' : 'soon'}" onclick="UI.health='vax';go('health')" style="cursor:pointer"><h3>💉 ${overdue ? 'Пора сделать прививки' : 'Скоро прививки'}</h3>
+    <p class="st" style="margin:6px 0 0">${soon.slice(0, 4).map(v => esc(v.name)).join(', ')}${soon.length > 4 ? ' и ещё ' + (soon.length - 4) : ''}${overdue ? '' : ' — с ' + dayShort(due)}</p>
+    <p class="hint">Отметьте, когда сделаете — нажмите сюда.</p></div>`;
 }
 
 /* ───────── советы ───────── */
@@ -838,7 +1169,7 @@ async function gsApi(url, o = {}, again) {
 
 // записи для таблицы: события + 'baby' + 'dev:<устройство>'
 function recOf(id) {
-  if (id === 'baby') return { id, t: 'baby', name: S.baby.name, birth: S.baby.birth, u: S.baby.u || 0 };
+  if (id === 'baby') return { id, t: 'baby', name: S.baby.name, birth: S.baby.birth, sex: S.baby.sex || '', u: S.baby.u || 0 };
   if (id.startsWith('dev:')) { const d = S.devs[id.slice(4)]; return d ? Object.assign({ id, t: 'dev' }, d) : null; }
   return evById(id) || null;
 }
@@ -868,7 +1199,7 @@ function applyRemote(list) {
   let ch = false; const old = now() - DEL_DAYS * 864e5;
   for (const r of list) {
     if (!r || !r.id || !r.t) continue;
-    if (r.t === 'baby') { if ((r.u || 0) > (S.baby.u || 0)) { S.baby = { name: r.name || '', birth: r.birth || '', u: r.u }; ch = true; } continue; }
+    if (r.t === 'baby') { if ((r.u || 0) > (S.baby.u || 0)) { S.baby = { name: r.name || '', birth: r.birth || '', sex: r.sex || '', u: r.u }; ch = true; } continue; }
     if (r.t === 'dev') { const k = r.id.slice(4), o = S.devs[k]; if (!o || (r.u || 0) > (o.u || 0)) { S.devs[k] = { name: r.name || '', email: r.email || '', u: r.u }; ch = true; } continue; }
     if (!isFinite(r.s) || (r.del && r.u < old)) continue;
     const i = S.events.findIndex(e => e.id === r.id);
