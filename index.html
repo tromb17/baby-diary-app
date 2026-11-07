@@ -3,53 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#5b6cd9">
+<meta name="theme-color" content="#d9f3e3">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Дневник малыша</title>
 <style>
+/* Днём — светлый мятный градиент и размытые зверята на фоне (.zoo), карточки полупрозрачные.
+   Тёмная тема телефона — ночное небо. Ночной режим — почти чёрный, без зверят. */
 :root{
-  --page:#f8f7f4; --surface:#fdfcfa; --surface-2:#f0eee9; --line:#e4e1da;
-  --text:#121110; --text-2:#55524c; --muted:#8c8880;
-  --accent:#5b6cd9; --on-accent:#fff; --good:#1a9d5a; --warn:#d98a00; --bad:#cf3b3b;
-  --c-feed:#d9558c; --c-sleep:#6a55d6; --c-diaper:#0d93a3; --c-pump:#e5672f;
-  --shadow:0 1px 2px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04); --r:16px;
+  --page:#eaf7ef; --bg:linear-gradient(165deg,#d9f3e3 0%,#eef9ee 30%,#fff5e3 68%,#e3f0fc 100%);
+  --surface:rgba(255,255,255,.62); --solid:#ffffff; --surface-2:rgba(255,255,255,.55); --line:rgba(36,94,62,.12);
+  --text:#14241b; --text-2:#45584c; --muted:#7c8d82;
+  --accent:#2a9d68; --on-accent:#fff; --good:#1a9d5a; --warn:#d98a00; --bad:#d23f3f;
+  --c-feed:#e0568f; --c-sleep:#6f5bd9; --c-diaper:#109aa8; --c-pump:#e8743a;
+  --shadow:0 1px 2px rgba(20,60,40,.06),0 6px 20px rgba(20,60,40,.07); --r:20px; --zoo:.9;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --page:#121316; --surface:#1b1d22; --surface-2:#25282e; --line:#33373e;
-    --text:#f0eee9; --text-2:#c4c1b9; --muted:#8c8880;
-    --accent:#8190ee; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
-    --c-feed:#ec7aa8; --c-sleep:#9a8af0; --c-diaper:#2ab7c7; --c-pump:#f08250; --shadow:none;
+    --page:#10202a; --bg:linear-gradient(165deg,#0e2a25 0%,#132536 55%,#221a38 100%);
+    --surface:rgba(24,34,44,.78); --solid:#18222c; --surface-2:rgba(38,52,64,.8); --line:rgba(255,255,255,.09);
+    --text:#eef3ef; --text-2:#c2cdc6; --muted:#8a9a91;
+    --accent:#4cc28c; --on-accent:#08170f; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
+    --c-feed:#ef7aa9; --c-sleep:#9d8cf2; --c-diaper:#2dbccb; --c-pump:#f28a58; --shadow:none; --zoo:.2;
   }
 }
 :root[data-theme="dark"]{
-  --page:#121316; --surface:#1b1d22; --surface-2:#25282e; --line:#33373e;
-  --text:#f0eee9; --text-2:#c4c1b9; --muted:#8c8880;
-  --accent:#8190ee; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
-  --c-feed:#ec7aa8; --c-sleep:#9a8af0; --c-diaper:#2ab7c7; --c-pump:#f08250; --shadow:none;
+  --page:#10202a; --bg:linear-gradient(165deg,#0e2a25 0%,#132536 55%,#221a38 100%);
+  --surface:rgba(24,34,44,.78); --solid:#18222c; --surface-2:rgba(38,52,64,.8); --line:rgba(255,255,255,.09);
+  --text:#eef3ef; --text-2:#c2cdc6; --muted:#8a9a91;
+  --accent:#4cc28c; --on-accent:#08170f; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
+  --c-feed:#ef7aa9; --c-sleep:#9d8cf2; --c-diaper:#2dbccb; --c-pump:#f28a58; --shadow:none; --zoo:.2;
 }
 /* ночной режим: почти чёрный экран, тёплый приглушённый текст, крупные кнопки */
 :root[data-night]{
-  --page:#070605; --surface:#110e0c; --surface-2:#1a1512; --line:#2a211b;
+  --page:#070605; --bg:#070605; --surface:#110e0c; --solid:#110e0c; --surface-2:#1a1512; --line:#2a211b;
   --text:#d8a888; --text-2:#b48a6f; --muted:#7d6150;
   --accent:#b8805c; --on-accent:#140f0c; --good:#9a8a55; --warn:#c08a4a; --bad:#c06a5a;
-  --c-feed:#b86a6a; --c-sleep:#8a74a8; --c-diaper:#6a8f8a; --c-pump:#b07a50; --shadow:none;
+  --c-feed:#b86a6a; --c-sleep:#8a74a8; --c-diaper:#6a8f8a; --c-pump:#b07a50; --shadow:none; --zoo:0;
 }
 :root{color-scheme:light dark}
 :root[data-theme="light"]{color-scheme:light}
 :root[data-theme="dark"],:root[data-night]{color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--page);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+html{background:var(--page)}
+body{background:var(--bg);background-attachment:fixed;min-height:100vh;color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+.zoo{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--zoo);transition:opacity .4s}
+.zoo svg{position:absolute;filter:blur(2.5px)}
+.card.feed,.card.sleep,.card.diaper{background:color-mix(in srgb,var(--c) 9%,var(--surface))}
+:root[data-night] .card.feed,:root[data-night] .card.sleep,:root[data-night] .card.diaper{background:var(--surface)}
+.top,main{position:relative;z-index:1}
+.ava{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#ffd9a8,#ffb3cf 50%,#b9c8ff);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+:root[data-night] .ava{background:#2a211b;box-shadow:none;filter:grayscale(.6) brightness(.7)}
+.syncdot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none;margin:0 6px}
+.syncdot.ok{background:var(--good)} .syncdot.busy{background:var(--warn)} .syncdot.err,.syncdot.need{background:var(--bad)}
+.syncbtn{border:0;background:transparent;padding:14px 4px;margin:-10px 0}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .num{font-variant-numeric:tabular-nums}
 [hidden]{display:none!important}
 
-.top{position:sticky;top:0;z-index:20;background:var(--page);display:flex;align-items:center;gap:6px;padding:calc(10px + env(safe-area-inset-top)) 16px 8px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--page) 55%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
+:root[data-night] .top{background:var(--page)}
 .who{flex:1;min-width:0}
 .who h1{font-size:20px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .age{font-size:13px;color:var(--muted)}
@@ -59,7 +76,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .icon-btn.on{color:var(--accent);background:var(--surface-2)}
 
 main{max-width:640px;margin:0 auto;padding:0 16px 24px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.card{background:var(--surface);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px;box-shadow:var(--shadow)}
 .card h3{margin:0;font-size:16px;display:flex;align-items:center;gap:8px}
 .card h3 .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
 .hint{color:var(--muted);font-size:13px;margin:4px 0 0}
@@ -72,7 +89,8 @@ main{max-width:640px;margin:0 auto;padding:0 16px 24px}
 .b{flex:1 1 0;min-width:0;border:1px solid color-mix(in srgb,var(--c,var(--accent)) 40%,var(--line));background:color-mix(in srgb,var(--c,var(--accent)) 10%,var(--surface));color:var(--text);border-radius:13px;padding:12px 8px;font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.15}
 .b small{font-weight:500;font-size:11.5px;color:var(--c,var(--accent))}
 .b:active{transform:scale(.97)}
-.b.main{background:var(--c,var(--accent));border-color:transparent;color:var(--on-accent)}
+.b.main{background:linear-gradient(135deg,var(--c,var(--accent)),color-mix(in srgb,var(--c,var(--accent)) 72%,#ffb36b));border-color:transparent;color:var(--on-accent);box-shadow:0 4px 14px color-mix(in srgb,var(--c,var(--accent)) 30%,transparent)}
+:root[data-night] .b.main{background:var(--c,var(--accent));box-shadow:none}
 .b.main small{color:inherit;opacity:.85}
 .b.ghost{background:transparent}
 .b.wide{flex-basis:100%}
@@ -125,18 +143,18 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .norm th{border-top:0;font-size:12.5px;color:var(--muted);font-weight:500}
 .norm tr.me td{font-weight:700;color:var(--accent)}
 
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:4px 8px calc(4px + env(safe-area-inset-bottom))}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:var(--surface);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:4px 8px calc(4px + env(safe-area-inset-bottom))}
 .tabs button{flex:1;border:0;background:transparent;padding:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--muted)}
 .tabs svg{width:24px;height:24px}
 .tabs button.on{color:var(--accent);font-weight:600}
 
 .sheet-wrap{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
 .sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.4)}
-.sheet{position:relative;background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet{position:relative;background:var(--solid);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
 .sheet h2{margin:0 0 12px;font-size:19px}
 .f{display:block;margin:0 0 12px}
 .f>span{display:block;font-size:13px;color:var(--text-2);margin-bottom:4px}
-.f input,.f select,.f textarea{width:100%;border:1px solid var(--line);background:var(--page);border-radius:11px;padding:10px 12px;min-height:44px}
+.f input,.f select,.f textarea{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:11px;padding:10px 12px;min-height:44px}
 .f textarea{min-height:64px;resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
@@ -161,8 +179,30 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 </style>
 </head>
 <body>
+<div class="zoo" aria-hidden="true">
+  <!-- мишка -->
+  <svg viewBox="0 0 100 100" style="width:150px;top:70px;right:-34px;transform:rotate(12deg)"><circle cx="22" cy="24" r="14" fill="#f1bf92"/><circle cx="78" cy="24" r="14" fill="#f1bf92"/><circle cx="50" cy="56" r="36" fill="#f4c9a0"/><ellipse cx="50" cy="68" rx="15" ry="12" fill="#fde6cf"/><circle cx="37" cy="50" r="3.5" fill="#9b6b48"/><circle cx="63" cy="50" r="3.5" fill="#9b6b48"/><ellipse cx="50" cy="63" rx="5" ry="3.5" fill="#9b6b48"/></svg>
+  <!-- зайка -->
+  <svg viewBox="0 0 100 130" style="width:110px;top:330px;left:-30px;transform:rotate(-14deg)"><ellipse cx="36" cy="30" rx="11" ry="30" fill="#f6bcd2"/><ellipse cx="64" cy="30" rx="11" ry="30" fill="#f6bcd2"/><ellipse cx="36" cy="32" rx="5" ry="20" fill="#fde0ea"/><ellipse cx="64" cy="32" rx="5" ry="20" fill="#fde0ea"/><circle cx="50" cy="86" r="32" fill="#f7c6d9"/><circle cx="39" cy="82" r="3.5" fill="#a5577a"/><circle cx="61" cy="82" r="3.5" fill="#a5577a"/><ellipse cx="50" cy="93" rx="4" ry="3" fill="#e27aa3"/></svg>
+  <!-- утёнок -->
+  <svg viewBox="0 0 120 100" style="width:140px;bottom:120px;left:6%;transform:rotate(6deg)"><ellipse cx="70" cy="68" rx="40" ry="24" fill="#ffe08a"/><circle cx="40" cy="38" r="20" fill="#ffe59c"/><ellipse cx="19" cy="42" rx="11" ry="6" fill="#ffad5c"/><circle cx="37" cy="33" r="3.5" fill="#7a5a1c"/><path d="M75 55q14-8 26 4q-12 6-26-4z" fill="#ffd36a"/></svg>
+  <!-- слонёнок -->
+  <svg viewBox="0 0 110 100" style="width:150px;bottom:150px;right:-26px;transform:rotate(-8deg)"><circle cx="22" cy="46" r="22" fill="#a9c6ee"/><circle cx="88" cy="46" r="22" fill="#a9c6ee"/><circle cx="55" cy="48" r="30" fill="#b9d3f2"/><path d="M48 62q-2 26 12 30q6 1 6-5q-8-2-7-25z" fill="#b9d3f2"/><circle cx="44" cy="44" r="3.5" fill="#4e6a92"/><circle cx="66" cy="44" r="3.5" fill="#4e6a92"/></svg>
+  <!-- котёнок -->
+  <svg viewBox="0 0 100 100" style="width:96px;top:560px;right:12%;transform:rotate(10deg)"><path d="M18 40L22 8L44 26z" fill="#c6e6a6"/><path d="M82 40L78 8L56 26z" fill="#c6e6a6"/><circle cx="50" cy="56" r="34" fill="#cfe8b0"/><circle cx="38" cy="52" r="3.5" fill="#5d7d3c"/><circle cx="62" cy="52" r="3.5" fill="#5d7d3c"/><path d="M46 62h8l-4 4z" fill="#e48aa8"/></svg>
+  <!-- китёнок -->
+  <svg viewBox="0 0 120 80" style="width:170px;top:760px;left:-40px;transform:rotate(-6deg)"><path d="M10 46q0-30 46-30q40 0 50 26q4 10-6 16q-20 12-56 10q-34-2-34-22z" fill="#a9dcea"/><path d="M100 40q8-18 18-20q-4 12-10 20q8 2 12 12q-12-2-20-12z" fill="#a9dcea"/><circle cx="34" cy="38" r="3.5" fill="#3f6f80"/><path d="M40 6q2 8-2 12M46 4q-2 8 0 12" stroke="#a9dcea" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+  <!-- шарик -->
+  <svg viewBox="0 0 40 70" style="width:64px;top:140px;left:8px;transform:rotate(-8deg)"><ellipse cx="20" cy="22" rx="17" ry="20" fill="#ff9fb3"/><path d="M20 42q-4 10 2 16q4 6-1 12" stroke="#e6a0b0" stroke-width="1.5" fill="none"/></svg>
+  <!-- звёзды и облачко -->
+  <svg viewBox="0 0 24 24" style="width:46px;top:210px;left:42%"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg>
+  <svg viewBox="0 0 24 24" style="width:30px;top:470px;left:58%"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffc6a0"/></svg>
+  <svg viewBox="0 0 64 40" style="width:130px;top:24px;left:22%"><path d="M16 36a12 12 0 0 1-1-24A16 16 0 0 1 45 10a12 12 0 0 1 3 26z" fill="#ffffff" opacity=".9"/></svg>
+</div>
 <header class="top">
+  <div class="ava" id="ava">👶</div>
   <div class="who"><h1 id="bName">Дневник малыша</h1><div class="age" id="bAge"></div></div>
+  <button class="syncbtn" id="syncBtn" onclick="syncInfo()" aria-label="Связь с Google" hidden><i class="syncdot" id="syncDot"></i></button>
   <button class="icon-btn" id="nightBtn" onclick="toggleNight()" aria-label="Ночной режим" title="Ночной режим"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   <button class="icon-btn" onclick="openSettings()" aria-label="Настройки" title="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </header>
@@ -186,10 +226,13 @@ function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function lsJson(k, d) { try { return JSON.parse(lsGet(k)) || d; } catch (e) { return d; } }
 const DEV = lsGet(DEVKEY) || (() => { const d = uid(); lsSet(DEVKEY, d); return d; })();
 
+/* Кроме событий в общий дневник уходят ещё две записи того же вида: 'baby' (имя, дата рождения)
+   и 'dev:<устройство>' (как зовут родителя — «Мама», «Папа»). Всё объединяется одинаково: по id, свежее u. */
 function normalize(s) {
   if (!s || typeof s !== 'object') s = {};
   s.v = 1;
-  s.baby = Object.assign({ name: '', birth: '' }, s.baby || {});
+  s.baby = Object.assign({ name: '', birth: '', u: 0 }, s.baby || {});
+  s.devs = s.devs && typeof s.devs === 'object' ? s.devs : {};
   const old = now() - DEL_DAYS * 864e5;
   s.events = (Array.isArray(s.events) ? s.events : []).filter(e => e && e.id && e.t && isFinite(e.s) && !(e.del && e.u < old));
   return s;
@@ -198,12 +241,20 @@ function load() { return normalize(lsJson(KEY, null)); }
 function save() { lsSet(KEY, JSON.stringify(S)); }
 let S = load();
 
+// очередь на отправку в таблицу: {id: u}. Пишем всегда — при входе в Google уйдёт всё, что накопилось.
+const OUTKEY = 'babydiary.out.v1';
+function mark(id, u) { const o = lsJson(OUTKEY, {}); o[id] = u; lsSet(OUTKEY, JSON.stringify(o)); if (typeof schedulePush === 'function') schedulePush(); }
+
 const evs = () => S.events.filter(e => !e.del);
 const byStart = (a, b) => b.s - a.s;
 const activeOf = t => evs().find(e => e.t === t && e.e == null);
 const lastOf = (t, f) => evs().filter(e => e.t === t && (!f || f(e))).sort(byStart)[0];
-function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, o); S.events.push(e); save(); return e; }
-function upd(e, p) { Object.assign(e, p, { u: now() }); save(); }
+const evById = id => S.events.find(e => e.id === id);
+function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, o); S.events.push(e); save(); mark(e.id, e.u); return e; }
+function upd(e, p) { e = evById(e.id) || e; Object.assign(e, p, { u: now() }); save(); mark(e.id, e.u); return e; }
+function setBaby(p) { Object.assign(S.baby, p, { u: now() }); save(); mark('baby', S.baby.u); }
+function setMe(p) { S.devs[DEV] = Object.assign({ name: '', email: '' }, S.devs[DEV], p, { u: now() }); save(); mark('dev:' + DEV, S.devs[DEV].u); }
+const devName = id => (S.devs[id] || {}).name || '';
 function mergeEvents(a, b) {
   const m = new Map();
   for (const e of [...a, ...b]) { const o = m.get(e.id); if (!o || (e.u || 0) > (o.u || 0)) m.set(e.id, e); }
@@ -310,19 +361,27 @@ function toast(text, act) {
 }
 
 /* ───────── ночной режим ─────────
-   Кнопка в шапке включает/выключает на 12 часов; в настройках — «сам с 22:00 до 7:00». На устройстве, не в данных. */
-function nightPref() { return lsJson(NIGHTKEY, { auto: false }); }
+   По расписанию (auto, from–to, можно через полночь) и кнопкой-луной в шапке. Кнопка действует до ближайшей
+   смены по расписанию (без расписания — 12 часов). Настройка на устройстве, не в дневнике. */
+function nightPref() { return Object.assign({ auto: false, from: '22:00', to: '07:00' }, lsJson(NIGHTKEY, {})); }
+const hhmm = v => { const m = /^(\d\d?):(\d\d)$/.exec(v || ''); return m ? +m[1] * 60 + +m[2] : null; };
+function bySchedule(p, ts) {
+  const f = hhmm(p.from), t = hhmm(p.to); if (!p.auto || f == null || t == null || f === t) return false;
+  const d = new Date(ts), m = d.getHours() * 60 + d.getMinutes();
+  return f < t ? m >= f && m < t : m >= f || m < t;
+}
 function isNight() {
-  const p = nightPref();
-  if (p.force && now() - p.at < 12 * 3600e3) return p.force === 'on';
-  const h = new Date(now()).getHours(); return !!p.auto && (h >= 22 || h < 7);
+  const p = nightPref(), t = now();
+  if (p.force && t - p.at < 12 * 3600e3 && bySchedule(p, p.at) === bySchedule(p, t)) return p.force === 'on';
+  return bySchedule(p, t);
 }
 function toggleNight() { const p = nightPref(); p.force = isNight() ? 'off' : 'on'; p.at = now(); lsSet(NIGHTKEY, JSON.stringify(p)); applyNight(); }
+const darkOS = () => window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
 function applyNight() {
   const on = isNight();
   if (on) document.documentElement.setAttribute('data-night', ''); else document.documentElement.removeAttribute('data-night');
   $('#nightBtn').classList.toggle('on', on);
-  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : '#5b6cd9';
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : darkOS() ? '#0e2a25' : '#d9f3e3';
 }
 
 /* ───────── экраны ───────── */
@@ -341,6 +400,7 @@ function render() {
   applyNight();
   $('#bName').textContent = S.baby.name ? S.baby.name : 'Дневник малыша';
   $('#bAge').textContent = ageText();
+  syncShow();
   renderTabs();
   const v = $('#view');
   v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewTips() : viewNow();
@@ -428,12 +488,14 @@ function welcomeCard() {
     <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off"></label>
     <label class="f"><span>Дата рождения</span><input id="wBirth" type="date"></label>
     <div class="err" id="wErr"></div>
-    <div class="btns"><button class="b main" onclick="saveWelcome()">Готово</button></div></div></div>`;
+    <div class="btns"><button class="b main" onclick="saveWelcome()">Готово</button></div></div>
+    ${gOK() && !REMOTE ? `<p class="hint" style="margin-top:14px">Уже ведёте дневник на другом телефоне или вас пригласили?</p>
+      <div class="btns" style="margin-top:8px"><button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button></div>` : ''}</div>`;
 }
 function saveWelcome() {
   const b = $('#wBirth').value;
   if (!parseDay(b)) { $('#wErr').textContent = 'Укажите дату рождения'; return; }
-  S.baby.name = $('#wName').value.trim(); S.baby.birth = b; save(); render();
+  setBaby({ name: $('#wName').value.trim(), birth: b }); render();
 }
 
 /* ───────── день ───────── */
@@ -453,7 +515,7 @@ function daySum(day) {
   return r;
 }
 function sumGrid(d) {
-  const fs = [d.L || d.R ? 'Л ' + fmtMin(d.L) + ' · П ' + fmtMin(d.R) : '', d.ml ? d.ml + ' мл' : ''].filter(Boolean).join(' · ') || '—';
+  const fs = [d.L >= 30000 ? 'Л ' + fmtMin(d.L) : '', d.R >= 30000 ? 'П ' + fmtMin(d.R) : '', d.ml ? d.ml + ' мл' : ''].filter(Boolean).join(' · ') || '—';
   return `<div class="sum">
     <div class="feed"><div class="l">Кормления</div><div class="v num">${d.feeds}</div><div class="s">${fs}</div></div>
     <div class="sleep"><div class="l">Сон</div><div class="v num">${d.sleep ? fmtMin(d.sleep).replace(' мин', ' м') : '—'}</div><div class="s">${d.naps ? d.naps + ' ' + pl(d.naps, 'раз', 'раза', 'раз') : '—'}</div></div>
@@ -498,7 +560,9 @@ function evInfo(e) {
 function rowHtml(e) {
   const i = evInfo(e), dur = e.e != null && e.e - e.s >= 60000;
   const tm = hm(e.s) + (e.t === 'diaper' || e.kind === 'bottle' || e.t === 'pump' ? '' : dur ? '–' + hm(e.e) : e.e == null ? '–…' : '');
-  const sub = [i.sub, e.note].filter(Boolean).map(esc).join(' · ');
+  // в общем дневнике — кто записал (если это не я)
+  const who = e.by && e.by !== DEV && devName(e.by) ? '✎ ' + devName(e.by) : '';
+  const sub = [i.sub, e.note, who].filter(Boolean).map(esc).join(' · ');
   return `<li class="${i.c}" onclick="editEvent('${e.id}')"><span class="tm">${tm}</span><span class="ic">${i.ic}</span><span class="tx"><div>${esc(i.tx)}</div>${sub ? `<small>${sub}</small>` : ''}</span></li>`;
 }
 
@@ -509,7 +573,7 @@ const last = () => lsJson(LASTKEY, {});
 function chipsHtml(name, opts, val) { return `<div class="chips" data-name="${name}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" class="${String(v) === String(val) ? 'on' : ''}" onclick="chip(this)">${t}</button>`).join('')}</div>`; }
 function chip(btn) {
   const box = btn.parentElement; for (const b of box.children) b.classList.toggle('on', b === btn);
-  const inp = document.getElementById('f_' + box.dataset.name); if (inp) inp.value = btn.dataset.v;
+  const inp = document.getElementById('f_' + box.dataset.name) || document.getElementById('s_' + box.dataset.name); if (inp) inp.value = btn.dataset.v;
 }
 function openBottle() { editEvent(null, { t: 'feed', kind: 'bottle', s: now(), ml: last().ml || '', milk: last().milk || 'formula' }); }
 function openAdd(day) {
@@ -587,7 +651,7 @@ function saveEvent() {
     p.ml = ml; p.e = s;
     if (e.t === 'feed') { p.milk = $('#f_milk').value; lsSet(LASTKEY, JSON.stringify({ ml, milk: p.milk })); }
   }
-  if (id) upd(e, p); else add(Object.assign({}, e, p));
+  if (id) { if (!evById(id)) return err('Запись удалили на другом телефоне'); upd(e, p); } else add(Object.assign({}, e, p));
   closeSheet(); buzz();
   if (!id) toast('Записано');
   render();
@@ -600,28 +664,38 @@ function delEvent() {
 
 /* ───────── настройки ───────── */
 function openSettings() {
-  const p = nightPref();
+  const p = nightPref(), me = S.devs[DEV] || {};
   openSheet(`<h2>Настройки</h2>
     <div class="sec-t" style="margin-top:0">Малыш</div>
     <label class="f"><span>Имя</span><input id="s_name" value="${esc(S.baby.name)}" autocomplete="off"></label>
     <label class="f"><span>Дата рождения</span><input id="s_birth" type="date" value="${esc(S.baby.birth)}"></label>
-    <div class="sec-t">Ночь</div>
-    <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''}> Сам включать ночной режим с 22:00 до 7:00</label>
-    <p class="hint" style="margin:-6px 0 0">Тёмный экран, тёплый неяркий текст и крупные кнопки. Луна в шапке включает и выключает его вручную.</p>
-    <div class="sec-t">Данные</div>
-    <p class="hint" style="margin:0 0 10px">Пока дневник хранится только на этом устройстве. Скоро: вход через Google и общий дневник для двух родителей.</p>
+    <div class="sec-t">Ночной режим</div>
+    <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
+    <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать автоматически по расписанию</label>
+    <div class="two" id="s_ntimes"><label class="f"><span>Включать в</span><input id="s_nfrom" type="time" value="${esc(p.from)}"></label><label class="f"><span>Выключать в</span><input id="s_nto" type="time" value="${esc(p.to)}"></label></div>
+    ${settingsShare(me)}
+    <div class="sec-t">Копия дневника</div>
+    <p class="hint" style="margin:0 0 10px">Файл со всеми записями. Загруженная копия не затирает дневник, а добавляется к нему.</p>
     <div class="btns"><button class="b" onclick="exportData()">Сохранить копию</button><button class="b" onclick="$('#s_file').click()">Загрузить копию</button></div>
     <input type="file" id="s_file" accept="application/json,.json" hidden onchange="importData(this.files[0])">
     <div class="err" id="s_err" style="margin-top:8px"></div>
     <div class="acts" style="margin-top:14px"><button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveSettings()">Сохранить</button></div>
     <div class="btns" style="margin-top:22px"><button class="b del ghost" onclick="wipeData()">Удалить все записи</button></div>`);
+  nightInputs();
 }
+function nightInputs() { const on = $('#s_auto').checked; for (const i of document.querySelectorAll('#s_ntimes input')) i.disabled = !on; $('#s_ntimes').style.opacity = on ? 1 : .5; }
 function saveSettings() {
-  const b = $('#s_birth').value;
-  if (b && !parseDay(b)) return $('#s_err').textContent = 'Неверная дата рождения';
-  if (b && parseDay(b) > new Date(now() + 864e5 * 280)) return $('#s_err').textContent = 'Проверьте дату рождения';
-  S.baby.name = $('#s_name').value.trim(); S.baby.birth = b; save();
-  const p = nightPref(); p.auto = $('#s_auto').checked; delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
+  const b = $('#s_birth').value, err = m => { $('#s_err').textContent = m; };
+  if (b && !parseDay(b)) return err('Неверная дата рождения');
+  if (b && parseDay(b) > new Date(now() + 864e5 * 280)) return err('Проверьте дату рождения');
+  const auto = $('#s_auto').checked, from = $('#s_nfrom').value, to = $('#s_nto').value;
+  if (auto && (hhmm(from) == null || hhmm(to) == null)) return err('Укажите, во сколько включать и выключать ночной режим');
+  if (auto && from === to) return err('Время включения и выключения совпадает');
+  const name = $('#s_name').value.trim();
+  if (name !== S.baby.name || b !== S.baby.birth) setBaby({ name, birth: b });
+  const meName = $('#s_me') ? $('#s_me').value.trim() : null;
+  if (meName != null && meName !== devName(DEV)) setMe({ name: meName });
+  const p = nightPref(); Object.assign(p, { auto, from: from || p.from, to: to || p.to }); delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
   closeSheet(); render();
 }
 function exportData() {
@@ -643,13 +717,18 @@ function importData(file) {
 // копия не затирает дневник, а объединяется с ним (как будет при общем дневнике)
 function importState(d) {
   d = normalize(d);
+  const before = new Map(S.events.map(e => [e.id, e.u]));
   S.events = mergeEvents(S.events, d.events);
-  if (!S.baby.birth && d.baby.birth) S.baby = d.baby;
+  for (const e of S.events) if (before.get(e.id) !== e.u) mark(e.id, e.u);
   save();
+  if (!S.baby.birth && d.baby.birth) setBaby({ name: d.baby.name, birth: d.baby.birth });
 }
+// удаляем пометкой — тогда запись исчезнет и у второго родителя
 function wipeData() {
-  if (!confirm('Удалить все записи дневника на этом устройстве? Вернуть их можно только из сохранённой копии.')) return;
-  S.events = []; save(); closeSheet(); render();
+  if (!confirm(REMOTE ? 'Удалить все записи общего дневника — у вас и у второго родителя? Вернуть их можно только из сохранённой копии.'
+    : 'Удалить все записи дневника на этом устройстве? Вернуть их можно только из сохранённой копии.')) return;
+  for (const e of evs()) upd(e, { del: true });
+  closeSheet(); render();
 }
 
 /* ───────── советы ───────── */
@@ -689,20 +768,294 @@ function viewTips() {
   return h;
 }
 
+/* ───────── Google: вход и общий дневник ─────────
+   Дневник — в таблице «Дневник малыша» на Google Диске того, кто вошёл первым. Права узкие (drive.file):
+   приложение видит только таблицы, которые создало само или которые человек выбрал в окне Google (Picker).
+   Лист «Журнал»: строка на каждую версию записи — id | изменено (u) | данные (JSON) | когда | что | кто.
+   Пишем ТОЛЬКО дописыванием строк (values.append) — два телефона не затирают друг друга; читаем последнюю версию по id.
+   Когда строк много, лист сжимается (compact) одним пакетом: вставить последние версии, удалить прочитанные строки;
+   дописанное вторым телефоном за это время остаётся. Пропуск Google живёт час и продлевается переходом на страницу
+   Google и обратно (молча, если вход жив). Второй родитель: приглашение (Drive permissions) → ссылка ?join=<id> →
+   вход → выбор таблицы в окне Google (так приложение получает к ней доступ). Настройка Cloud — docs/ПОДКЛЮЧЕНИЕ.md. */
+const G_CLIENT = '';   // Client ID «Веб-приложение» из Google Cloud (не секрет)
+const G_API_KEY = '';  // ключ API для окна выбора таблицы (Picker), ограничен адресом сайта (не секрет)
+const G_APP_ID = '';   // номер проекта Google Cloud
+const G_SCOPE = 'openid email https://www.googleapis.com/auth/drive.file';
+const GS_TITLE = 'Дневник малыша', GS_TAB = 'Журнал', GS_HEAD = ['ID (не менять)', 'Изменено', 'Данные', 'Когда', 'Что', 'Кто'];
+const SHEETS_API = 'https://sheets.googleapis.com/v4/spreadsheets', DRIVE_API = 'https://www.googleapis.com/drive/v3/files';
+const RKEY = 'babydiary.remote.v1', GTOK_KEY = 'babydiary.gtok.v1', GAUTH_KEY = 'babydiary.gauth.v1', GAUTO_KEY = 'babydiary.gauto.v1', JOINKEY = 'babydiary.join.v1';
+const G_ICON = '<svg viewBox="0 0 48 48" width="18" height="18" style="vertical-align:-3px;margin-right:4px"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>';
+let REMOTE = lsJson(RKEY, null), GTOK = lsJson(GTOK_KEY, null), GAUTH_RET = null, gsAutoUntil = 0;
+const gOK = () => !!window.__gtest || (!!G_CLIENT && location.protocol === 'https:');
+const gRedirectUri = () => location.origin + location.pathname.replace(/index\.html$/, '');
+const tokOk = () => !!(GTOK && GTOK.exp > Date.now() + 60000);
+function gsSetTok(t, sec) { GTOK = { t, exp: Date.now() + sec * 1000 }; lsSet(GTOK_KEY, JSON.stringify(GTOK)); }
+function gsDropTok() { GTOK = null; try { localStorage.removeItem(GTOK_KEY); } catch (e) {} }
+// вернулись со страницы входа Google: #access_token=…&expires_in=…&state=… или #error=…
+(function () {
+  const h = location.hash; if (!/^#.*\b(access_token|error)=/.test(h)) return;
+  const p = new URLSearchParams(h.slice(1)), st = lsJson(GAUTH_KEY, null);
+  try { localStorage.removeItem(GAUTH_KEY); } catch (e) {}
+  history.replaceState(null, '', location.pathname + location.search);
+  if (!st || p.get('state') !== st.n) return;
+  if (p.get('access_token')) { gsSetTok(p.get('access_token'), +p.get('expires_in') || 3600); GAUTH_RET = { ok: true, first: st.first, join: st.join }; }
+  else GAUTH_RET = { err: p.get('error') || 'ошибка', first: st.first, join: st.join };
+})();
+function gsNeed() { const e = new Error('нужно снова войти в Google'); e.need = true; return e; }
+// переход на страницу входа Google (страница перезагрузится; всё уже лежит на устройстве)
+function gsRedirect(o) {
+  const n = uid();
+  lsSet(GAUTH_KEY, JSON.stringify({ n, first: !!o.first, join: o.join || '' }));
+  if (!o.interactive) lsSet(GAUTO_KEY, String(Date.now()));
+  const q = new URLSearchParams({ client_id: G_CLIENT, redirect_uri: gRedirectUri(), response_type: 'token', scope: G_SCOPE, state: n, include_granted_scopes: 'true' });
+  if (o.first) q.set('prompt', 'select_account'); else if (!o.interactive) q.set('prompt', 'none');
+  if (!o.first && REMOTE && REMOTE.email) q.set('login_hint', REMOTE.email);
+  location.assign('https://accounts.google.com/o/oauth2/v2/auth?' + q);
+  return new Promise(() => {});
+}
+// молча продлевать вход можно сразу после открытия (или возвращения в приложение), не чаще раза в минуту
+function gsAutoOk() { return Date.now() < gsAutoUntil && $('#sheetWrap').hidden && Date.now() - (+lsGet(GAUTO_KEY) || 0) > 60000; }
+function gsAuth(interactive) {
+  if (tokOk()) return Promise.resolve(GTOK.t);
+  if (window.__gtest) return Promise.reject(gsNeed());
+  if (interactive || gsAutoOk()) return gsRedirect({ interactive });
+  return Promise.reject(gsNeed());
+}
+async function gsApi(url, o = {}, again) {
+  const tok = await gsAuth(false);
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 45000);
+  let r;
+  try {
+    r = await fetch(/^https:/.test(url) ? url : SHEETS_API + '/' + REMOTE.sheet + url, { method: o.method || 'GET', signal: ctl.signal, cache: 'no-store',
+      headers: Object.assign({ Authorization: 'Bearer ' + tok }, o.body ? { 'Content-Type': 'application/json' } : {}), body: o.body ? JSON.stringify(o.body) : undefined });
+  } catch (e) { const x = new Error(e && e.name === 'AbortError' ? 'Google не ответил' : 'нет связи'); x.net = true; throw x; }
+  finally { clearTimeout(tm); }
+  if (r.status === 401 && !again) { gsDropTok(); return gsApi(url, o, true); }
+  let j = null; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) { const e = new Error(j && j.error && j.error.message || 'Google ответил ошибкой ' + r.status); e.status = r.status; throw e; }
+  return j || {};
+}
+
+// записи для таблицы: события + 'baby' + 'dev:<устройство>'
+function recOf(id) {
+  if (id === 'baby') return { id, t: 'baby', name: S.baby.name, birth: S.baby.birth, u: S.baby.u || 0 };
+  if (id.startsWith('dev:')) { const d = S.devs[id.slice(4)]; return d ? Object.assign({ id, t: 'dev' }, d) : null; }
+  return evById(id) || null;
+}
+const allIds = () => ['baby', ...Object.keys(S.devs).map(k => 'dev:' + k), ...S.events.map(e => e.id)];
+const dRu = ts => { const d = new Date(ts); return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + hm(ts); };
+function rowOf(r) {
+  const data = Object.assign({}, r); delete data.id; delete data.u;
+  let when = '', what = '', who = '';
+  if (r.t === 'baby') what = 'Малыш: ' + (r.name || '') + (r.birth ? ', родился ' + r.birth.split('-').reverse().join('.') : '');
+  else if (r.t === 'dev') what = 'Родитель: ' + (r.name || '—') + (r.email ? ' (' + r.email + ')' : '');
+  else { const i = evInfo(r); when = dRu(r.s); what = (r.del ? '[удалено] ' : '') + i.tx + (i.sub ? ' — ' + i.sub : '') + (r.note ? ' — ' + r.note : ''); who = devName(r.by); }
+  return [r.id, r.u || 0, JSON.stringify(data), when, what, who];
+}
+function parseRows(rows) {
+  const m = new Map();
+  for (const row of rows || []) {
+    const id = String(row[0] || ''); if (!id) continue;
+    let r; try { r = JSON.parse(row[2]); } catch (e) { continue; }
+    if (!r || typeof r !== 'object') continue;
+    r.id = id; r.u = +row[1] || 0;
+    const o = m.get(id); if (!o || r.u >= o.u) m.set(id, r);
+  }
+  return m;
+}
+// применить записи из таблицы: по id побеждает более свежая. true — что-то поменялось
+function applyRemote(list) {
+  let ch = false; const old = now() - DEL_DAYS * 864e5;
+  for (const r of list) {
+    if (!r || !r.id || !r.t) continue;
+    if (r.t === 'baby') { if ((r.u || 0) > (S.baby.u || 0)) { S.baby = { name: r.name || '', birth: r.birth || '', u: r.u }; ch = true; } continue; }
+    if (r.t === 'dev') { const k = r.id.slice(4), o = S.devs[k]; if (!o || (r.u || 0) > (o.u || 0)) { S.devs[k] = { name: r.name || '', email: r.email || '', u: r.u }; ch = true; } continue; }
+    if (!isFinite(r.s) || (r.del && r.u < old)) continue;
+    const i = S.events.findIndex(e => e.id === r.id);
+    if (i < 0) { if (!r.del) { S.events.push(r); ch = true; } }
+    else if ((r.u || 0) > (S.events[i].u || 0)) { S.events[i] = r; ch = true; }
+  }
+  if (ch) save();
+  return ch;
+}
+
+const SYNC = { st: 'off', msg: '', busy: null, again: false, timer: null };
+function setSync(st, msg) { SYNC.st = st; SYNC.msg = msg || ''; syncShow(); }
+function syncShow() { const b = $('#syncBtn'); if (!b) return; b.hidden = !REMOTE; $('#syncDot').className = 'syncdot ' + SYNC.st; }
+function syncInfo() {
+  const t = { ok: 'Дневник сохранён в Google', busy: 'Сохраняю в Google…', pending: 'Нет связи — записи на телефоне, отправлю позже',
+    err: SYNC.msg || 'Ошибка связи с Google', need: 'Нужно снова войти в Google — записи сохранены на телефоне' }[SYNC.st] || 'Подключаюсь к Google…';
+  toast(t, SYNC.st === 'need' ? { label: 'Войти', fn: () => gsAuth(true) } : null);
+}
+function schedulePush() { if (!REMOTE) return; clearTimeout(SYNC.timer); SYNC.timer = setTimeout(sync, 1500); }
+async function sync() {
+  if (!REMOTE) return;
+  if (SYNC.busy) { SYNC.again = true; return SYNC.busy; }
+  SYNC.busy = (async () => {
+    setSync('busy');
+    try {
+      await push();
+      const ch = await pull();
+      setSync('ok');
+      if (ch && $('#sheetWrap').hidden) render();
+    } catch (e) { setSync(e.need ? 'need' : e.net ? 'pending' : 'err', e.need || e.net ? '' : 'Google: ' + e.message); }
+  })();
+  await SYNC.busy; SYNC.busy = null;
+  if (SYNC.again) { SYNC.again = false; return sync(); }
+}
+async function push() {
+  const out = lsJson(OUTKEY, {}), ids = Object.keys(out); if (!ids.length) return;
+  const rows = ids.map(recOf).filter(r => r && !(r.t === 'baby' && !r.u)).map(rowOf);
+  if (rows.length) await gsApi('/values/' + encodeURIComponent(GS_TAB + '!A1') + ':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS', { method: 'POST', body: { values: rows } });
+  const cur = lsJson(OUTKEY, {}); for (const id of ids) if (cur[id] === out[id]) delete cur[id]; lsSet(OUTKEY, JSON.stringify(cur));
+}
+async function pull() {
+  const r = await gsApi('/values/' + encodeURIComponent(GS_TAB + '!A2:C') + '?valueRenderOption=UNFORMATTED_VALUE');
+  const rows = r.values || [], m = parseRows(rows), ch = applyRemote([...m.values()]);
+  if (rows.length > 2 * m.size + 300) await compact(rows.length, m).catch(() => {});
+  return ch;
+}
+// сжатие: вставить последние версии сверху, затем удалить n прочитанных строк (всё одним пакетом)
+async function compact(n, m) {
+  const meta = await gsApi('?fields=sheets.properties(sheetId,title)');
+  const sh = (meta.sheets || []).map(s => s.properties).find(p => p.title === GS_TAB); if (!sh) return;
+  const old = now() - DEL_DAYS * 864e5;
+  const rows = [...m.values()].filter(r => !(r.del && r.u < old)).map(rowOf)
+    .map(v => ({ values: v.map(x => ({ userEnteredValue: typeof x === 'number' ? { numberValue: x } : { stringValue: String(x) } })) }));
+  if (!rows.length) return;
+  const k = rows.length, id = sh.sheetId;
+  await gsApi(':batchUpdate', { method: 'POST', body: { requests: [
+    { insertDimension: { range: { sheetId: id, dimension: 'ROWS', startIndex: 1, endIndex: 1 + k } } },
+    { updateCells: { start: { sheetId: id, rowIndex: 1, columnIndex: 0 }, rows, fields: 'userEnteredValue' } },
+    { deleteDimension: { range: { sheetId: id, dimension: 'ROWS', startIndex: 1 + k, endIndex: 1 + k + n } } }] } });
+}
+
+function gsLogin() { if (window.__gtest) return gsSetup(); gsRedirect({ interactive: true, first: true }); }
+// первый вход: своя таблица (созданная приложением раньше или выбранная в окне Google) — или новая
+async function gsSetup() {
+  setSync('busy');
+  const q = "name='" + GS_TITLE + "' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false";
+  const f = (await gsApi(DRIVE_API + '?q=' + encodeURIComponent(q) + '&spaces=drive&orderBy=createdTime&fields=files(id)')).files || [];
+  let id = f[0] && f[0].id, made = false;
+  if (!id) { id = await gsCreate(); made = true; }
+  await connect(id, made ? 'Готово: дневник сохраняется в таблицу «' + GS_TITLE + '» на вашем Google Диске' : 'Вход выполнен — дневник из вашей таблицы «' + GS_TITLE + '»');
+}
+async function gsCreate() {
+  let tz = 'Europe/Moscow'; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch (e) {}
+  const head = { values: GS_HEAD.map(h => ({ userEnteredValue: { stringValue: h }, userEnteredFormat: { textFormat: { bold: true } } })) };
+  const r = await gsApi(SHEETS_API, { method: 'POST', body: { properties: { title: GS_TITLE, locale: 'ru_RU', timeZone: tz },
+    sheets: [{ properties: { title: GS_TAB, gridProperties: { frozenRowCount: 1 } }, data: [{ startRow: 0, startColumn: 0, rowData: [head] }] }] } });
+  return r.spreadsheetId;
+}
+async function connect(id, msg) {
+  const u = await gsApi('https://openidconnect.googleapis.com/v1/userinfo');
+  REMOTE = { sheet: id, email: u.email || '' }; lsSet(RKEY, JSON.stringify(REMOTE));
+  if (u.email && (S.devs[DEV] || {}).email !== u.email) setMe({ email: u.email });
+  // всё, что есть на устройстве, — в очередь (повторы не страшны: читается последняя версия)
+  const o = lsJson(OUTKEY, {}); for (const k of allIds()) { const r = recOf(k); if (r) o[k] = r.u; } lsSet(OUTKEY, JSON.stringify(o));
+  closeSheet(); await sync(); render();
+  if (msg) toast(msg);
+}
+function openJoin(id) {
+  openSheet(`<h2>👪 Общий дневник</h2><p style="color:var(--text-2);margin:0">Вас пригласили вести дневник малыша вместе. Войдите через Google тем аккаунтом, на который пришло приглашение, и выберите таблицу «${GS_TITLE}».</p>
+    <p class="hint" style="margin-top:10px">Записи, которые уже есть на этом телефоне, добавятся в общий дневник.</p>
+    <div class="acts" style="margin-top:16px"><button class="b ghost" onclick="closeSheet()">Позже</button><button class="b main" onclick="gsJoin('${esc(id)}')">Войти через Google</button></div>`);
+}
+async function gsJoin(id) {
+  if (!tokOk() && !window.__gtest) return gsRedirect({ interactive: true, first: true, join: id || '-' });
+  try {
+    const picked = await pickSheet(id && id !== '-' ? id : '');
+    if (!picked) return;
+    await connect(picked, 'Готово: теперь у вас общий дневник');
+  } catch (e) { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось открыть общий дневник: ' + e.message); }
+}
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('нет связи')); document.head.appendChild(s); }); }
+// окно Google «выберите таблицу»: выбор даёт приложению доступ к чужой (приглашённой) таблице
+async function pickSheet(id) {
+  if (!G_API_KEY) throw new Error('окно выбора таблицы ещё не настроено');
+  const tok = await gsAuth(false);
+  if (!window.gapi) await loadScript('https://apis.google.com/js/api.js');
+  await new Promise(r => gapi.load('picker', r));
+  const P = google.picker;
+  closeSheet();
+  return new Promise(res => {
+    const v = new P.DocsView(P.ViewId.SPREADSHEETS).setMode(P.DocsViewMode.LIST);
+    if (id) v.setFileIds(id); else v.setQuery(GS_TITLE);
+    new P.PickerBuilder().addView(v).setOAuthToken(tok).setDeveloperKey(G_API_KEY).setAppId(G_APP_ID).setLocale('ru')
+      .setTitle('Выберите таблицу «' + GS_TITLE + '»')
+      .setCallback(d => { if (d.action === P.Action.PICKED) res(d.docs[0].id); else if (d.action === P.Action.CANCEL) res(null); })
+      .build().setVisible(true);
+  });
+}
+const joinLink = () => gRedirectUri() + '?join=' + encodeURIComponent(REMOTE.sheet);
+async function invite() {
+  const em = $('#s_inv').value.trim(), err = m => { $('#s_ierr').textContent = m; };
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return err('Проверьте адрес почты');
+  if (em.toLowerCase() === (REMOTE.email || '').toLowerCase()) return err('Это ваш адрес — нужен адрес второго родителя');
+  err(''); $('#s_invb').disabled = true;
+  try {
+    const msg = 'Давай вести дневник малыша вместе! Открой ссылку и войди через Google: ' + joinLink();
+    await gsApi(DRIVE_API + '/' + REMOTE.sheet + '/permissions?sendNotificationEmail=true&fields=id&emailMessage=' + encodeURIComponent(msg),
+      { method: 'POST', body: { role: 'writer', type: 'user', emailAddress: em } });
+    $('#s_inv').value = ''; toast('Приглашение отправлено на ' + em);
+  } catch (e) { err('Не получилось: ' + e.message); }
+  finally { const b = $('#s_invb'); if (b) b.disabled = false; }
+}
+function shareLink() {
+  const l = joinLink();
+  if (navigator.share) navigator.share({ title: 'Дневник малыша', text: 'Присоединяйся к дневнику малыша', url: l }).catch(() => {});
+  else { try { navigator.clipboard.writeText(l); } catch (e) {} toast('Ссылка скопирована'); }
+}
+function gsLogout() {
+  if (!confirm('Выйти из Google? Записи останутся на этом телефоне, но перестанут сохраняться в общий дневник.')) return;
+  REMOTE = null; try { localStorage.removeItem(RKEY); } catch (e) {} gsDropTok(); setSync('off'); closeSheet(); render();
+}
+function settingsShare(me) {
+  const h = `<div class="sec-t">Общий дневник</div>`;
+  if (!gOK()) return h + `<p class="hint" style="margin:0">Вход через Google и общий дневник для двух родителей заработают в версии на сайте.</p>`;
+  if (!REMOTE) return h + `<p class="hint" style="margin:0 0 10px">Войдите через Google — дневник будет храниться в таблице на вашем Google Диске, появится на всех ваших устройствах, и можно будет пригласить второго родителя.</p>
+    <div class="btns"><button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button></div>
+    <p class="hint" style="margin:12px 0 6px">Вас пригласили в общий дневник?</p><div class="btns"><button class="b ghost" onclick="gsJoin('')">Открыть общий дневник</button></div>`;
+  const others = Object.entries(S.devs).filter(([k, d]) => k !== DEV && (d.name || d.email));
+  return h + `<p class="hint" style="margin:0 0 10px">Вы вошли как <b>${esc(REMOTE.email)}</b>. Дневник хранится в таблице <a href="https://docs.google.com/spreadsheets/d/${encodeURIComponent(REMOTE.sheet)}" target="_blank" rel="noopener">«${GS_TITLE}»</a>.</p>
+    <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
+    ${others.length ? `<p class="hint" style="margin:0 0 10px">Ещё ведут дневник: <b>${others.map(([k, d]) => esc(d.name || d.email)).join(', ')}</b></p>` : ''}
+    <label class="f"><span>Пригласить второго родителя — его почта Google</span><input id="s_inv" type="email" inputmode="email" placeholder="name@gmail.com" autocomplete="off"></label>
+    <div class="err" id="s_ierr"></div>
+    <div class="btns"><button class="b" id="s_invb" onclick="invite()">Пригласить</button><button class="b ghost" onclick="shareLink()">Отправить ссылку</button></div>
+    <p class="hint" style="margin:8px 0 0">Сначала пригласите по почте — ему придёт письмо со ссылкой. Ссылка открывает дневник только тем, кого пригласили.</p>
+    <div class="btns" style="margin-top:12px"><button class="b ghost" onclick="gsLogout()">Выйти из Google</button></div>`;
+}
+
 /* ───────── запуск ───────── */
 function launch() {
-  const a = new URLSearchParams(location.search).get('action');
-  if (!a) return;
+  const q = new URLSearchParams(location.search), a = q.get('action'), j = q.get('join');
+  if (!a && !j) return;
   history.replaceState(null, '', location.pathname);
+  if (j) { if (REMOTE && REMOTE.sheet === j) toast('Вы уже ведёте этот общий дневник'); else openJoin(j); return; }
   if (a === 'sleep') toggleSleep();
   else if (a === 'feed') { const n = nextSide() || 'L'; if (!activeOf('feed')) breast(n); }
   else if (a === 'day') go('day');
 }
 function boot() {
   render(); launch();
+  if (GAUTH_RET) {
+    const g = GAUTH_RET; GAUTH_RET = null;
+    if (g.ok && g.join) gsJoin(g.join);
+    else if (g.ok && g.first) gsSetup().catch(e => { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось войти: ' + e.message); });
+    else if (g.ok) sync();
+    else if (g.first || g.join) toast(g.err === 'access_denied' ? 'Вход отменён' : 'Не удалось войти в Google');
+    else setSync('need');
+  } else if (REMOTE) { gsAutoUntil = Date.now() + 8000; sync(); }
   setInterval(() => { if (!$('#sheetWrap').hidden) { tick(); return; } const n = isNight(); if (n !== document.documentElement.hasAttribute('data-night')) applyNight(); tick(); }, 1000);
   setInterval(() => { if ($('#sheetWrap').hidden) render(); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && $('#sheetWrap').hidden) { S = load(); render(); } });
+  // общий дневник: пока приложение открыто — забираем записи второго родителя раз в 30 секунд
+  setInterval(() => { if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need') sync(); }, 30000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !$('#sheetWrap').hidden) return;
+    S = load(); render();
+    if (REMOTE) { gsAutoUntil = Date.now() + 8000; sync(); }
+  });
   window.addEventListener('storage', e => { if (e.key === KEY && $('#sheetWrap').hidden) { S = load(); render(); } });
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
 }
