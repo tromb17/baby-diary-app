@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5b6cd9">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Дневник малыша</title>
+<style>
+:root{
+  --page:#f8f7f4; --surface:#fdfcfa; --surface-2:#f0eee9; --line:#e4e1da;
+  --text:#121110; --text-2:#55524c; --muted:#8c8880;
+  --accent:#5b6cd9; --on-accent:#fff; --good:#1a9d5a; --warn:#d98a00; --bad:#cf3b3b;
+  --c-feed:#d9558c; --c-sleep:#6a55d6; --c-diaper:#0d93a3; --c-pump:#e5672f;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04); --r:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#121316; --surface:#1b1d22; --surface-2:#25282e; --line:#33373e;
+    --text:#f0eee9; --text-2:#c4c1b9; --muted:#8c8880;
+    --accent:#8190ee; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
+    --c-feed:#ec7aa8; --c-sleep:#9a8af0; --c-diaper:#2ab7c7; --c-pump:#f08250; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#121316; --surface:#1b1d22; --surface-2:#25282e; --line:#33373e;
+  --text:#f0eee9; --text-2:#c4c1b9; --muted:#8c8880;
+  --accent:#8190ee; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
+  --c-feed:#ec7aa8; --c-sleep:#9a8af0; --c-diaper:#2ab7c7; --c-pump:#f08250; --shadow:none;
+}
+/* ночной режим: почти чёрный экран, тёплый приглушённый текст, крупные кнопки */
+:root[data-night]{
+  --page:#070605; --surface:#110e0c; --surface-2:#1a1512; --line:#2a211b;
+  --text:#d8a888; --text-2:#b48a6f; --muted:#7d6150;
+  --accent:#b8805c; --on-accent:#140f0c; --good:#9a8a55; --warn:#c08a4a; --bad:#c06a5a;
+  --c-feed:#b86a6a; --c-sleep:#8a74a8; --c-diaper:#6a8f8a; --c-pump:#b07a50; --shadow:none;
+}
+:root{color-scheme:light dark}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"],:root[data-night]{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:20;background:var(--page);display:flex;align-items:center;gap:6px;padding:calc(10px + env(safe-area-inset-top)) 16px 8px}
+.who{flex:1;min-width:0}
+.who h1{font-size:20px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.age{font-size:13px;color:var(--muted)}
+.icon-btn{border:0;background:transparent;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--text-2);flex:none}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn svg{width:22px;height:22px}
+.icon-btn.on{color:var(--accent);background:var(--surface-2)}
+
+main{max-width:640px;margin:0 auto;padding:0 16px 24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.card h3{margin:0;font-size:16px;display:flex;align-items:center;gap:8px}
+.card h3 .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.hint{color:var(--muted);font-size:13px;margin:4px 0 0}
+.st{font-size:14px;color:var(--text-2);margin:4px 0 10px}
+.st b{color:var(--text);font-weight:600}
+.st .warn{color:var(--warn);font-weight:600}
+.feed{--c:var(--c-feed)} .sleep{--c:var(--c-sleep)} .diaper{--c:var(--c-diaper)} .pump{--c:var(--c-pump)}
+
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.b{flex:1 1 0;min-width:0;border:1px solid color-mix(in srgb,var(--c,var(--accent)) 40%,var(--line));background:color-mix(in srgb,var(--c,var(--accent)) 10%,var(--surface));color:var(--text);border-radius:13px;padding:12px 8px;font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.15}
+.b small{font-weight:500;font-size:11.5px;color:var(--c,var(--accent))}
+.b:active{transform:scale(.97)}
+.b.main{background:var(--c,var(--accent));border-color:transparent;color:var(--on-accent)}
+.b.main small{color:inherit;opacity:.85}
+.b.ghost{background:transparent}
+.b.wide{flex-basis:100%}
+.b .e{font-size:20px;line-height:1}
+
+.live{border-color:color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 8%,var(--surface))}
+.timer{font-size:44px;font-weight:700;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.sides{display:flex;gap:16px;font-size:14px;color:var(--text-2);margin-bottom:12px}
+.sides .cur{color:var(--c);font-weight:700}
+
+.sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sum>div{background:var(--surface-2);border-radius:12px;padding:10px;min-width:0;border-top:3px solid var(--c)}
+.sum .l{font-size:12px;color:var(--text-2)}
+.sum .v{font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum .s{font-size:12px;color:var(--muted)}
+.link{border:0;background:transparent;color:var(--accent);padding:10px 0 0;font-size:14px;font-weight:600}
+
+.daynav{display:flex;align-items:center;gap:8px;margin:2px 0 12px}
+.daynav h2{flex:1;margin:0;text-align:center;font-size:18px}
+.daynav button{border:1px solid var(--line);background:var(--surface);border-radius:12px;width:44px;height:40px;font-size:20px;color:var(--text-2)}
+.daynav button:disabled{opacity:.35}
+
+.strip{position:relative;height:34px;background:var(--surface-2);border-radius:9px;overflow:hidden;margin:10px 0 4px}
+.strip i{position:absolute;top:0;bottom:0;background:var(--c);opacity:.85}
+.strip i.feed{top:55%;opacity:1;min-width:3px}
+.strip i.diaper{top:auto;bottom:0;height:5px;width:5px;border-radius:50%;opacity:1;transform:translateX(-50%)}
+.strip i.nowl{background:var(--text);width:1.5px;opacity:.6}
+.strip-ax{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--c);margin-right:5px;vertical-align:-1px}
+
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;align-items:center;gap:12px;padding:11px 2px;border-top:1px solid var(--line);cursor:pointer}
+.list li:first-child{border-top:0}
+.list .tm{width:92px;flex:none;font-size:13.5px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.list .ic{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 15%,transparent);font-size:17px}
+.list .tx{flex:1;min-width:0}
+.list .tx div{font-weight:600}
+.list .tx small{color:var(--muted);font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{color:var(--muted);text-align:center;padding:18px 0 8px;font-size:14px}
+
+.adv h3{margin-bottom:6px}
+.adv ul{margin:6px 0 0;padding-left:20px}
+.adv li{margin:3px 0}
+.adv .src{font-size:12px;color:var(--muted);margin-top:8px}
+.adv.alarm{border-color:color-mix(in srgb,var(--bad) 45%,var(--line));background:color-mix(in srgb,var(--bad) 6%,var(--surface))}
+.adv.alarm h3{color:var(--bad)}
+table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.norm td,.norm th{padding:6px 4px;border-top:1px solid var(--line);text-align:left}
+.norm th{border-top:0;font-size:12.5px;color:var(--muted);font-weight:500}
+.norm tr.me td{font-weight:700;color:var(--accent)}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:4px 8px calc(4px + env(safe-area-inset-bottom))}
+.tabs button{flex:1;border:0;background:transparent;padding:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--muted)}
+.tabs svg{width:24px;height:24px}
+.tabs button.on{color:var(--accent);font-weight:600}
+
+.sheet-wrap{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.4)}
+.sheet{position:relative;background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 12px;font-size:19px}
+.f{display:block;margin:0 0 12px}
+.f>span{display:block;font-size:13px;color:var(--text-2);margin-bottom:4px}
+.f input,.f select,.f textarea{width:100%;border:1px solid var(--line);background:var(--page);border-radius:11px;padding:10px 12px;min-height:44px}
+.f textarea{min-height:64px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chips button{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px}
+.chips button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.chk{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:15px}
+.chk input{width:22px;height:22px}
+.acts{display:flex;gap:8px;margin-top:6px}
+.acts .b{flex:1}
+.b.del{--c:var(--bad);background:transparent}
+.err{color:var(--bad);font-size:13.5px;min-height:1px;margin:0 0 8px}
+.sec-t{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:var(--text);color:var(--page);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);box-shadow:0 4px 18px rgba(0,0,0,.2)}
+.toast button{border:0;background:transparent;color:inherit;font-weight:700;text-decoration:underline;padding:4px}
+
+/* ночью — крупнее */
+:root[data-night] body{font-size:17px}
+:root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
+:root[data-night] .timer{font-size:56px}
+:root[data-night] .card h3{font-size:18px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="who"><h1 id="bName">Дневник малыша</h1><div class="age" id="bAge"></div></div>
+  <button class="icon-btn" id="nightBtn" onclick="toggleNight()" aria-label="Ночной режим" title="Ночной режим"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <button class="icon-btn" onclick="openSettings()" aria-label="Настройки" title="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+</header>
+<main id="view"></main>
+<nav class="tabs" id="tabs"></nav>
+<div class="sheet-wrap" id="sheetWrap" hidden><div class="sheet-bg" onclick="closeSheet()"></div><div class="sheet" id="sheet" role="dialog"></div></div>
+<div class="toast" id="toast" hidden></div>
+<script>
+'use strict';
+/* ───────── хранение ─────────
+   Всё лежит в localStorage. Каждая запись — событие {id, t, s, e, …, by, u, del}:
+   id — уникальный, u — время последней правки, del — удалено (не стираем сразу, чтобы потом
+   правильно объединять дневники двух родителей: по id побеждает более свежая правка, mergeEvents). */
+const KEY = 'babydiary.v1', DEVKEY = 'babydiary.dev', NIGHTKEY = 'babydiary.night.v1', LASTKEY = 'babydiary.last.v1';
+const DEL_DAYS = 30;
+const $ = s => document.querySelector(s);
+const now = () => Date.now() + (window.__shift || 0);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function lsJson(k, d) { try { return JSON.parse(lsGet(k)) || d; } catch (e) { return d; } }
+const DEV = lsGet(DEVKEY) || (() => { const d = uid(); lsSet(DEVKEY, d); return d; })();
+
+function normalize(s) {
+  if (!s || typeof s !== 'object') s = {};
+  s.v = 1;
+  s.baby = Object.assign({ name: '', birth: '' }, s.baby || {});
+  const old = now() - DEL_DAYS * 864e5;
+  s.events = (Array.isArray(s.events) ? s.events : []).filter(e => e && e.id && e.t && isFinite(e.s) && !(e.del && e.u < old));
+  return s;
+}
+function load() { return normalize(lsJson(KEY, null)); }
+function save() { lsSet(KEY, JSON.stringify(S)); }
+let S = load();
+
+const evs = () => S.events.filter(e => !e.del);
+const byStart = (a, b) => b.s - a.s;
+const activeOf = t => evs().find(e => e.t === t && e.e == null);
+const lastOf = (t, f) => evs().filter(e => e.t === t && (!f || f(e))).sort(byStart)[0];
+function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, o); S.events.push(e); save(); return e; }
+function upd(e, p) { Object.assign(e, p, { u: now() }); save(); }
+function mergeEvents(a, b) {
+  const m = new Map();
+  for (const e of [...a, ...b]) { const o = m.get(e.id); if (!o || (e.u || 0) > (o.u || 0)) m.set(e.id, e); }
+  return [...m.values()];
+}
+
+/* ───────── время и слова ───────── */
+const pad = n => String(n).padStart(2, '0');
+function pl(n, a, b, c) { n = Math.abs(n) % 100; const d = n % 10; return n > 10 && n < 20 ? c : d === 1 ? a : d > 1 && d < 5 ? b : c; }
+function hm(ts) { const d = new Date(ts); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+function fmtMin(ms) { const m = Math.max(0, Math.round(ms / 60000)); if (m < 60) return m + ' мин'; const h = Math.floor(m / 60), r = m % 60; return h + ' ч' + (r ? ' ' + r + ' мин' : ''); }
+function fmtTimer(ms) { const t = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, s = t % 60; return (h ? h + ':' + pad(m) : m) + ':' + pad(s); }
+function fmtAgo(ts) { const ms = now() - ts; return ms < 60000 ? 'только что' : fmtMin(ms) + ' назад'; }
+function sod(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return +d; }
+function addDays(ts, n) { const d = new Date(ts); d.setDate(d.getDate() + n); return +d; }
+function toInput(ts) { const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+function fromInput(v) { if (!v) return null; const t = +new Date(v); return isFinite(t) ? t : null; }
+function parseDay(v) { const m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(v || ''); return m ? new Date(+m[1], m[2] - 1, +m[3]) : null; }
+const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+const WD = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+function dayTitle(ts) {
+  const t = sod(now()), d = new Date(ts);
+  const base = d.getDate() + ' ' + MONTHS[d.getMonth()];
+  return ts === t ? 'Сегодня, ' + base : ts === addDays(t, -1) ? 'Вчера, ' + base : base + ', ' + WD[d.getDay()];
+}
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* ───────── возраст и ориентиры ───────── */
+function age() {
+  const b = parseDay(S.baby.birth); if (!b) return null;
+  const d = new Date(now()), total = Math.round((sod(+d) - +b) / 864e5);
+  if (total < 0) return { total, m: 0, days: 0 };
+  let m = (d.getFullYear() - b.getFullYear()) * 12 + d.getMonth() - b.getMonth();
+  const mAt = k => { const y = b.getFullYear(), mo = b.getMonth() + k, dim = new Date(y, mo + 1, 0).getDate(); return new Date(y, mo, Math.min(b.getDate(), dim)); };
+  if (mAt(m) > d) m--;
+  return { total, m, days: Math.round((sod(+d) - +mAt(m)) / 864e5) };
+}
+function ageText() {
+  const a = age(); if (!a) return '';
+  if (a.total < 0) return 'ещё не родился';
+  if (a.m < 1) return a.total + ' ' + pl(a.total, 'день', 'дня', 'дней');
+  if (a.m >= 12) { const y = Math.floor(a.m / 12), r = a.m % 12; return y + ' ' + pl(y, 'год', 'года', 'лет') + (r ? ' ' + r + ' мес.' : ''); }
+  return a.m + ' мес.' + (a.days ? ' ' + a.days + ' дн.' : '');
+}
+// Время бодрствования: ориентир по возрасту (до N месяцев). Единых норм в исследованиях нет — это распространённые рекомендации.
+const WAKE = [[1, '40–60 мин', 40, 60], [2, '1–1,5 ч', 60, 90], [4, '1¼–2 ч', 75, 120], [6, '2–2,5 ч', 120, 150], [9, '2,5–3 ч', 150, 180], [12, '3–4 ч', 180, 240]];
+// Сон за сутки: до 4 мес. — 14–17 ч (National Sleep Foundation), 4–12 мес. — 12–16 ч (AASM, одобрено AAP).
+const SLEEP = [[4, '14–17 ч', 14, 17], [12, '12–16 ч', 12, 16]];
+const pick = (tab, m) => tab.find(r => m < r[0]) || tab[tab.length - 1];
+const ageM = () => { const a = age(); return a && a.total >= 0 ? a.m : null; };
+
+/* ───────── кормление ───────── */
+const SIDE = { L: 'Левая', R: 'Правая' }, SIDE1 = { L: 'Л', R: 'П' };
+const other = s => s === 'L' ? 'R' : 'L';
+function segsDur(e, side) { let t = 0; for (const g of e.segs || []) if (!side || g.side === side) t += (g.e ?? now()) - g.s; return t; }
+const openSeg = e => { const g = (e.segs || [])[(e.segs || []).length - 1]; return g && g.e == null ? g : null; };
+function lastSide() { const f = lastOf('feed', e => e.kind === 'breast' && (e.segs || []).length); return f ? f.segs[f.segs.length - 1].side : null; }
+function nextSide() { const s = lastSide(); return s ? other(s) : null; }
+
+function breast(side) {
+  const t = now(); const f = activeOf('feed');
+  if (f && f.kind === 'breast') {
+    const g = openSeg(f); if (g && g.side === side) return;
+    if (g) g.e = t;
+    f.segs.push({ side, s: t, e: null }); upd(f, {});
+  } else {
+    if (f) upd(f, { e: t });
+    add({ t: 'feed', kind: 'breast', s: t, e: null, segs: [{ side, s: t, e: null }] });
+  }
+  buzz(); render();
+}
+function pauseFeed() { const f = activeOf('feed'), g = f && openSeg(f); if (g) { g.e = now(); upd(f, {}); render(); } }
+function stopFeed() {
+  const f = activeOf('feed'); if (!f) return;
+  const t = now(), g = openSeg(f); if (g) g.e = t;
+  upd(f, { e: t }); buzz();
+  toast('Кормление записано: ' + fmtMin(segsDur(f)), { label: 'Изменить', fn: () => editEvent(f.id) });
+  render();
+}
+
+/* ───────── сон и подгузник ───────── */
+function toggleSleep() {
+  const a = activeOf('sleep'), t = now();
+  if (a) { upd(a, { e: t }); toast('Сон записан: ' + fmtMin(t - a.s), { label: 'Изменить', fn: () => editEvent(a.id) }); }
+  else add({ t: 'sleep', s: t, e: null });
+  buzz(); render();
+}
+function diaper(k) {
+  const t = now(), e = add({ t: 'diaper', s: t, e: t, wet: k !== 'dirty', dirty: k !== 'wet' });
+  buzz(); toast(diaperTxt(e) + ' — записано', { label: 'Отменить', fn: () => { upd(e, { del: true }); render(); } });
+  render();
+}
+const diaperTxt = e => 'Подгузник: ' + (e.wet && e.dirty ? 'мокрый и грязный' : e.dirty ? 'грязный' : 'мокрый');
+function lastAwake() { if (activeOf('sleep')) return null; const s = lastOf('sleep', e => e.e != null); return s ? s.e : null; }
+
+/* ───────── отклик ───────── */
+function buzz() { try { navigator.vibrate && navigator.vibrate(15); } catch (e) {} }
+let toastT;
+function toast(text, act) {
+  const el = $('#toast'); clearTimeout(toastT);
+  el.innerHTML = '<span>' + esc(text) + '</span>' + (act ? '<button>' + esc(act.label) + '</button>' : '');
+  if (act) el.querySelector('button').onclick = () => { el.hidden = true; act.fn(); };
+  el.hidden = false; toastT = setTimeout(() => el.hidden = true, 4500);
+}
+
+/* ───────── ночной режим ─────────
+   Кнопка в шапке включает/выключает на 12 часов; в настройках — «сам с 22:00 до 7:00». На устройстве, не в данных. */
+function nightPref() { return lsJson(NIGHTKEY, { auto: false }); }
+function isNight() {
+  const p = nightPref();
+  if (p.force && now() - p.at < 12 * 3600e3) return p.force === 'on';
+  const h = new Date(now()).getHours(); return !!p.auto && (h >= 22 || h < 7);
+}
+function toggleNight() { const p = nightPref(); p.force = isNight() ? 'off' : 'on'; p.at = now(); lsSet(NIGHTKEY, JSON.stringify(p)); applyNight(); }
+function applyNight() {
+  const on = isNight();
+  if (on) document.documentElement.setAttribute('data-night', ''); else document.documentElement.removeAttribute('data-night');
+  $('#nightBtn').classList.toggle('on', on);
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : '#5b6cd9';
+}
+
+/* ───────── экраны ───────── */
+const UI = { tab: 'now', day: null };
+const TABS = [
+  ['now', 'Сейчас', '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'],
+  ['day', 'День', '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h8"/>'],
+  ['tips', 'Советы', '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.6 1 2.5h6c0-.9.2-1.7 1-2.5A6 6 0 0 0 12 3z"/>'],
+];
+function renderTabs() {
+  $('#tabs').innerHTML = TABS.map(([id, t, p]) => `<button class="${UI.tab === id ? 'on' : ''}" onclick="go('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`).join('');
+}
+function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); render(); window.scrollTo(0, 0); }
+
+function render() {
+  applyNight();
+  $('#bName').textContent = S.baby.name ? S.baby.name : 'Дневник малыша';
+  $('#bAge').textContent = ageText();
+  renderTabs();
+  const v = $('#view');
+  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewTips() : viewNow();
+  tick();
+}
+
+// живые цифры: data-base (уже набежало, мс) + data-from (идёт с …); data-ago — «… назад»
+function tick() {
+  const t = now();
+  for (const el of document.querySelectorAll('[data-from]')) el.textContent = fmtTimer(+(el.dataset.base || 0) + (el.dataset.from ? t - +el.dataset.from : 0));
+  for (const el of document.querySelectorAll('[data-ago]')) el.textContent = fmtAgo(+el.dataset.ago);
+}
+
+function viewNow() {
+  let h = '';
+  if (!S.baby.birth) h += welcomeCard();
+  const f = activeOf('feed'), sl = activeOf('sleep');
+  if (f) h += liveFeed(f);
+  if (sl) h += `<div class="card sleep live"><h3><span class="dot"></span>Спит</h3>
+    <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>
+    <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">☀️</span>Проснулся</button></div></div>`;
+
+  // кормление
+  if (!f) {
+    const lf = lastOf('feed'), ns = nextSide();
+    const st = lf ? `Последнее — <b data-ago="${lf.s}"></b>, в ${hm(lf.s)}${lf.kind === 'breast' && lf.segs ? ' (' + feedSides(lf) + ')' : ''}` : 'Пока нет записей';
+    h += `<div class="card feed"><h3><span class="dot"></span>Кормление</h3><div class="st">${st}</div>
+      <div class="btns">
+        ${['L', 'R'].map(s => `<button class="b ${ns === s ? 'main' : ''}" onclick="breast('${s}')">${SIDE[s]}<small>${ns === s ? 'следующая' : 'грудь'}</small></button>`).join('')}
+        <button class="b" onclick="openBottle()"><span class="e">🍼</span><small>бутылочка</small></button>
+      </div></div>`;
+  }
+  // сон
+  if (!sl) {
+    const aw = lastAwake(), m = ageM(), w = m != null ? pick(WAKE, m) : null;
+    let st = 'Пока нет записей';
+    if (aw) {
+      const mins = (now() - aw) / 60000;
+      st = `Проснулся в ${hm(aw)}, не спит уже <b>${fmtMin(now() - aw)}</b>`;
+      if (w) st += mins > w[3] ? `<br><span class="warn">Пора укладывать</span> — ориентир для возраста ${w[1]}` : `<br>Ориентир бодрствования: ${w[1]}`;
+    }
+    h += `<div class="card sleep"><h3><span class="dot"></span>Сон</h3><div class="st">${st}</div>
+      <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">🌙</span>Уснул</button></div></div>`;
+  }
+  // подгузник
+  const ld = lastOf('diaper');
+  h += `<div class="card diaper"><h3><span class="dot"></span>Подгузник</h3><div class="st">${ld ? `Меняли <b data-ago="${ld.s}"></b> — ${diaperTxt(ld).slice(11)}` : 'Пока нет записей'}</div>
+    <div class="btns">
+      <button class="b" onclick="diaper('wet')"><span class="e">💧</span>Мокрый</button>
+      <button class="b" onclick="diaper('dirty')"><span class="e">💩</span>Грязный</button>
+      <button class="b" onclick="diaper('both')"><span class="e">💧💩</span>Оба</button>
+    </div></div>`;
+
+  // сегодня кратко
+  const d = daySum(sod(now()));
+  h += `<div class="card"><h3>Сегодня</h3>${sumGrid(d)}<button class="link" onclick="go('day')">Весь день →</button></div>`;
+  h += `<div class="btns" style="margin-bottom:12px"><button class="b ghost" onclick="openAdd()">+ Добавить запись задним числом</button></div>`;
+  return h;
+}
+function feedSides(e) {
+  const o = []; for (const s of ['L', 'R']) { const d = segsDur(e, s); if (d >= 30000 || (e.segs || []).some(g => g.side === s && g.e == null)) o.push(SIDE1[s] + ' ' + fmtMin(d)); }
+  return o.join(', ') || fmtMin(segsDur(e));
+}
+function liveFeed(f) {
+  if (f.kind !== 'breast') return '';
+  const g = openSeg(f), cur = g ? g.side : null;
+  const base = g ? segsDur(f) - (now() - g.s) : segsDur(f);
+  const sideLine = ['L', 'R'].map(s => {
+    const og = g && g.side === s;
+    return `<span class="${og ? 'cur' : ''}">${SIDE[s]}: <span class="num" data-from="${og ? g.s : ''}" data-base="${og ? segsDur(f, s) - (now() - g.s) : segsDur(f, s)}"></span></span>`;
+  }).join('');
+  return `<div class="card feed live"><h3><span class="dot"></span>Кормит${cur ? ' · ' + SIDE[cur].toLowerCase() + ' грудь' : ' · пауза'}</h3>
+    <div class="timer" data-from="${g ? g.s : ''}" data-base="${base}"></div>
+    <div class="sides">${sideLine}</div>
+    <div class="btns">
+      ${cur ? `<button class="b" onclick="breast('${other(cur)}')">Сменить<small>на ${other(cur) === 'L' ? 'левую' : 'правую'}</small></button>
+               <button class="b" onclick="pauseFeed()">Пауза<small>отпустил грудь</small></button>`
+            : ['L', 'R'].map(s => `<button class="b" onclick="breast('${s}')">${SIDE[s]}<small>продолжить</small></button>`).join('')}
+      <button class="b main wide" onclick="stopFeed()">Закончить кормление</button>
+    </div></div>`;
+}
+function welcomeCard() {
+  return `<div class="card"><h3>Давайте познакомимся</h3>
+    <p class="hint">Имя и дата рождения нужны, чтобы считать возраст и показывать ориентиры по сну и кормлению.</p>
+    <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off"></label>
+    <label class="f"><span>Дата рождения</span><input id="wBirth" type="date"></label>
+    <div class="err" id="wErr"></div>
+    <div class="btns"><button class="b main" onclick="saveWelcome()">Готово</button></div></div></div>`;
+}
+function saveWelcome() {
+  const b = $('#wBirth').value;
+  if (!parseDay(b)) { $('#wErr').textContent = 'Укажите дату рождения'; return; }
+  S.baby.name = $('#wName').value.trim(); S.baby.birth = b; save(); render();
+}
+
+/* ───────── день ───────── */
+function dayEvents(day) {
+  const a = day, b = addDays(day, 1), t = now();
+  return evs().filter(e => e.s < b && (e.e ?? t) >= a && (e.t === 'sleep' || e.s >= a)).sort(byStart);
+}
+function daySum(day) {
+  const a = day, b = addDays(day, 1), t = now(), list = dayEvents(day);
+  const r = { feeds: 0, L: 0, R: 0, ml: 0, bottles: 0, sleep: 0, naps: 0, wet: 0, dirty: 0, diapers: 0, pump: 0 };
+  for (const e of list) {
+    if (e.t === 'feed') { r.feeds++; if (e.kind === 'breast') { r.L += segsDur(e, 'L'); r.R += segsDur(e, 'R'); } else { r.bottles++; r.ml += +e.ml || 0; } }
+    else if (e.t === 'sleep') { r.sleep += Math.max(0, Math.min(b, e.e ?? t) - Math.max(a, e.s)); if (e.s >= a) r.naps++; }
+    else if (e.t === 'diaper') { r.diapers++; if (e.wet) r.wet++; if (e.dirty) r.dirty++; }
+    else if (e.t === 'pump') r.pump += +e.ml || 0;
+  }
+  return r;
+}
+function sumGrid(d) {
+  const fs = [d.L || d.R ? 'Л ' + fmtMin(d.L) + ' · П ' + fmtMin(d.R) : '', d.ml ? d.ml + ' мл' : ''].filter(Boolean).join(' · ') || '—';
+  return `<div class="sum">
+    <div class="feed"><div class="l">Кормления</div><div class="v num">${d.feeds}</div><div class="s">${fs}</div></div>
+    <div class="sleep"><div class="l">Сон</div><div class="v num">${d.sleep ? fmtMin(d.sleep).replace(' мин', ' м') : '—'}</div><div class="s">${d.naps ? d.naps + ' ' + pl(d.naps, 'раз', 'раза', 'раз') : '—'}</div></div>
+    <div class="diaper"><div class="l">Подгузники</div><div class="v num">${d.diapers}</div><div class="s">💧 ${d.wet} · 💩 ${d.dirty}</div></div>
+  </div>`;
+}
+function viewDay() {
+  const day = UI.day ?? sod(now()), today = sod(now()), list = dayEvents(day), d = daySum(day), m = ageM();
+  let h = `<div class="daynav"><button onclick="shiftDay(-1)" aria-label="Предыдущий день">‹</button><h2>${dayTitle(day)}</h2><button onclick="shiftDay(1)" aria-label="Следующий день" ${day >= today ? 'disabled' : ''}>›</button></div>`;
+  h += `<div class="card">${sumGrid(d)}${strip(day, list)}`;
+  if (m != null) {
+    const sn = pick(SLEEP, m);
+    h += `<p class="hint">Ориентиры для возраста: сон ${sn[1]} в сутки${m < 2 ? ', кормлений 8–12' : ''}${age().total >= 5 ? ', мокрых подгузников — от 6' : ''}.</p>`;
+  }
+  h += `</div>`;
+  h += `<div class="card"><div style="display:flex;align-items:center;justify-content:space-between"><h3>Записи</h3><button class="link" style="padding:0" onclick="openAdd(${day})">+ Добавить</button></div>`;
+  h += list.length ? `<ul class="list">${list.map(rowHtml).join('')}</ul>` : `<div class="empty">В этот день записей нет</div>`;
+  return h + `</div>`;
+}
+function shiftDay(n) { UI.day = Math.min(sod(now()), addDays(UI.day ?? sod(now()), n)); render(); }
+function strip(day, list) {
+  const a = day, b = addDays(day, 1), t = now(), L = 864e5, p = x => ((Math.max(a, Math.min(b, x)) - a) / L * 100).toFixed(2) + '%';
+  let h = '';
+  for (const e of list) {
+    if (e.t === 'sleep') h += `<i class="sleep" style="left:${p(e.s)};width:calc(${p(e.e ?? t)} - ${p(e.s)})"></i>`;
+    else if (e.t === 'feed') h += `<i class="feed" style="left:${p(e.s)};width:calc(${p(e.e ?? (e.kind === 'breast' ? t : e.s))} - ${p(e.s)})"></i>`;
+    else if (e.t === 'diaper') h += `<i class="diaper" style="left:${p(e.s)}"></i>`;
+  }
+  if (t >= a && t < b) h += `<i class="nowl" style="left:${p(t)}"></i>`;
+  return `<div class="strip">${h}</div><div class="strip-ax"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
+    <div class="legend"><span class="sleep">сон</span><span class="feed">кормление</span><span class="diaper">подгузник</span></div>`;
+}
+function evInfo(e) {
+  const t = now();
+  if (e.t === 'feed' && e.kind === 'breast') return { c: 'feed', ic: '🤱', tx: 'Грудь', sub: feedSides(e) + (e.e == null ? ' · идёт' : '') };
+  if (e.t === 'feed') return { c: 'feed', ic: '🍼', tx: 'Бутылочка' + (e.ml ? ' ' + e.ml + ' мл' : ''), sub: e.milk === 'breast' ? 'сцеженное молоко' : e.milk === 'formula' ? 'смесь' : '' };
+  if (e.t === 'sleep') return { c: 'sleep', ic: '😴', tx: e.e == null ? 'Спит сейчас' : 'Сон ' + fmtMin(e.e - e.s), sub: e.e == null ? 'уже ' + fmtMin(t - e.s) : '' };
+  if (e.t === 'diaper') return { c: 'diaper', ic: e.dirty ? '💩' : '💧', tx: diaperTxt(e), sub: '' };
+  if (e.t === 'pump') return { c: 'pump', ic: '🥛', tx: 'Сцеживание' + (e.ml ? ' ' + e.ml + ' мл' : ''), sub: '' };
+  return { c: '', ic: '•', tx: e.t, sub: '' };
+}
+function rowHtml(e) {
+  const i = evInfo(e), dur = e.e != null && e.e - e.s >= 60000;
+  const tm = hm(e.s) + (e.t === 'diaper' || e.kind === 'bottle' || e.t === 'pump' ? '' : dur ? '–' + hm(e.e) : e.e == null ? '–…' : '');
+  const sub = [i.sub, e.note].filter(Boolean).map(esc).join(' · ');
+  return `<li class="${i.c}" onclick="editEvent('${e.id}')"><span class="tm">${tm}</span><span class="ic">${i.ic}</span><span class="tx"><div>${esc(i.tx)}</div>${sub ? `<small>${sub}</small>` : ''}</span></li>`;
+}
+
+/* ───────── окна: бутылочка, запись задним числом, правка ───────── */
+function openSheet(html) { $('#sheet').innerHTML = html; $('#sheetWrap').hidden = false; }
+function closeSheet() { $('#sheetWrap').hidden = true; $('#sheet').innerHTML = ''; }
+const last = () => lsJson(LASTKEY, {});
+function chipsHtml(name, opts, val) { return `<div class="chips" data-name="${name}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" class="${String(v) === String(val) ? 'on' : ''}" onclick="chip(this)">${t}</button>`).join('')}</div>`; }
+function chip(btn) {
+  const box = btn.parentElement; for (const b of box.children) b.classList.toggle('on', b === btn);
+  const inp = document.getElementById('f_' + box.dataset.name); if (inp) inp.value = btn.dataset.v;
+}
+function openBottle() { editEvent(null, { t: 'feed', kind: 'bottle', s: now(), ml: last().ml || '', milk: last().milk || 'formula' }); }
+function openAdd(day) {
+  const t = day != null && day !== sod(now()) ? day + 12 * 3600e3 : now();
+  const it = [['breast', '🤱', 'Грудь'], ['bottle', '🍼', 'Бутылочка'], ['sleep', '😴', 'Сон'], ['diaper', '🧷', 'Подгузник'], ['pump', '🥛', 'Сцеживание']];
+  openSheet(`<h2>Добавить запись</h2><div class="btns">${it.map(([k, e, n]) => `<button class="b" style="flex-basis:30%" onclick="addKind('${k}',${t})"><span class="e">${e}</span>${n}</button>`).join('')}</div>
+    <div class="acts" style="margin-top:14px"><button class="b ghost" onclick="closeSheet()">Отмена</button></div>`);
+}
+function addKind(k, t) {
+  const tpl = {
+    breast: { t: 'feed', kind: 'breast', s: t - 15 * 60000, e: t, segs: [] },
+    bottle: { t: 'feed', kind: 'bottle', s: t, ml: last().ml || '', milk: last().milk || 'formula' },
+    sleep: { t: 'sleep', s: t - 3600e3, e: t },
+    diaper: { t: 'diaper', s: t, e: t, wet: true, dirty: false },
+    pump: { t: 'pump', s: t, e: t, ml: '' },
+  }[k];
+  editEvent(null, tpl);
+}
+let EDIT = null; // {id|null, tpl}
+function editEvent(id, tpl) {
+  const e = id ? S.events.find(x => x.id === id) : tpl; if (!e) return;
+  EDIT = { id, e };
+  const isNew = !id, live = e.e == null && !isNew, i = evInfo(e);
+  let f = '';
+  f += `<label class="f"><span>${e.t === 'sleep' ? 'Уснул' : e.kind === 'breast' ? 'Начало' : 'Время'}</span><input id="f_s" type="datetime-local" value="${toInput(e.s)}"></label>`;
+  if (e.t === 'feed' && e.kind === 'breast') {
+    if (live) f += `<p class="hint" style="margin:-4px 0 12px">Кормление ещё идёт — можно поправить только начало.</p>`;
+    else f += `<div class="two"><label class="f"><span>Левая, мин</span><input id="f_L" type="number" inputmode="numeric" min="0" max="180" value="${isNew ? '' : Math.round(segsDur(e, 'L') / 60000)}"></label>
+      <label class="f"><span>Правая, мин</span><input id="f_R" type="number" inputmode="numeric" min="0" max="180" value="${isNew ? '' : Math.round(segsDur(e, 'R') / 60000)}"></label></div>`;
+  }
+  if (e.t === 'sleep') f += `<label class="f"><span>Проснулся${live ? ' (пусто — ещё спит)' : ''}</span><input id="f_e" type="datetime-local" value="${e.e != null ? toInput(e.e) : ''}"></label>`;
+  if ((e.t === 'feed' && e.kind === 'bottle') || e.t === 'pump') {
+    f += `<label class="f"><span>Сколько, мл</span><input id="f_ml" type="number" inputmode="numeric" min="0" max="1000" value="${e.ml || ''}">${chipsHtml('ml', [60, 90, 120, 150, 180, 210].map(v => [v, v]), e.ml)}</label>`;
+  }
+  if (e.t === 'feed' && e.kind === 'bottle') f += `<div class="f"><span>Что в бутылочке</span><input type="hidden" id="f_milk" value="${e.milk || 'formula'}">${chipsHtml('milk', [['formula', 'Смесь'], ['breast', 'Сцеженное молоко'], ['other', 'Другое']], e.milk || 'formula')}</div>`;
+  if (e.t === 'diaper') f += `<label class="chk"><input type="checkbox" id="f_wet" ${e.wet ? 'checked' : ''}> 💧 Мокрый</label><label class="chk"><input type="checkbox" id="f_dirty" ${e.dirty ? 'checked' : ''}> 💩 Грязный</label>`;
+  f += `<label class="f"><span>Заметка</span><textarea id="f_note" placeholder="Например: срыгнул, капризничал">${esc(e.note || '')}</textarea></label>`;
+  openSheet(`<h2>${i.ic} ${isNew ? 'Новая запись' : 'Запись'} — ${e.t === 'feed' ? (e.kind === 'breast' ? 'грудь' : 'бутылочка') : e.t === 'sleep' ? 'сон' : e.t === 'diaper' ? 'подгузник' : 'сцеживание'}</h2>${f}
+    <div class="err" id="f_err"></div>
+    <div class="acts">${isNew ? '' : '<button class="b del" onclick="delEvent()">Удалить</button>'}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveEvent()">Сохранить</button></div>`);
+}
+function saveEvent() {
+  const { id, e } = EDIT, err = m => { $('#f_err').textContent = m; };
+  const live = e.e == null && id;
+  const s = fromInput($('#f_s').value); if (s == null) return err('Укажите время');
+  if (s > now() + 60000) return err('Это время ещё не наступило');
+  const p = { s, note: $('#f_note').value.trim() };
+  if (e.t === 'feed' && e.kind === 'breast') {
+    if (live) { const d = s - e.s; p.segs = e.segs.map(g => ({ side: g.side, s: g.s + d, e: g.e == null ? null : g.e + d })); }
+    else {
+      const L = Math.max(0, +$('#f_L').value || 0), R = Math.max(0, +$('#f_R').value || 0);
+      if (!L && !R) return err('Сколько минут кормили? Укажите хотя бы одну грудь');
+      // порядок грудей сохраняем: какая была последней — та и останется последней (от неё считается «следующая»)
+      const order = []; for (const g of e.segs || []) if (!order.includes(g.side)) order.push(g.side);
+      for (const sd of ['L', 'R']) if (!order.includes(sd)) order.push(sd);
+      const lastS = (e.segs || []).length ? e.segs[e.segs.length - 1].side : null;
+      if (lastS) { order.splice(order.indexOf(lastS), 1); order.push(lastS); }
+      let t = s; p.segs = [];
+      for (const sd of order) { const m = sd === 'L' ? L : R; if (m) { p.segs.push({ side: sd, s: t, e: t + m * 60000 }); t += m * 60000; } }
+      p.e = t;
+    }
+  } else if (e.t === 'sleep') {
+    const en = fromInput($('#f_e').value);
+    if (en == null && !live) return err('Укажите, когда проснулся');
+    if (en != null && en <= s) return err('Проснулся раньше, чем уснул — проверьте время');
+    if (en != null && en > now() + 60000) return err('Это время ещё не наступило');
+    if (en != null && en - s > 24 * 3600e3) return err('Сон дольше суток — проверьте даты');
+    p.e = en;
+  } else if (e.t === 'diaper') {
+    p.wet = $('#f_wet').checked; p.dirty = $('#f_dirty').checked; p.e = s;
+    if (!p.wet && !p.dirty) return err('Отметьте: мокрый или грязный');
+  } else {
+    const ml = Math.round(+$('#f_ml').value || 0);
+    if (!ml) return err('Сколько миллилитров?');
+    p.ml = ml; p.e = s;
+    if (e.t === 'feed') { p.milk = $('#f_milk').value; lsSet(LASTKEY, JSON.stringify({ ml, milk: p.milk })); }
+  }
+  if (id) upd(e, p); else add(Object.assign({}, e, p));
+  closeSheet(); buzz();
+  if (!id) toast('Записано');
+  render();
+}
+function delEvent() {
+  const { e } = EDIT; upd(e, { del: true }); closeSheet();
+  toast('Запись удалена', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } });
+  render();
+}
+
+/* ───────── настройки ───────── */
+function openSettings() {
+  const p = nightPref();
+  openSheet(`<h2>Настройки</h2>
+    <div class="sec-t" style="margin-top:0">Малыш</div>
+    <label class="f"><span>Имя</span><input id="s_name" value="${esc(S.baby.name)}" autocomplete="off"></label>
+    <label class="f"><span>Дата рождения</span><input id="s_birth" type="date" value="${esc(S.baby.birth)}"></label>
+    <div class="sec-t">Ночь</div>
+    <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''}> Сам включать ночной режим с 22:00 до 7:00</label>
+    <p class="hint" style="margin:-6px 0 0">Тёмный экран, тёплый неяркий текст и крупные кнопки. Луна в шапке включает и выключает его вручную.</p>
+    <div class="sec-t">Данные</div>
+    <p class="hint" style="margin:0 0 10px">Пока дневник хранится только на этом устройстве. Скоро: вход через Google и общий дневник для двух родителей.</p>
+    <div class="btns"><button class="b" onclick="exportData()">Сохранить копию</button><button class="b" onclick="$('#s_file').click()">Загрузить копию</button></div>
+    <input type="file" id="s_file" accept="application/json,.json" hidden onchange="importData(this.files[0])">
+    <div class="err" id="s_err" style="margin-top:8px"></div>
+    <div class="acts" style="margin-top:14px"><button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveSettings()">Сохранить</button></div>
+    <div class="btns" style="margin-top:22px"><button class="b del ghost" onclick="wipeData()">Удалить все записи</button></div>`);
+}
+function saveSettings() {
+  const b = $('#s_birth').value;
+  if (b && !parseDay(b)) return $('#s_err').textContent = 'Неверная дата рождения';
+  if (b && parseDay(b) > new Date(now() + 864e5 * 280)) return $('#s_err').textContent = 'Проверьте дату рождения';
+  S.baby.name = $('#s_name').value.trim(); S.baby.birth = b; save();
+  const p = nightPref(); p.auto = $('#s_auto').checked; delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
+  closeSheet(); render();
+}
+function exportData() {
+  const blob = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  const d = new Date(now()); a.download = 'дневник-малыша-' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function importData(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    let d; try { d = JSON.parse(r.result); } catch (e) { d = null; }
+    if (!d || !Array.isArray(d.events)) return $('#s_err').textContent = 'Это не копия дневника';
+    importState(d); closeSheet(); toast('Копия загружена: ' + d.events.length + ' ' + pl(d.events.length, 'запись', 'записи', 'записей')); render();
+  };
+  r.readAsText(file);
+}
+// копия не затирает дневник, а объединяется с ним (как будет при общем дневнике)
+function importState(d) {
+  d = normalize(d);
+  S.events = mergeEvents(S.events, d.events);
+  if (!S.baby.birth && d.baby.birth) S.baby = d.baby;
+  save();
+}
+function wipeData() {
+  if (!confirm('Удалить все записи дневника на этом устройстве? Вернуть их можно только из сохранённой копии.')) return;
+  S.events = []; save(); closeSheet(); render();
+}
+
+/* ───────── советы ───────── */
+function viewTips() {
+  const m = ageM(), wk = m != null ? pick(WAKE, m) : null, sl = m != null ? pick(SLEEP, m) : null;
+  const C = (title, body, src, cls) => `<div class="card adv ${cls || ''}"><h3>${title}</h3>${body}${src ? `<div class="src">Источник: ${src}</div>` : ''}</div>`;
+  let h = `<p class="hint" style="margin:0 0 12px">Коротко о главном по рекомендациям ВОЗ, Американской академии педиатрии и Союза педиатров России. Это не заменяет консультацию врача.</p>`;
+  h += C('🚑 Когда срочно к врачу', `<p class="hint" style="color:var(--text-2)">Звоните <b>103</b> или <b>112</b>, если:</p><ul>
+    <li>температура <b>38,0 °C и выше у малыша до 3 месяцев</b>;</li>
+    <li>трудно дышать, губы или кожа синеют, долгие паузы в дыхании;</li>
+    <li>вялый, трудно разбудить, не реагирует как обычно;</li>
+    <li>судороги;</li>
+    <li>отказывается от еды несколько кормлений подряд, мало мокрых подгузников (меньше 4 за сутки), сухие губы, запавший родничок;</li>
+    <li>рвота фонтаном или зелёного цвета, кровь в стуле;</li>
+    <li>выбухающий родничок, сыпь, которая не бледнеет при надавливании стаканом.</li></ul>`, 'AAP (HealthyChildren.org), NHS', 'alarm');
+  h += C('😴 Безопасный сон', `<ul>
+    <li>Всегда <b>на спине</b> — и днём, и ночью.</li>
+    <li>Своя кроватка с ровным жёстким матрасом; <b>без подушек, одеял, бортиков и игрушек</b>.</li>
+    <li>Спать в одной комнате с родителями, но на отдельном месте — желательно первые 6 месяцев.</li>
+    <li>Не перегревать: лёгкая одежда или спальный мешок, без шапки в помещении.</li>
+    <li>Никакого курения рядом с малышом. Пустышка во время сна снижает риск внезапной смерти.</li>
+    <li>Нельзя оставлять спать на диване, в кресле, в автокресле вне машины.</li></ul>`, 'AAP, рекомендации по безопасному сну (2022)');
+  h += C('🌙 Сон по возрасту', `<table class="norm"><tr><th>Возраст</th><th>Бодрствование</th><th>Сон в сутки</th></tr>
+    ${WAKE.map((r, i) => { const from = i ? WAKE[i - 1][0] : 0; return `<tr class="${m != null && from <= m && m < r[0] ? 'me' : ''}"><td>${from}–${r[0]} мес.</td><td>${r[1]}</td><td>${pick(SLEEP, from)[1]}</td></tr>`; }).join('')}</table>
+    <p class="hint">Это ориентиры, у каждого малыша свой ритм. Признаки усталости — трёт глаза, зевает, отворачивается, капризничает; лучше укладывать при первых признаках.${wk ? ` Для вашего возраста: бодрствование ${wk[1]}, сон ${sl[1]}.` : ''}</p>`,
+    'сон в сутки — National Sleep Foundation (2015), AASM/AAP (2016); время бодрствования — распространённые рекомендации педиатров (строгих норм в исследованиях нет)');
+  h += C('🤱 Кормление', `<ul>
+    <li>ВОЗ советует <b>только грудное молоко до 6 месяцев</b> и продолжать грудное вскармливание с прикормом до 2 лет и дольше.</li>
+    <li>Кормить <b>по требованию</b>: новорождённый ест 8–12 раз в сутки. Признаки голода — ищет грудь, причмокивает, тянет руки в рот; плач — уже поздний признак.</li>
+    <li>Начинайте следующее кормление с той груди, которой закончили прошлое, — приложение подсказывает её.</li>
+    <li>Молока хватает, если с 5–6-го дня не меньше 6 мокрых подгузников в сутки и малыш набирает вес.</li></ul>`, 'ВОЗ, AAP, Союз педиатров России');
+  h += C('🥕 Прикорм', `<ul>
+    <li>ВОЗ — с 6 месяцев; российская программа вскармливания — между 4 и 6 месяцами. Решение — вместе с педиатром.</li>
+    <li>Признаки готовности: уверенно держит голову, сидит с поддержкой, интересуется едой, не выталкивает ложку языком.</li>
+    <li>Новый продукт — по одному, наблюдайте 3–5 дней.</li></ul>
+    <p class="hint">Скоро: календарь прикорма, журнал реакций и рецепты.</p>`, 'ВОЗ; Национальная программа оптимизации вскармливания детей первого года жизни (Союз педиатров России)');
+  return h;
+}
+
+/* ───────── запуск ───────── */
+function launch() {
+  const a = new URLSearchParams(location.search).get('action');
+  if (!a) return;
+  history.replaceState(null, '', location.pathname);
+  if (a === 'sleep') toggleSleep();
+  else if (a === 'feed') { const n = nextSide() || 'L'; if (!activeOf('feed')) breast(n); }
+  else if (a === 'day') go('day');
+}
+function boot() {
+  render(); launch();
+  setInterval(() => { if (!$('#sheetWrap').hidden) { tick(); return; } const n = isNight(); if (n !== document.documentElement.hasAttribute('data-night')) applyNight(); tick(); }, 1000);
+  setInterval(() => { if ($('#sheetWrap').hidden) render(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && $('#sheetWrap').hidden) { S = load(); render(); } });
+  window.addEventListener('storage', e => { if (e.key === KEY && $('#sheetWrap').hidden) { S = load(); render(); } });
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+boot();
+</script>
+</body>
+</html>
