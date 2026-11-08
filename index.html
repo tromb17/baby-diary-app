@@ -319,6 +319,57 @@ ul.bms b{font-weight:normal;color:#9a8574;white-space:nowrap}
   .bpage{margin:0;box-shadow:none}
   :root[data-night] .bph img{filter:none}
 }
+/* знакомство, «кто вы» */
+input.own{width:100%;margin-top:8px;border:1px solid var(--line);background:var(--surface-2);border-radius:11px;padding:10px 12px;min-height:44px}
+.card.welcome{border:1.5px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+/* сон */
+.card h3.tap,.st.tap{cursor:pointer}
+.card h3 .more{margin-left:auto;font-size:13px;font-weight:600;color:var(--c-sleep)}
+.snorm{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+.snorm .v{font-size:28px;font-weight:700}
+.snorm .pct{margin-top:0}
+.nbar{position:relative;height:12px;border-radius:99px;background:var(--surface-2);margin:12px 0 4px}
+.nbar .rng{position:absolute;top:0;bottom:0;border-radius:99px;background:color-mix(in srgb,var(--good) 35%,transparent)}
+.nbar .me{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--c-sleep);transform:translateX(-50%)}
+.sgrid{margin-top:8px}
+.srow{display:flex;align-items:center;gap:8px;margin:5px 0}
+.srow .sd{width:44px;flex:none;font-size:12.5px;color:var(--text-2)}
+.srow .st2{width:56px;flex:none;text-align:right;font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.strip.sm{flex:1;height:18px;margin:0;border-radius:6px}
+.srow.ax .strip-ax{font-size:10.5px}
+/* развитие */
+.dseg button{font-size:13px;padding:8px 2px}
+.slist{list-style:none;padding:0;margin:10px 0 6px}
+.slist li{display:flex;justify-content:space-between;padding:8px 10px;border-radius:11px;margin-top:4px;background:var(--surface-2);font-size:14px}
+.slist li span{color:var(--muted)} .slist li.past{opacity:.55} .slist li.now{background:color-mix(in srgb,var(--c-feed) 16%,transparent);font-weight:600} .slist li.now span{color:var(--c-feed)}
+.leaps{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.leaps span{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;align-content:center;background:var(--surface-2);font-weight:700;font-size:15px;line-height:1}
+.leaps small{font-size:9.5px;font-weight:500;color:var(--muted)} .leaps .past{opacity:.45} .leaps .now{background:var(--c-sleep);color:#fff} .leaps .now small{color:#fff}
+.card.game h3{font-size:15.5px}
+.card.spurt{border-color:color-mix(in srgb,var(--c-feed) 40%,transparent);background:color-mix(in srgb,var(--c-feed) 7%,var(--surface))}
+.card.mrem{border-color:color-mix(in srgb,var(--c-sleep) 40%,transparent);background:color-mix(in srgb,var(--c-sleep) 8%,var(--surface))}
+ul.ways{list-style:none;padding:0;margin:0 0 12px}
+ul.ways li{display:flex;gap:10px;padding:8px 10px;border-radius:11px;margin-top:4px;background:var(--surface-2);font-size:14px}
+ul.ways li b{flex:none;width:62px;color:var(--c-food)} ul.ways li.now{outline:2px solid var(--c-food)} ul.ways li.later{opacity:.55}
+/* фото каждый месяц */
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.mtile{border:1px solid var(--line);background:var(--surface);border-radius:14px;overflow:hidden;padding:0;display:flex;flex-direction:column}
+.mtile .ph{aspect-ratio:1} .mtile .ph.none{font-size:28px;color:var(--muted)}
+.mtile.later{opacity:.5}
+.mtile .mcap{display:block;padding:5px 4px 7px;font-size:12px;font-weight:600;text-align:center}
+.bmonths{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;width:100%}
+.bmonths .bph{height:38mm;border-radius:2.5mm}
+.bmonths span{display:block;text-align:center;font-size:8.5pt;color:#9a8574;margin-top:1mm}
+/* строка звука поверх вкладок */
+.sndbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(64px + env(safe-area-inset-bottom));z-index:31;display:flex;align-items:center;gap:2px;max-width:calc(100vw - 32px);background:var(--c-sleep);color:#fff;border-radius:999px;box-shadow:0 3px 12px rgba(60,40,140,.3);padding:2px 2px 2px 4px}
+.sndbar button{border:0;background:transparent;color:inherit;font-size:13px;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sndbar .sb-t{min-width:0;font-weight:600}
+.sndbar .sb-x{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.22);padding:0;font-size:11px;flex:none}
+body.inchat .sndbar{bottom:calc(126px + env(safe-area-inset-bottom))}
+body.withsnd{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
+body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
+:root[data-night] .sndbar{background:#3a2e4a;box-shadow:none}
+@media print{.sndbar{display:none!important}}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -356,6 +407,7 @@ ul.bms b{font-weight:normal;color:#9a8574;white-space:nowrap}
   <button class="icon-btn" onclick="openSettings()" aria-label="Настройки" title="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </header>
 <main id="view"></main>
+<div class="sndbar" id="sndbar" hidden></div>
 <div class="chatbar" id="chatbar" hidden><button class="icon-btn" onclick="$('#c_file').click()" aria-label="Фото">📷</button><textarea id="c_in" rows="1" placeholder="Сообщение" oninput="chatGrow(this)" onkeydown="chatKey(event)"></textarea><button class="b main csend" onclick="sendMsg()" aria-label="Отправить">➤</button><input type="file" id="c_file" accept="image/*" hidden onchange="sendPhoto(this.files[0])"></div>
 <nav class="tabs" id="tabs"></nav>
 <div class="sheet-wrap" id="sheetWrap" hidden><div class="sheet-bg" onclick="closeSheet()"></div><div class="sheet" id="sheet" role="dialog"></div></div>
@@ -557,8 +609,8 @@ function render() {
   syncShow();
   renderTabs();
   const v = $('#view');
-  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : viewNow();
-  tick(); hydratePhotos(); chatShow(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
+  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : UI.tab === 'sleep' ? viewSleep() : viewNow();
+  tick(); hydratePhotos(); chatShow(); sndBar(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
 }
 
 // живые цифры: data-base (уже набежало, мс) + data-from (идёт с …); data-ago — «… назад»
@@ -571,10 +623,10 @@ function tick() {
 
 function viewNow() {
   let h = '';
-  if (!S.baby.birth) h += welcomeCard();
+  if (!S.baby.birth) { h += welcomeCard(); if (!evs().length) return h; }
   const f = activeOf('feed'), sl = activeOf('sleep');
   if (f) h += liveFeed(f);
-  if (sl) h += `<div class="card sleep live"><h3><span class="dot"></span>Спит</h3>
+  if (sl) h += `<div class="card sleep live"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Спит<span class="more">график →</span></h3>
     <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>
     <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">☀️</span>Проснулся</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
 
@@ -597,7 +649,7 @@ function viewNow() {
       st = `Проснулся в ${hm(aw)}, не спит уже <b>${fmtMin(now() - aw)}</b>`;
       if (w) st += mins > w[3] ? `<br><span class="warn">Пора укладывать</span> — ориентир для возраста ${w[1]}` : `<br>Ориентир бодрствования: ${w[1]}`;
     }
-    h += `<div class="card sleep"><h3><span class="dot"></span>Сон</h3><div class="st">${st}</div>
+    h += `<div class="card sleep"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Сон<span class="more">график →</span></h3><div class="st tap" onclick="go('sleep')">${st}</div>
       <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">🌙</span>Уснул</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
   }
   // подгузник
@@ -609,7 +661,7 @@ function viewNow() {
       <button class="b" onclick="diaper('both')"><span class="e">💧💩</span>Оба</button>
     </div></div>`;
 
-  h += sndMini() + homeHealth();
+  h += monthReminder() + spurtCard() + homeHealth();
   // сегодня кратко
   const d = daySum(sod(now()));
   h += `<div class="card"><h3>Сегодня</h3>${sumGrid(d)}<button class="link" onclick="go('day')">Весь день →</button></div>`;
@@ -639,19 +691,27 @@ function liveFeed(f) {
     </div></div>`;
 }
 function welcomeCard() {
-  return `<div class="card"><h3>Давайте познакомимся</h3>
-    <p class="hint">Имя и дата рождения нужны, чтобы считать возраст и показывать ориентиры по сну и кормлению.</p>
-    <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off"></label>
+  const me = devName(DEV);
+  return `<div class="card welcome"><h3>👋 Давайте познакомимся</h3>
+    <p class="hint">Возраст нужен, чтобы показывать нормы сна, роста и веса ВОЗ, прививки и вехи — всё под вашего малыша.</p>
+    <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off" value="${esc(S.baby.name)}"></label>
+    <div class="f"><span>Пол</span><input type="hidden" id="f_wsex" value="${esc(S.baby.sex || '')}">${chipsHtml('wsex', [['f', '👧 Девочка'], ['m', '👦 Мальчик']], S.baby.sex)}</div>
     <label class="f"><span>Дата рождения</span><input id="wBirth" type="date"></label>
+    <div class="f"><span>Кто вы малышу</span>${roleChips('wrole', me)}</div>
     <div class="err" id="wErr"></div>
-    <div class="btns"><button class="b main" onclick="saveWelcome()">Готово</button></div></div>
+    <div class="btns"><button class="b main" onclick="saveWelcome()">Начать дневник</button></div></div>
     ${gOK() && !REMOTE ? `<p class="hint" style="margin-top:14px">Уже ведёте дневник на другом телефоне или вас пригласили?</p>
       <div class="btns" style="margin-top:8px"><button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button></div>` : ''}</div>`;
 }
 function saveWelcome() {
-  const b = $('#wBirth').value;
-  if (!parseDay(b)) { $('#wErr').textContent = 'Укажите дату рождения'; return; }
-  setBaby({ name: $('#wName').value.trim(), birth: b }); render();
+  const b = $('#wBirth').value, name = $('#wName').value.trim(), sex = $('#f_wsex').value, err = m => { $('#wErr').textContent = m; };
+  if (!name) return err('Как зовут малыша?');
+  if (!sex) return err('Выберите: девочка или мальчик');
+  if (!parseDay(b)) return err('Укажите дату рождения');
+  if (parseDay(b) > new Date(now() + 864e5 * 280)) return err('Проверьте дату рождения');
+  setBaby({ name, birth: b, sex });
+  const r = roleVal('wrole'); if (r && r !== devName(DEV)) setMe({ name: r });
+  render();
 }
 
 /* ───────── день ───────── */
@@ -719,6 +779,7 @@ function evInfo(e) {
   if (e.t === 'check') { const c = CHECKS.find(x => x.id === e.cid); return { c: '', ic: '📋', tx: 'Осмотр ' + (c ? checkTitle(c) : e.cid) + ': отмечено ' + (e.done || []).length + (c ? ' из ' + checkItems(c).length : ''), sub: '' }; }
   if (e.t === 'mile') { const m = MILES.find(x => x.id === e.mid); return { c: '', ic: '⭐', tx: m ? m.name : e.mid, sub: '' }; }
   if (e.t === 'food') return { c: 'food', ic: foodIc(e.fid), tx: foodName(e.fid, e.name) + (e.amt ? ' — ' + e.amt : ''), sub: e.react && e.react !== 'none' ? '⚠ ' + REACT[e.react] : '' };
+  if (e.t === 'mphoto') return { c: '', ic: '📅', tx: 'Фото месяца: ' + e.m, sub: '' };
   if (e.t === 'msg') return { c: '', ic: '💬', tx: (e.text || 'Фото').slice(0, 80), sub: '' };
   if (e.t === 'first') return { c: '', ic: '📸', tx: e.title || 'Первый раз', sub: '' };
   return { c: '', ic: '•', tx: e.t, sub: '' };
@@ -740,6 +801,7 @@ function chipsHtml(name, opts, val) { return `<div class="chips" data-name="${na
 function chip(btn) {
   const box = btn.parentElement; for (const b of box.children) b.classList.toggle('on', b === btn);
   if (box.dataset.name === 'stimer') return sndSet('timer', +btn.dataset.v);
+  const own = document.getElementById(box.dataset.name + '_own'); if (own) { own.hidden = btn.dataset.v !== '*'; if (!own.hidden) own.focus(); }
   const inp = document.getElementById('f_' + box.dataset.name) || document.getElementById('s_' + box.dataset.name); if (inp) inp.value = btn.dataset.v;
 }
 function openBottle() { editEvent(null, { t: 'feed', kind: 'bottle', s: now(), ml: last().ml || '', milk: last().milk || 'formula' }); }
@@ -1356,8 +1418,8 @@ function viewTips() {
 
 /* ───────── развитие: вехи, прикорм, альбом ───────── */
 function viewDev() {
-  const seg = `<div class="seg" style="margin-bottom:12px">${[['miles', 'Вехи'], ['food', 'Прикорм'], ['album', 'Альбом']].map(([k, t]) => `<button class="${UI.dev === k ? 'on' : ''}" onclick="UI.dev='${k}';UI.demo=false;render()">${t}</button>`).join('')}</div>`;
-  return seg + (UI.dev === 'food' ? viewFood() : UI.dev === 'album' ? viewAlbum() : viewMiles());
+  const seg = `<div class="seg dseg" style="margin-bottom:12px">${[['miles', 'Вехи'], ['spurts', 'Скачки'], ['games', 'Игры'], ['food', 'Прикорм'], ['album', 'Альбом']].map(([k, t]) => `<button class="${UI.dev === k ? 'on' : ''}" onclick="UI.dev='${k}';UI.demo=false;render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.dev === 'food' ? viewFood() : UI.dev === 'album' ? viewAlbum() : UI.dev === 'spurts' ? viewSpurts() : UI.dev === 'games' ? viewGames() : viewMiles());
 }
 
 /* ───────── прикорм ─────────
@@ -1443,6 +1505,7 @@ function editFood(id, fid) {
   const title = fid ? esc(foodName(fid, e ? e.name : recs[0] && recs[0].name)) : 'Новый продукт';
   openSheet(`<h2>${foodIc(fid)} ${title}</h2>
     ${known && monthsAt(now()) != null && monthsAt(now()) < known.g.lo ? `<p class="hint" style="margin:0 0 10px;color:var(--warn)">Обычно — с ${known.g.lo} мес. Обсудите с педиатром.</p>` : ''}
+    ${id ? '' : foodWays(fid)}
     ${recs.length && !id ? `<div class="sec-t" style="margin-top:0">Уже давали</div><ul class="list" style="margin-bottom:10px">${recs.slice().reverse().map(r => `<li onclick="editFood('${r.id}')"><span class="tm">${dayShort(r.s)}</span><span class="tx"><div>${esc(r.amt || 'попробовал')}</div><small>${esc([REACT[r.react] || '', r.note].filter(Boolean).join(' · '))}</small></span></li>`).join('')}</ul><div class="sec-t">Записать ещё</div>` : ''}
     ${fid ? '' : `<label class="f"><span>Что дали</span><input id="fd_name" placeholder="Например, морковь с яблоком" autocomplete="off"></label>`}
     <label class="f"><span>Когда</span><input id="fd_s" type="datetime-local" value="${toInput(v.s)}"></label>
@@ -1630,6 +1693,10 @@ function sndStop(quiet) {
 }
 function sndSet(k, v) { const p = sndPref(); p[k] = v; lsSet(SND_KEY, JSON.stringify(p)); if (k === 'vol') { sndGain(v); return; } if (k === 'timer' && SND.src) { const id = SND.id; SND.id = null; sndPlay(id); return; } render(); }
 const sndLeft = () => SND.until ? Math.max(0, SND.until - Date.now()) : null;
+function spurtCard() {
+  const s = spurtNow(); if (!s) return '';
+  return `<div class="card spurt" onclick="UI.tab='dev';UI.dev='spurts';render()" style="cursor:pointer"><h3>🌱 Возможен скачок роста (${s[2]})</h3><p class="hint">Пару дней малыш может чаще просить есть и капризничать — это нормально. Подробнее — нажмите.</p></div>`;
+}
 function sndMini() {
   if (!SND.id) return '';
   const s = SOUNDS.find(x => x.id === SND.id), left = sndLeft();
@@ -1717,6 +1784,10 @@ function ageGroup(ts) {
   return m < 1 ? 'Первый месяц' : m >= 12 ? (m === 12 ? 'Год' : 'Больше года') : m + ' ' + pl(m, 'месяц', 'месяца', 'месяцев');
 }
 function viewAlbum() {
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['firsts', 'Первые разы'], ['months', 'Каждый месяц']].map(([k, t]) => `<button class="${(UI.alb || 'firsts') === k ? 'on' : ''}" onclick="UI.alb='${k}';render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.alb === 'months' ? viewMonths() : viewFirsts());
+}
+function viewFirsts() {
   const demo = UI.demo, list = demo ? demoAlbum() : albumItems();
   let h = demo ? `<div class="card demo"><h3>👀 Так будет выглядеть альбом</h3><p class="hint">Это пример с нарисованными картинками — ваши записи не менялись.</p><div class="btns" style="margin-top:10px"><button class="b" onclick="openBook()">📖 Книжка</button><button class="b main" onclick="UI.demo=false;render()">Закрыть пример</button></div></div>`
     : `<div class="card"><h3>📸 Первые разы</h3><p class="hint">Улыбка, первая прогулка, первый зубик — с фото и парой слов. Отмеченные вехи развития тоже здесь.</p>
@@ -2006,6 +2077,8 @@ function viewBook() {
     <div class="book" id="book">`;
   h += `<section class="bpage bcover">${cover ? `<div class="bph"><img data-ph="${cover.ph[0]}" data-sz="full" alt=""></div>` : `<div class="bemo">👶</div>`}
     <div class="btitle">Наш первый год</div><div class="bname">${esc(name)}</div>${born ? `<div class="bsub">${esc(born)}</div>` : ''}</section>`;
+  const mp = UI.demo ? demoMonths() : mphotos(), mks = Object.keys(mp).map(Number).filter(m => (mp[m].ph || []).length).sort((x, y) => x - y);
+  if (mks.length) { pg++; h += `<section class="bpage"><div class="bgrp">Месяц за месяцем</div><div class="bmonths">${mks.map(m => `<div><div class="bph"><img data-ph="${mp[m].ph[0]}" data-sz="full" alt=""></div><span>${m} ${pl(m, 'месяц', 'месяца', 'месяцев')}</span></div>`).join('')}</div><div class="bno">${pg}</div></section>`; }
   let grp = '';
   for (const e of list) {
     const g = ageGroup(e.s), ph = (e.ph || [])[0]; pg++;
@@ -2032,6 +2105,198 @@ async function printBook() {
   const title = 'Наш первый год — ' + (S.baby.name || 'малыш');
   if (NATIVE && typeof NATIVE.print === 'function') { NATIVE.print(title); return; }
   const t = document.title; document.title = title; window.print(); document.title = t;
+}
+
+/* ───────── знакомство и «кто вы» ─────────
+   Первый запуск: имя, пол и дата рождения обязательны (без них нет возраста и норм), плюс кем вы приходитесь малышу.
+   После входа через Google — сразу вопрос «кто вы», если ещё не ответили (askRole). */
+const ROLES = ['Мама', 'Папа', 'Бабушка', 'Дедушка', 'Няня'];
+function roleChips(id, val) {
+  return `<input type="hidden" id="f_${id}" value="${esc(ROLES.includes(val) ? val : val ? '*' : '')}">${chipsHtml(id, [...ROLES.map(r => [r, r]), ['*', 'Другое']], ROLES.includes(val) ? val : val ? '*' : '')}
+    <input id="${id}_own" class="own" placeholder="Например, тётя Оля" value="${esc(ROLES.includes(val) ? '' : val || '')}" ${ROLES.includes(val) || !val ? 'hidden' : ''} autocomplete="off">`;
+}
+function roleVal(id) { const v = ($('#f_' + id) || {}).value || ''; return v === '*' ? ($('#' + id + '_own').value || '').trim() : v; }
+function askRole() {
+  openSheet(`<h2>Кто вы малышу?</h2><p class="hint" style="margin:0 0 12px">Так будут подписаны ваши записи и сообщения в общем дневнике.</p>
+    <div class="f">${roleChips('role', devName(DEV))}</div><div class="err" id="r_err"></div>
+    <div class="acts"><button class="b ghost" onclick="closeSheet()">Позже</button><button class="b main" onclick="saveRole()">Готово</button></div>`);
+}
+function saveRole() { const v = roleVal('role'); if (!v) { $('#r_err').textContent = 'Выберите или напишите'; return; } setMe({ name: v }); closeSheet(); render(); toast('Записи будут подписаны: ' + v); }
+
+/* ───────── сон: страница с графиком, средние и нормы ─────────
+   Открывается с карточки «Сон» на главной (UI.tab='sleep'). Полные дни до сегодня (UI.sdays 7|14), ночь — 21:00–07:00.
+   Ориентир «следующий сон» — середина окна бодрствования для возраста (простая подсказка, не прогноз). */
+const NIGHT_FROM = 21, NIGHT_TO = 7;
+function sleepStats(n) {
+  const today = sod(now()), b = birthTs(); let from = addDays(today, -n); if (b != null && from < sod(b)) from = sod(b);
+  const days = []; for (let d = from; d < today; d = addDays(d, 1)) days.push(d);
+  const all = evs().filter(e => e.t === 'sleep' && e.e != null), rows = [];
+  for (const d of days) {
+    const a = d, z = addDays(d, 1), list = all.filter(e => e.s < z && e.e > a);
+    let tot = 0, night = 0;
+    for (const e of list) {
+      const s = Math.max(a, e.s), en = Math.min(z, e.e); tot += en - s;
+      // ночная часть: 00:00–07:00 и 21:00–24:00 этих суток
+      const n1 = Math.max(0, Math.min(en, a + NIGHT_TO * 3600e3) - s), n2 = Math.max(0, en - Math.max(s, a + NIGHT_FROM * 3600e3));
+      night += Math.max(0, n1) + Math.max(0, n2);
+    }
+    const naps = list.filter(e => e.s >= a && e.s < z && new Date(e.s).getHours() >= NIGHT_TO && new Date(e.s).getHours() < NIGHT_FROM).length;
+    rows.push({ d, list, tot, night, day: tot - night, naps, has: list.length > 0 });
+  }
+  const with_ = rows.filter(r => r.has), k = with_.length, avg = f => k ? with_.reduce((x, r) => x + f(r), 0) / k : 0;
+  // бодрствование между снами днём
+  const gaps = []; const ss = all.filter(e => e.s >= from && e.s < today).sort((x, y) => x.s - y.s);
+  for (let i = 1; i < ss.length; i++) { const g = ss[i].s - ss[i - 1].e, h = new Date(ss[i].s).getHours(); if (g > 10 * 60000 && g < 8 * 3600e3 && h >= NIGHT_TO && h < 23) gaps.push(g); /* и вечернее — до ночного сна */ }
+  return { rows, k, tot: avg(r => r.tot), night: avg(r => r.night), day: avg(r => r.day), naps: avg(r => r.naps), longest: ss.reduce((m, e) => Math.max(m, e.e - e.s), 0), wake: gaps.length ? gaps.reduce((x, y) => x + y, 0) / gaps.length : 0 };
+}
+function nextSleepHint() {
+  const aw = lastAwake(), m = ageM(); if (!aw || m == null || activeOf('sleep')) return '';
+  const w = pick(WAKE, m), at = aw + (w[2] + w[3]) / 2 * 60000;
+  return at > now() ? `Следующий сон — ориентир <b>около ${hm(at)}</b> (бодрствование для возраста ${w[1]}). Смотрите на признаки усталости.` : `Уже пора укладывать: малыш не спит дольше ориентира (${w[1]}).`;
+}
+function viewSleep() {
+  const n = UI.sdays || 7, st = sleepStats(n), m = ageM(), norm = m != null ? pick(SLEEP, m) : null, wk = m != null ? pick(WAKE, m) : null, H = 3600e3;
+  let h = `<div class="daynav"><button onclick="go('now')" aria-label="Назад">‹</button><h2>Сон</h2><span style="width:44px"></span></div>`;
+  const sl = activeOf('sleep');
+  h += `<div class="card sleep ${sl ? 'live' : ''}"><h3><span class="dot"></span>${sl ? 'Спит' : 'Сейчас не спит'}</h3>${sl ? `<div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>` : `<p class="st">${nextSleepHint() || 'Записей сна пока нет.'}</p>`}
+    <div class="btns"><button class="b main" onclick="toggleSleep()">${sl ? '☀️ Проснулся' : '🌙 Уснул'}</button><button class="b" onclick="addKind('sleep',now())">+ Сон задним числом</button></div></div>`;
+  h += `<div class="seg" style="margin-bottom:12px">${[7, 14].map(x => `<button class="${n === x ? 'on' : ''}" onclick="UI.sdays=${x};render()">${x} дней</button>`).join('')}</div>`;
+  if (!st.k) return h + `<div class="card"><div class="empty">За эти дни сна не записано</div></div>`;
+  const inNorm = norm ? (st.tot / H < norm[2] ? 'low' : st.tot / H > norm[3] ? 'high' : 'ok') : '';
+  h += `<div class="card"><h3>В среднем за сутки</h3>
+    <div class="snorm"><div class="v num">${fmtMin(st.tot)}</div>${norm ? `<div class="pct ${inNorm}">${inNorm === 'ok' ? 'в пределах ориентира' : inNorm === 'low' ? 'меньше ориентира' : 'больше ориентира'} ${norm[1]}</div>` : ''}</div>
+    ${norm ? `<div class="nbar"><i class="rng" style="left:${norm[2] / 20 * 100}%;width:${(norm[3] - norm[2]) / 20 * 100}%"></i><i class="me" style="left:${Math.min(100, st.tot / H / 20 * 100)}%"></i></div><div class="strip-ax"><span>0</span><span>5</span><span>10</span><span>15</span><span>20 ч</span></div>` : ''}
+    <table class="norm" style="margin-top:10px"><tr><td>Ночью (21–7)</td><td><b>${fmtMin(st.night)}</b></td></tr><tr><td>Днём</td><td><b>${fmtMin(st.day)}</b>, ${r1(st.naps)} ${pl(Math.round(st.naps), 'раз', 'раза', 'раз')}</td></tr>
+    ${st.wake ? `<tr><td>Бодрствование днём</td><td><b>${fmtMin(st.wake)}</b>${wk ? ` <span class="hint">(ориентир ${wk[1]})</span>` : ''}</td></tr>` : ''}<tr><td>Самый долгий сон</td><td><b>${fmtMin(st.longest)}</b></td></tr></table>
+    <p class="hint">Считаются дни с записями (${st.k} из ${st.rows.length}). Ориентиры — National Sleep Foundation, AASM/AAP; у каждого малыша свой ритм.</p></div>`;
+  h += `<div class="card"><h3>График</h3><div class="sgrid">${st.rows.slice().reverse().map(r => {
+    const p = x => ((Math.max(r.d, Math.min(addDays(r.d, 1), x)) - r.d) / 864e5 * 100).toFixed(2) + '%';
+    return `<div class="srow"><span class="sd">${WD[new Date(r.d).getDay()].slice(0, 2)} ${new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep" style="left:${p(e.s)};width:calc(${p(e.e)} - ${p(e.s)})"></i>`).join('')}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
+  }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div></div>`;
+  h += `<div class="card"><h3>Все сны</h3>${st.rows.slice().reverse().filter(r => r.has).map(r => `<div class="sec-t">${esc(dayTitle(r.d))} · ${fmtMin(r.tot)}</div><ul class="list">${r.list.filter(e => e.s >= r.d).map(rowHtml).join('')}</ul>`).join('')}</div>`;
+  return h;
+}
+
+/* ───────── скачки роста и «чудесные недели» ─────────
+   Скачки роста (малыш чаще просит есть, беспокойнее; несколько дней): около 7–10 дней, 2–3 недель, 6 недель, 3 и 6 месяцев —
+   по материалам WIC/USDA и консультантов по ГВ. «Чудесные недели» (van de Rijt, Plooij) — популярная книга, научных
+   подтверждений мало: показываем мягко, с пометкой. Недели — от дня рождения (у недоношенных — от ПДР). */
+const SPURTS = [[7, 10, '7–10 дней'], [14, 21, '2–3 недели'], [39, 45, '6 недель'], [84, 95, '3 месяца'], [175, 190, '6 месяцев']];
+const LEAPS = [5, 8, 12, 19, 26, 37, 46, 55];
+function spurtNow() { const b = birthTs(); if (b == null) return null; const d = Math.round((sod(now()) - b) / 864e5); return SPURTS.find(s => d >= s[0] - 1 && d <= s[1] + 1) || null; }
+function viewSpurts() {
+  const b = birthTs(); if (b == null) return needBirth('подсказывать про скачки роста');
+  const d = Math.round((sod(now()) - b) / 864e5), w = d / 7, cur = spurtNow();
+  let h = `<div class="card ${cur ? 'feed live' : ''}"><h3>${cur ? '🌱 Сейчас возможен скачок роста' : '🌱 Скачки роста'}</h3>
+    <p class="hint">Несколько дней малыш просит грудь или бутылочку чаще (бывает каждые 30–60 минут, особенно вечером), беспокоится, может спать больше или хуже. Это нормально и не значит, что не хватает молока — если хорошо писает (от 6 мокрых подгузников) и прибавляет в весе.</p>
+    <ul class="slist">${SPURTS.map(s => { const st = d > s[1] + 1 ? 'past' : d >= s[0] - 1 ? 'now' : ''; return `<li class="${st}"><b>${s[2]}</b><span>${st === 'past' ? 'прошёл' : st === 'now' ? 'сейчас' : 'с ' + dayShort(b + s[0] * 864e5)}</span></li>`; }).join('')}</ul>
+    <p class="hint">Что помогает: кормить по требованию, больше контакта «кожа к коже», отдыхать, когда спит малыш. Сроки у всех разные — это ориентир.</p>
+    <div class="src">Источник: WIC Breastfeeding Support (USDA), консультанты по грудному вскармливанию</div></div>`;
+  const nl = LEAPS.findIndex(x => x + 1 >= w);
+  h += `<div class="card adv"><h3>🧩 «Чудесные недели»</h3><p class="hint">Популярная книга Х. ван де Рейт и Ф. Плоой: в эти недели малыш учится новому и бывает капризнее («скачок развития»). Научных подтверждений у такого точного расписания мало — воспринимайте как подсказку, а не правило.</p>
+    <div class="leaps">${LEAPS.map((x, i) => `<span class="${w > x + 1 ? 'past' : i === nl ? 'now' : ''}">${x}<small>нед.</small></span>`).join('')}</div>
+    <p class="hint">Сейчас — ${Math.floor(w)} ${pl(Math.floor(w), 'неделя', 'недели', 'недель')}. У недоношенных малышей недели считают от предполагаемой даты родов.</p></div>`;
+  return h;
+}
+
+/* ───────── игры по возрасту ─────────
+   Простые игры без покупок; что развивают — по материалам CDC «Learn the Signs. Act Early» и AAP (HealthyChildren). */
+const GAMES = [
+  { from: 0, to: 3, ic: '😛', name: 'Рожицы', how: 'Лицом к лицу на расстоянии 20–30 см: медленно высуньте язык, откройте рот, улыбнитесь. Подождите — малыш может повторить.', dev: 'внимание к лицам, подражание' },
+  { from: 0, to: 4, ic: '🗣️', name: 'Разговоры по очереди', how: 'Отвечайте на «агу» и гуление — повторите звук и сделайте паузу, будто ждёте ответа.', dev: 'речь, общение' },
+  { from: 0, to: 6, ic: '🐢', name: 'Время на животике', how: 'Несколько раз в день, пока бодрствует: положите на живот, перед ним — яркая игрушка или ваше лицо. Начните с 1–2 минут.', dev: 'шея, спина, плечи' },
+  { from: 1, to: 4, ic: '👀', name: 'Следи за погремушкой', how: 'Медленно ведите погремушку из стороны в сторону, вверх и вниз. Потрясите сбоку — пусть ищет звук.', dev: 'зрение, слух' },
+  { from: 3, to: 8, ic: '🧸', name: 'Дотянись', how: 'Держите игрушку чуть дальше, чем малыш может достать, — пусть тянется, переворачивается.', dev: 'хватание, перевороты' },
+  { from: 4, to: 10, ic: '🙈', name: 'Ку-ку', how: 'Закройте лицо ладонями или платком и откройте: «Ку-ку!». Потом пусть малыш стянет платок сам.', dev: 'понимание, что предмет не исчез; смех' },
+  { from: 4, to: 9, ic: '🪞', name: 'Зеркало', how: 'Посадите перед небьющимся зеркалом, покажите: «Где Маша? Вот она!» Улыбайтесь вместе.', dev: 'интерес к себе, эмоции' },
+  { from: 5, to: 10, ic: '🧺', name: 'Шуршалки', how: 'Дайте потрогать разное: мягкую ткань, шуршащую бумагу, деревянную ложку, губку. Называйте: «мягкий», «шуршит».', dev: 'чувства, словарь' },
+  { from: 6, to: 12, ic: '👏', name: 'Ладушки и Сорока-ворона', how: 'Потешки с движениями: хлопайте ладошками малыша, загибайте пальчики. Повторяйте одни и те же — малыш начнёт ждать.', dev: 'речь, ритм, мелкая моторика' },
+  { from: 7, to: 12, ic: '🥁', name: 'Барабанщик', how: 'Кастрюля и деревянная ложка: стучите по очереди, громко и тихо.', dev: 'причина и следствие, ритм' },
+  { from: 8, to: 12, ic: '🎁', name: 'Найди игрушку', how: 'При малыше спрячьте игрушку под платок или чашку — пусть найдёт. Потом под одну из двух.', dev: 'память, постоянство предметов' },
+  { from: 9, to: 12, ic: '⚽', name: 'Мяч туда-сюда', how: 'Сядьте напротив и катайте мяч друг другу. «Лови!»', dev: 'внимание, игра по очереди' },
+  { from: 9, to: 12, ic: '👉', name: 'Покажи, где…', how: 'Спрашивайте: «Где мишка? Где лампа? Где у тебя носик?» — и показывайте сами, пока малыш не начнёт.', dev: 'понимание речи, указательный жест' },
+  { from: 10, to: 12, ic: '🧱', name: 'Башня и пирамидка', how: 'Ставьте кубики друг на друга — малыш будет ломать с удовольствием, а потом попробует ставить сам. Пирамидка — снимать и надевать.', dev: 'руки, глаза, терпение' },
+];
+function viewGames() {
+  const am = monthsAt(now());
+  const now_ = am == null ? GAMES : GAMES.filter(g => am >= g.from - 0.5 && am < g.to), rest = am == null ? [] : GAMES.filter(g => !now_.includes(g));
+  const card = g => `<div class="card game"><h3>${g.ic} ${esc(g.name)}</h3><p class="st" style="margin:6px 0 4px">${esc(g.how)}</p><p class="hint">Развивает: ${esc(g.dev)} · ${g.from}–${g.to} мес.</p></div>`;
+  let h = `<p class="hint" style="margin:0 0 12px">Лучшая игрушка для малыша — вы. Несколько минут, когда он бодр, сыт и в настроении; заскучал или отворачивается — пора отдохнуть.</p>`;
+  h += now_.length ? `<div class="sec-t" style="margin-top:0">Сейчас подходят</div>${now_.map(card).join('')}` : '';
+  if (rest.length) h += `<details class="ckp" style="margin-bottom:12px"><summary><b>Остальные игры</b><span class="vdate">${rest.length}</span></summary>${rest.map(card).join('')}</details>`;
+  return h + `<p class="hint" style="margin:0 0 12px">По материалам CDC «Learn the Signs. Act Early» и Американской академии педиатрии (HealthyChildren.org).</p>`;
+}
+
+/* ───────── как предложить продукт по возрасту ─────────
+   ВОЗ: с 6 мес. — пюре и размятая пища, к 8 мес. — кусочки «для пальчиков», к 12 — почти как у всех. В российских
+   методичках кусочки чаще советуют с 9–10 мес. Показываем ступени и примеры для группы продукта. */
+const WAYS = {
+  veg: [[4, 'Однородное жидкое пюре из одного овоща, разбавить отваром'], [7, 'Пюре погуще, размять вилкой — с мелкими мягкими комочками'], [8, 'Мягкие брусочки на пару — держит в руке и жуёт дёснами (ВОЗ — с 8 мес., в РФ чаще с 9–10)'], [10, 'Тушёные кубики, овощные оладьи и запеканки на пару']],
+  cereal: [[4, 'Жидкая каша из муки или хлопьев на воде (или на грудном молоке, смеси)'], [7, 'Каша гуще, можно добавить знакомое фруктовое пюре'], [9, 'Вязкая каша из дроблёной крупы'], [12, 'Обычная разваренная каша']],
+  fruit: [[4, 'Однородное пюре — сырое тёртое или печёное (яблоко, груша)'], [7, 'Размятое вилкой с комочками; банан — просто размять'], [8, 'Мягкие спелые кусочки: банан, груша, персик без кожицы'], [12, 'Мелкие кусочки фруктов, кроме твёрдых и круглых целиком']],
+  oil: [[4, 'Несколько капель в овощное пюре или кашу — растительное к овощам, сливочное к каше'], [8, 'До 1 ч. ложки растительного и 1 ч. ложки сливочного в день']],
+  meat: [[6, 'Однородное пюре из отварного мяса, смешать со знакомым овощным пюре'], [8, 'Фарш, суфле, паровые фрикадельки'], [10, 'Паровые котлеты и тефтели, мелко нарезанное мягкое мясо']],
+  milk: [[6, 'Творог — пару ложек отдельно или с фруктовым пюре; желток — крутое яйцо, начиная с крошки размятого желтка'], [9, 'Творожная запеканка, сырнички на пару'], [12, 'Омлет на пару — после того как желток и белок переносятся (белок — по решению педиатра)']],
+  bread: [[6, 'Детское печенье размочить в смеси или молоке'], [8, 'Сухарик или кусочек хлеба — держит сам, под присмотром']],
+  fish: [[8, 'Однородное пюре из отварной рыбы без косточек с овощами, 1–2 раза в неделю вместо мяса'], [10, 'Рыбное суфле, паровые фрикадельки'], [12, 'Мелкие кусочки отварной рыбы']],
+  sour: [[8, 'Детский кефир или йогурт без сахара из чашки или ложкой, вечером'], [12, 'Можно с фруктовым пюре']],
+};
+function foodWays(fid) {
+  const f = foodOf(fid); if (!f || !WAYS[f.g.g]) return '';
+  const am = monthsAt(now()), w = WAYS[f.g.g], cur = am == null ? -1 : w.reduce((k, x, i) => am >= x[0] ? i : k, -1);
+  return `<div class="sec-t" style="margin-top:0">Как предложить</div><ul class="ways">${w.map((x, i) => `<li class="${i === cur ? 'now' : am != null && am < x[0] ? 'later' : ''}"><b>с ${x[0]} мес.</b><span>${esc(x[1])}</span></li>`).join('')}</ul>
+    <p class="hint" style="margin:-4px 0 12px">Кусочки — только мягкие, малыш сидит, взрослый рядом. Без соли и сахара до года. Источник: ВОЗ; Программа вскармливания (Союз педиатров России).</p>`;
+}
+
+/* ───────── фото каждый месяц ─────────
+   Запись 'mphoto' {m (1–12), s, ph:[id], note} — одна на месяц (новая заменяет). В альбоме — отдельная вкладка (UI.alb='months'),
+   в книжке — страница «Месяц за месяцем». На главной в первые 3 дня после «месячного дня рождения» — напоминание. */
+const mphotos = () => { const o = {}; for (const e of evs()) if (e.t === 'mphoto') o[e.m] = e; return o; };
+const monthDay = m => { const b = parseDay(S.baby.birth); if (!b) return null; const d = new Date(b.getFullYear(), b.getMonth() + m, 1), dim = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); d.setDate(Math.min(b.getDate(), dim)); return +d; };
+function viewMonths() {
+  if (!birthTs()) return needBirth('собирать фото по месяцам');
+  const mp = UI.demo ? demoMonths() : mphotos(), a = age(), cur = a ? a.m : 0;
+  let h = `<div class="card"><h3>📅 Каждый месяц</h3><p class="hint">Одно фото в каждый «месячный день рождения» — потом видно, как малыш меняется. Удобно снимать в одном месте, с одной игрушкой рядом для масштаба.</p></div><div class="mgrid">`;
+  for (let m = 1; m <= 12; m++) {
+    const e = mp[m], ph = e && (e.ph || [])[0], open = m <= cur;
+    h += `<button class="mtile ${open ? '' : 'later'}" ${open && !UI.demo ? `onclick="editMonth(${m})"` : ''}>${ph ? `<span class="ph"><img data-ph="${ph}" alt=""></span>` : `<span class="ph none">${open ? '+' : '🔒'}</span>`}<span class="mcap">${m} ${pl(m, 'месяц', 'месяца', 'месяцев')}</span></button>`;
+  }
+  return h + `</div>`;
+}
+let MPEDIT = null;
+function editMonth(m) {
+  const e = mphotos()[m]; MPEDIT = m; AEDIT = { id: e ? e.id : null, ph: e ? (e.ph || []).slice() : [], mile: false };
+  openSheet(`<h2>📅 ${m} ${pl(m, 'месяц', 'месяца', 'месяцев')}</h2><p class="hint" style="margin:0 0 10px">Месячный день рождения — ${dayShort(monthDay(m))}.</p>
+    <div class="f"><span>Фото</span><div id="a_ph">${aPhHtml()}</div><input type="file" id="a_file" accept="image/*" hidden onchange="addAPhoto(this.files[0])"></div>
+    <label class="f"><span>Вес, рост, что умеет — пара слов</span><textarea id="a_note" placeholder="Например: 6,2 кг, улыбается всем">${esc(e ? e.note || '' : '')}</textarea></label>
+    <div class="err" id="a_err"></div>
+    <div class="acts">${e ? '<button class="b del" onclick="delMonth()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" id="a_save" onclick="saveMonth()">Сохранить</button></div>`);
+  hydratePhotos();
+}
+function saveMonth() {
+  if (!AEDIT.ph.length) { $('#a_err').textContent = 'Добавьте фото'; return; }
+  const s = Math.min(now(), monthDay(MPEDIT) + 12 * 3600e3), p = { s, e: s, ph: AEDIT.ph, note: $('#a_note').value.trim() }, old = mphotos()[MPEDIT];
+  if (old) upd(old, p); else { add(Object.assign({ t: 'mphoto', m: MPEDIT }, p)); toast('Фото месяца сохранено 💛'); }
+  closeSheet(); buzz(); render();
+}
+function delMonth() { const e = mphotos()[MPEDIT]; upd(e, { del: true }); closeSheet(); toast('Удалено', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } }); render(); }
+function monthReminder() {
+  const a = age(); if (!a || a.m < 1 || a.m > 12 || a.days > 3 || mphotos()[a.m]) return '';
+  return `<div class="card mrem" onclick="UI.tab='dev';UI.dev='album';UI.alb='months';render()" style="cursor:pointer"><h3>📸 ${esc(S.baby.name || 'Малышу')} — ${a.m} ${pl(a.m, 'месяц', 'месяца', 'месяцев')}!</h3><p class="hint">Сделайте фото месяца — нажмите сюда.</p></div>`;
+}
+function demoMonths() {
+  const o = {}, cols = [['#ffe1ea', '#e8f3ff'], ['#e2f7e4', '#fff3d6'], ['#e6e0ff', '#ffe8f0']];
+  for (let m = 1; m <= 6; m++) { const id = 'dm' + m; if (!DEMO_PH[id]) DEMO_PH[id] = demoPic(m * 11, ['👶', '😊', '🙂', '😄', '🤗', '🥰'][m - 1], cols[m % 3][0], cols[m % 3][1]); o[m] = { m, ph: [id], s: monthDay(m) }; }
+  return o;
+}
+
+/* ───────── звук: строка поверх всех вкладок ───────── */
+function sndBar() {
+  const b = $('#sndbar'); if (!b) return;
+  if (!SND.id) { b.hidden = true; document.body.classList.remove('withsnd'); return; }
+  const s = SOUNDS.find(x => x.id === SND.id), left = sndLeft();
+  b.innerHTML = `<button class="sb-t" onclick="UI.more='sounds';go('tips')">${s.ic} ${esc(s.name)}${left != null ? ` · <span class="num" data-left="1">${left < 60000 ? 'минуту' : fmtMin(left)}</span>` : ''}</button><button class="sb-x" onclick="sndStop()" aria-label="Остановить">■</button>`;
+  b.hidden = false; document.body.classList.add('withsnd');
 }
 
 /* ───────── Google: вход и общий дневник ─────────
@@ -2241,6 +2506,7 @@ async function connect(id, msg) {
   for (const e of S.events) for (const ph of e.del ? [] : e.ph || []) phQueue(ph);
   closeSheet(); await sync(); render();
   if (msg) toast(msg);
+  if (!devName(DEV)) askRole();
 }
 function openJoin(id) {
   openSheet(`<h2>👪 Общий дневник</h2><p style="color:var(--text-2);margin:0">Вас пригласили вести дневник малыша вместе. Войдите через Google тем аккаунтом, на который пришло приглашение, и выберите таблицу «${GS_TITLE}».</p>
