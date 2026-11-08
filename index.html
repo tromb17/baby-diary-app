@@ -2334,7 +2334,9 @@ const APK_API = 'https://api.github.com/repos/tromb17/baby-diary-app/releases/la
 function checkApk(force) {
   if (!NATIVE) return;
   if (!force && Date.now() - (+lsGet('babydiary.apkcheck') || 0) < 3600e3) return;
-  fetch(APK_API, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
+  // 404 — связь есть, но выпусков в baby-diary-app ещё нет (сборки уходят в закрытый репозиторий без секрета APP_TOKEN)
+  fetch(APK_API, { cache: 'no-store' }).then(r => r.ok ? r.json() : r.status === 404 ? { none: true } : null).then(j => {
+    if (j && j.none) { if (force) toast('На странице загрузки пока нет ни одной версии приложения'); return; }
     const n = j ? +((/^apk-(\d+)$/.exec(j.tag_name || '') || [])[1] || 0) : 0, have = +NATIVE.build() || 0, a = j && (j.assets || []).find(x => /\.apk$/i.test(x.name));
     if (n > have && a) { toast('Вышла новая версия приложения: 1.' + n, { label: 'Скачать', fn: () => NATIVE.openUrl(a.browser_download_url) }); return; }
     lsSet('babydiary.apkcheck', String(Date.now()));
