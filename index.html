@@ -17,7 +17,7 @@
   --surface:rgba(255,255,255,.62); --solid:#ffffff; --surface-2:rgba(255,255,255,.55); --line:rgba(36,94,62,.12);
   --text:#14241b; --text-2:#45584c; --muted:#7c8d82;
   --accent:#2a9d68; --on-accent:#fff; --good:#1a9d5a; --warn:#d98a00; --bad:#d23f3f;
-  --c-feed:#e0568f; --c-sleep:#6f5bd9; --c-diaper:#109aa8; --c-pump:#e8743a;
+  --c-feed:#e0568f; --c-sleep:#6f5bd9; --c-diaper:#109aa8; --c-pump:#e8743a; --c-food:#4f9a1f;
   --shadow:0 1px 2px rgba(20,60,40,.06),0 6px 20px rgba(20,60,40,.07); --r:20px; --zoo:.9;
 }
 @media (prefers-color-scheme: dark){
@@ -26,7 +26,7 @@
     --surface:rgba(24,34,44,.78); --solid:#18222c; --surface-2:rgba(38,52,64,.8); --line:rgba(255,255,255,.09);
     --text:#eef3ef; --text-2:#c2cdc6; --muted:#8a9a91;
     --accent:#4cc28c; --on-accent:#08170f; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
-    --c-feed:#ef7aa9; --c-sleep:#9d8cf2; --c-diaper:#2dbccb; --c-pump:#f28a58; --shadow:none; --zoo:.2;
+    --c-feed:#ef7aa9; --c-sleep:#9d8cf2; --c-diaper:#2dbccb; --c-pump:#f28a58; --c-food:#8fcf5a; --shadow:none; --zoo:.2;
   }
 }
 :root[data-theme="dark"]{
@@ -34,14 +34,14 @@
   --surface:rgba(24,34,44,.78); --solid:#18222c; --surface-2:rgba(38,52,64,.8); --line:rgba(255,255,255,.09);
   --text:#eef3ef; --text-2:#c2cdc6; --muted:#8a9a91;
   --accent:#4cc28c; --on-accent:#08170f; --good:#44c27f; --warn:#e9a93a; --bad:#ef7070;
-  --c-feed:#ef7aa9; --c-sleep:#9d8cf2; --c-diaper:#2dbccb; --c-pump:#f28a58; --shadow:none; --zoo:.2;
+  --c-feed:#ef7aa9; --c-sleep:#9d8cf2; --c-diaper:#2dbccb; --c-pump:#f28a58; --c-food:#8fcf5a; --shadow:none; --zoo:.2;
 }
 /* ночной режим: почти чёрный экран, тёплый приглушённый текст, крупные кнопки */
 :root[data-night]{
   --page:#070605; --bg:#070605; --surface:#110e0c; --solid:#110e0c; --surface-2:#1a1512; --line:#2a211b;
   --text:#d8a888; --text-2:#b48a6f; --muted:#7d6150;
   --accent:#b8805c; --on-accent:#140f0c; --good:#9a8a55; --warn:#c08a4a; --bad:#c06a5a;
-  --c-feed:#b86a6a; --c-sleep:#8a74a8; --c-diaper:#6a8f8a; --c-pump:#b07a50; --shadow:none; --zoo:0;
+  --c-feed:#b86a6a; --c-sleep:#8a74a8; --c-diaper:#6a8f8a; --c-pump:#b07a50; --c-food:#8a9a5a; --shadow:none; --zoo:0;
 }
 :root{color-scheme:light dark}
 :root[data-theme="light"]{color-scheme:light}
@@ -83,7 +83,7 @@ main{max-width:640px;margin:0 auto;padding:0 16px 24px}
 .st{font-size:14px;color:var(--text-2);margin:4px 0 10px}
 .st b{color:var(--text);font-weight:600}
 .st .warn{color:var(--warn);font-weight:600}
-.feed{--c:var(--c-feed)} .sleep{--c:var(--c-sleep)} .diaper{--c:var(--c-diaper)} .pump{--c:var(--c-pump)}
+.feed{--c:var(--c-feed)} .sleep{--c:var(--c-sleep)} .diaper{--c:var(--c-diaper)} .pump{--c:var(--c-pump)} .food{--c:var(--c-food)}
 
 .btns{display:flex;gap:8px;flex-wrap:wrap}
 .b{flex:1 1 0;min-width:0;border:1px solid color-mix(in srgb,var(--c,var(--accent)) 40%,var(--line));background:color-mix(in srgb,var(--c,var(--accent)) 10%,var(--surface));color:var(--text);border-radius:13px;padding:12px 8px;font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.15}
@@ -239,6 +239,39 @@ details.ckp summary b{flex:1}
 details.ckp.now .vdate{color:var(--warn);font-weight:600} details.ckp.soon .vdate{color:var(--accent);font-weight:600} details.ckp.done .vdate{color:var(--good);font-weight:600}
 .list small.rx{color:var(--c-diaper)}
 .list small.soon{color:var(--accent);font-weight:600}
+/* прикорм */
+.fgrp{border-top:1px solid var(--line);padding:10px 0 4px;margin-top:8px}
+.fgrp.early{opacity:.6}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.fchips button{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:7px 12px;font-size:14px}
+.fchips button.ok{background:color-mix(in srgb,var(--good) 15%,transparent);border-color:color-mix(in srgb,var(--good) 40%,transparent);color:var(--good);font-weight:600}
+.fchips button.intro{border:1.5px dashed var(--c-food);color:var(--c-food);font-weight:600;background:transparent}
+.fchips button.react{background:color-mix(in srgb,var(--warn) 15%,transparent);border-color:color-mix(in srgb,var(--warn) 45%,transparent);color:var(--warn);font-weight:600}
+details.ckp.early summary b{color:var(--text-2);font-weight:500}
+ol.rcp{margin:6px 0 4px;padding-left:20px;font-size:14px;color:var(--text-2)} ol.rcp li{margin:3px 0}
+/* сводка */
+.rep .rsec ul{margin:0;padding-left:18px} .rep .rsec li{margin:3px 0} .rep .sec-t{margin:14px 0 4px}
+/* звуки */
+.snds li .play{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--c-sleep);font-size:14px;flex:none}
+.snds li.on .play{background:var(--c-sleep);color:#fff}
+.snds li.on .tx div{color:var(--c-sleep)}
+.snds .ic{--c:var(--c-sleep)}
+p.lyr{margin:6px 0 8px;line-height:1.6;color:var(--text-2)}
+input[type=range]{accent-color:var(--c-sleep);width:100%}
+/* альбом */
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.atile{border:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:left;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.ph{display:block;aspect-ratio:4/5;background:linear-gradient(135deg,#ffe3ec,#e3f1ff);overflow:hidden;position:relative}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph.none{display:grid;place-items:center;font-size:54px;background:linear-gradient(135deg,color-mix(in srgb,var(--c-feed) 14%,var(--surface)),color-mix(in srgb,var(--c-sleep) 14%,var(--surface)))}
+.ph.miss::after{content:'фото на другом телефоне';position:absolute;inset:auto 0 0;padding:6px;font-size:11.5px;color:var(--muted);text-align:center}
+.ph.big{aspect-ratio:auto;max-height:62vh;border-radius:16px;background:var(--surface-2)} .ph.big img{max-height:62vh;object-fit:contain}
+.ph.pick{aspect-ratio:auto;height:180px;border-radius:14px} .phx{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:20px}
+.atile .cap{padding:9px 11px 11px;display:block}
+.atile .cap b{display:block;font-size:14.5px;line-height:1.25}
+.atile .cap small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.card.demo{border:1.5px dashed color-mix(in srgb,var(--c-sleep) 50%,transparent)}
+:root[data-night] .ph img{filter:brightness(.6) sepia(.3)}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -455,13 +488,13 @@ function applyNight() {
 }
 
 /* ───────── экраны ───────── */
-const UI = { tab: 'now', day: null, health: 'growth', gkind: 'w' };
+const UI = { tab: 'now', day: null, health: 'growth', gkind: 'w', dev: 'miles', more: 'sounds', rep: 7, demo: false };
 const TABS = [
   ['now', 'Сейчас', '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'],
   ['day', 'День', '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h8"/>'],
   ['health', 'Здоровье', '<path d="M12 21s-7-4.5-9.3-9A5 5 0 0 1 12 6a5 5 0 0 1 9.3 6c-2.3 4.5-9.3 9-9.3 9z"/><path d="M8 12h2l1-2 2 4 1-2h2"/>'],
   ['dev', 'Развитие', '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.4 6.8 19.2l1-5.9L3.5 9.2l5.9-.8z"/>'],
-  ['tips', 'Советы', '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.6 1 2.5h6c0-.9.2-1.7 1-2.5A6 6 0 0 0 12 3z"/>'],
+  ['tips', 'Ещё', '<path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>'],
 ];
 function renderTabs() {
   $('#tabs').innerHTML = TABS.map(([id, t, p]) => `<button class="${UI.tab === id ? 'on' : ''}" onclick="go('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`).join('');
@@ -475,8 +508,8 @@ function render() {
   syncShow();
   renderTabs();
   const v = $('#view');
-  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewTips() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewMiles() : viewNow();
-  tick();
+  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : viewNow();
+  tick(); hydratePhotos(); pushWidget();
 }
 
 // живые цифры: data-base (уже набежало, мс) + data-from (идёт с …); data-ago — «… назад»
@@ -484,6 +517,7 @@ function tick() {
   const t = now();
   for (const el of document.querySelectorAll('[data-from]')) el.textContent = fmtTimer(+(el.dataset.base || 0) + (el.dataset.from ? t - +el.dataset.from : 0));
   for (const el of document.querySelectorAll('[data-ago]')) el.textContent = fmtAgo(+el.dataset.ago);
+  const sl = sndLeft(); if (sl != null) for (const el of document.querySelectorAll('[data-left]')) el.textContent = sl < 60000 ? 'минуту' : fmtMin(sl);
 }
 
 function viewNow() {
@@ -493,7 +527,7 @@ function viewNow() {
   if (f) h += liveFeed(f);
   if (sl) h += `<div class="card sleep live"><h3><span class="dot"></span>Спит</h3>
     <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>
-    <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">☀️</span>Проснулся</button></div></div>`;
+    <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">☀️</span>Проснулся</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
 
   // кормление
   if (!f) {
@@ -515,7 +549,7 @@ function viewNow() {
       if (w) st += mins > w[3] ? `<br><span class="warn">Пора укладывать</span> — ориентир для возраста ${w[1]}` : `<br>Ориентир бодрствования: ${w[1]}`;
     }
     h += `<div class="card sleep"><h3><span class="dot"></span>Сон</h3><div class="st">${st}</div>
-      <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">🌙</span>Уснул</button></div></div>`;
+      <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">🌙</span>Уснул</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
   }
   // подгузник
   const ld = lastOf('diaper');
@@ -526,7 +560,7 @@ function viewNow() {
       <button class="b" onclick="diaper('both')"><span class="e">💧💩</span>Оба</button>
     </div></div>`;
 
-  h += homeHealth();
+  h += sndMini() + homeHealth();
   // сегодня кратко
   const d = daySum(sod(now()));
   h += `<div class="card"><h3>Сегодня</h3>${sumGrid(d)}<button class="link" onclick="go('day')">Весь день →</button></div>`;
@@ -572,7 +606,7 @@ function saveWelcome() {
 }
 
 /* ───────── день ───────── */
-const DIARY = new Set(['feed', 'sleep', 'diaper', 'pump']); // остальное (замеры, прививки, вехи) — в своих разделах
+const DIARY = new Set(['feed', 'sleep', 'diaper', 'pump', 'food']); // остальное (замеры, прививки, вехи) — в своих разделах
 function dayEvents(day) {
   const a = day, b = addDays(day, 1), t = now();
   return evs().filter(e => DIARY.has(e.t) && e.s < b && (e.e ?? t) >= a && (e.t === 'sleep' || e.s >= a)).sort(byStart);
@@ -635,6 +669,8 @@ function evInfo(e) {
   if (e.t === 'q') return { c: '', ic: '❓', tx: 'Вопрос к врачу: ' + e.text + (e.done ? ' (спросили)' : ''), sub: e.ans || '' };
   if (e.t === 'check') { const c = CHECKS.find(x => x.id === e.cid); return { c: '', ic: '📋', tx: 'Осмотр ' + (c ? checkTitle(c) : e.cid) + ': отмечено ' + (e.done || []).length + (c ? ' из ' + checkItems(c).length : ''), sub: '' }; }
   if (e.t === 'mile') { const m = MILES.find(x => x.id === e.mid); return { c: '', ic: '⭐', tx: m ? m.name : e.mid, sub: '' }; }
+  if (e.t === 'food') return { c: 'food', ic: foodIc(e.fid), tx: foodName(e.fid, e.name) + (e.amt ? ' — ' + e.amt : ''), sub: e.react && e.react !== 'none' ? '⚠ ' + REACT[e.react] : '' };
+  if (e.t === 'first') return { c: '', ic: '📸', tx: e.title || 'Первый раз', sub: '' };
   return { c: '', ic: '•', tx: e.t, sub: '' };
 }
 function rowHtml(e) {
@@ -643,7 +679,7 @@ function rowHtml(e) {
   // в общем дневнике — кто записал (если это не я)
   const who = e.by && e.by !== DEV && devName(e.by) ? '✎ ' + devName(e.by) : '';
   const sub = [i.sub, e.note, who].filter(Boolean).map(esc).join(' · ');
-  return `<li class="${i.c}" onclick="editEvent('${e.id}')"><span class="tm">${tm}</span><span class="ic">${i.ic}</span><span class="tx"><div>${esc(i.tx)}</div>${sub ? `<small>${sub}</small>` : ''}</span></li>`;
+  return `<li class="${i.c}" onclick="${e.t === 'food' ? 'editFood' : 'editEvent'}('${e.id}')"><span class="tm">${tm}</span><span class="ic">${i.ic}</span><span class="tx"><div>${esc(i.tx)}</div>${sub ? `<small>${sub}</small>` : ''}</span></li>`;
 }
 
 /* ───────── окна: бутылочка, запись задним числом, правка ───────── */
@@ -653,6 +689,7 @@ const last = () => lsJson(LASTKEY, {});
 function chipsHtml(name, opts, val) { return `<div class="chips" data-name="${name}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" class="${String(v) === String(val) ? 'on' : ''}" onclick="chip(this)">${t}</button>`).join('')}</div>`; }
 function chip(btn) {
   const box = btn.parentElement; for (const b of box.children) b.classList.toggle('on', b === btn);
+  if (box.dataset.name === 'stimer') return sndSet('timer', +btn.dataset.v);
   const inp = document.getElementById('f_' + box.dataset.name) || document.getElementById('s_' + box.dataset.name); if (inp) inp.value = btn.dataset.v;
 }
 function openBottle() { editEvent(null, { t: 'feed', kind: 'bottle', s: now(), ml: last().ml || '', milk: last().milk || 'formula' }); }
@@ -857,8 +894,8 @@ function pctOf(k, e) {
 const growths = () => evs().filter(e => e.t === 'growth').sort((a, b) => a.s - b.s);
 
 function viewHealth() {
-  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост и вес'], ['vax', 'Прививки'], ['docs', 'Врачи']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
-  return seg + (UI.health === 'vax' ? viewVax() : UI.health === 'docs' ? viewDocs() : viewGrowth());
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост и вес'], ['vax', 'Прививки'], ['docs', 'Врачи'], ['report', 'Сводка']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.health === 'vax' ? viewVax() : UI.health === 'docs' ? viewDocs() : UI.health === 'report' ? viewReport() : viewGrowth());
 }
 function needBirth(what) { return `<div class="card"><h3>Нужна дата рождения</h3><p class="hint">Чтобы ${what}, укажите дату рождения малыша.</p><div class="btns" style="margin-top:10px"><button class="b main" onclick="openSettings()">Открыть настройки</button></div></div>`; }
 function viewGrowth() {
@@ -1223,6 +1260,10 @@ function homeHealth() {
 }
 
 /* ───────── советы ───────── */
+function viewMore() {
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['sounds', 'Звуки и колыбельные'], ['tips', 'Советы']].map(([k, t]) => `<button class="${UI.more === k ? 'on' : ''}" onclick="UI.more='${k}';render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.more === 'tips' ? viewTips() : viewSounds());
+}
 function viewTips() {
   const m = ageM(), wk = m != null ? pick(WAKE, m) : null, sl = m != null ? pick(SLEEP, m) : null;
   const C = (title, body, src, cls) => `<div class="card adv ${cls || ''}"><h3>${title}</h3>${body}${src ? `<div class="src">Источник: ${src}</div>` : ''}</div>`;
@@ -1255,9 +1296,498 @@ function viewTips() {
     <li>ВОЗ — с 6 месяцев; российская программа вскармливания — между 4 и 6 месяцами. Решение — вместе с педиатром.</li>
     <li>Признаки готовности: уверенно держит голову, сидит с поддержкой, интересуется едой, не выталкивает ложку языком.</li>
     <li>Новый продукт — по одному, наблюдайте 3–5 дней.</li></ul>
-    <p class="hint">Скоро: календарь прикорма, журнал реакций и рецепты.</p>`, 'ВОЗ; Национальная программа оптимизации вскармливания детей первого года жизни (Союз педиатров России)');
+    <p class="hint">Календарь продуктов, журнал реакций и рецепты — «Развитие» → «Прикорм».</p>`, 'ВОЗ; Национальная программа оптимизации вскармливания детей первого года жизни (Союз педиатров России)');
   return h;
 }
+
+/* ───────── развитие: вехи, прикорм, альбом ───────── */
+function viewDev() {
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['miles', 'Вехи'], ['food', 'Прикорм'], ['album', 'Альбом']].map(([k, t]) => `<button class="${UI.dev === k ? 'on' : ''}" onclick="UI.dev='${k}';UI.demo=false;render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.dev === 'food' ? viewFood() : UI.dev === 'album' ? viewAlbum() : viewMiles());
+}
+
+/* ───────── прикорм ─────────
+   Сроки — ориентиры «Программы оптимизации вскармливания детей первого года жизни в РФ» (Союз педиатров России, 2019)
+   по опубликованным пересказам; ВОЗ — с 6 месяцев. Запись 'food' {s, fid (id продукта или 'c:<имя>'), name (своё),
+   amt (сколько, текстом), react: none|rash|tummy|stool|other, note}. Новый продукт наблюдаем FOOD_DAYS дней. */
+const FOODS = [
+  { g: 'veg', name: 'Овощи', ic: '🥦', lo: 4, items: [['zucchini', 'Кабачок'], ['cauli', 'Цветная капуста'], ['broc', 'Брокколи'], ['pumpkin', 'Тыква'], ['carrot', 'Морковь'], ['potato', 'Картофель']] },
+  { g: 'cereal', name: 'Каши без молока', ic: '🥣', lo: 4, items: [['buckwheat', 'Гречневая каша'], ['rice', 'Рисовая каша'], ['corn', 'Кукурузная каша'], ['oat', 'Овсяная каша'], ['multi', 'Каша из нескольких злаков']], note: 'сначала безглютеновые: гречневая, рисовая, кукурузная' },
+  { g: 'fruit', name: 'Фрукты', ic: '🍏', lo: 4, items: [['apple', 'Яблоко'], ['pear', 'Груша'], ['banana', 'Банан'], ['plum', 'Слива'], ['peach', 'Персик'], ['apricot', 'Абрикос']], note: 'после овощей и каш' },
+  { g: 'oil', name: 'Масло', ic: '🫒', lo: 4, items: [['oilv', 'Растительное масло'], ['butter', 'Сливочное масло']], note: 'по несколько капель — в пюре и кашу' },
+  { g: 'meat', name: 'Мясо', ic: '🍗', lo: 6, items: [['turkey', 'Индейка'], ['rabbit', 'Кролик'], ['beef', 'Говядина'], ['chicken', 'Курица'], ['pork', 'Нежирная свинина']] },
+  { g: 'milk', name: 'Творог и желток', ic: '🥚', lo: 6, items: [['cottage', 'Детский творог'], ['yolk', 'Желток']] },
+  { g: 'bread', name: 'Печенье и хлеб', ic: '🍪', lo: 6, items: [['cookie', 'Детское печенье'], ['bread', 'Пшеничный хлеб']], note: 'хлеб — ближе к 8 месяцам' },
+  { g: 'fish', name: 'Рыба', ic: '🐟', lo: 8, items: [['cod', 'Треска'], ['hake', 'Хек'], ['pollock', 'Минтай']] },
+  { g: 'sour', name: 'Кисломолочное', ic: '🥛', lo: 8, items: [['kefir', 'Детский кефир'], ['yogurt', 'Йогурт без добавок']] },
+];
+const FOOD_DAYS = 5;
+const REACT = { none: 'Всё хорошо', rash: 'Сыпь, покраснение', tummy: 'Животик, газики', stool: 'Изменился стул', other: 'Другое' };
+const foodOf = fid => { for (const g of FOODS) { const it = g.items.find(x => x[0] === fid); if (it) return { g, id: it[0], name: it[1] }; } return null; };
+const foodName = (fid, name) => { const f = foodOf(fid); return f ? f.name : name || String(fid || '').replace(/^c:/, ''); };
+const foodIc = fid => { const f = foodOf(fid); return f ? f.g.ic : '🥄'; };
+const foodRecs = () => evs().filter(e => e.t === 'food').sort((a, b) => a.s - b.s);
+function foodStat() {
+  const m = {};
+  for (const e of foodRecs()) { const x = m[e.fid] || (m[e.fid] = { fid: e.fid, name: e.name, first: e.s, last: e.s, n: 0, react: null }); x.last = e.s; x.n++; if (e.react && e.react !== 'none') x.react = e; }
+  const t = sod(now());
+  for (const x of Object.values(m)) { x.day = Math.round((t - sod(x.first)) / 864e5) + 1; x.st = x.react ? 'react' : x.day <= FOOD_DAYS ? 'intro' : 'ok'; }
+  return m;
+}
+function viewFood() {
+  const st = foodStat(), am = monthsAt(now()), intro = Object.values(st).filter(x => x.st === 'intro'), reacts = Object.values(st).filter(x => x.react);
+  let h = '';
+  if (am != null && am < 4) h += `<div class="card"><h3>🥄 Прикорм — впереди</h3><p class="hint">Обычно его начинают между 4 и 6 месяцами (ВОЗ — с 6), вместе с педиатром. До этого малышу хватает молока или смеси.</p>
+    <p class="hint">Признаки готовности: уверенно держит голову, сидит с поддержкой, тянется к еде, не выталкивает ложку языком.</p></div>`;
+  if (intro.length) {
+    const x = intro.sort((a, b) => b.first - a.first)[0], free = addDays(sod(x.first), FOOD_DAYS);
+    h += `<div class="card food live"><h3><span class="dot"></span>Сейчас вводим: ${esc(foodName(x.fid, x.name))}</h3>
+      <div class="st">День <b>${x.day} из ${FOOD_DAYS}</b> · дали ${x.n} ${pl(x.n, 'раз', 'раза', 'раз')}</div>
+      <p class="hint">Новый продукт лучше не раньше <b>${dayShort(free)}</b> — так понятно, на что реакция, если она будет.</p>
+      <div class="btns" style="margin-top:10px"><button class="b main" onclick="editFood(null,'${esc(x.fid)}')">Дали ещё</button></div></div>`;
+  } else if (am == null || am >= 4) {
+    const nxt = FOODS.filter(g => am == null || am >= g.lo).flatMap(g => g.items.map(it => it[0])).find(id => !st[id]);
+    h += `<div class="card food"><h3><span class="dot"></span>${Object.keys(st).length ? 'Можно пробовать новый продукт' : 'Первый прикорм'}</h3>
+      <p class="hint">${Object.keys(st).length ? 'Новый продукт — по одному, начиная с ½–1 чайной ложки, и несколько дней наблюдаем.' : 'Обычно начинают с овощного пюре из одного овоща (кабачок, цветная капуста, брокколи) или безмолочной каши — с ½–1 чайной ложки.'}</p>
+      ${nxt ? `<div class="btns" style="margin-top:10px"><button class="b main" onclick="editFood(null,'${nxt}')">Попробовать: ${esc(foodName(nxt))}</button></div>` : ''}</div>`;
+  }
+  if (reacts.length) h += `<div class="card adv alarm"><h3>⚠ Была реакция</h3><ul class="list">${reacts.map(x => `<li onclick="editFood(null,'${esc(x.fid)}')"><span class="ic">${foodIc(x.fid)}</span><span class="tx"><div>${esc(foodName(x.fid, x.name))}</div><small>${dayShort(x.react.s)} — ${esc(REACT[x.react.react] || '')}${x.react.note ? ' · ' + esc(x.react.note) : ''}</small></span></li>`).join('')}</ul>
+    <p class="hint">Расскажите педиатру. Отёк лица, губ, затруднённое дыхание — сразу 103 или 112.</p></div>`;
+  const tag = id => { const x = st[id]; return x ? x.st : ''; };
+  const own = Object.values(st).filter(x => !foodOf(x.fid));
+  h += `<div class="card"><h3>Продукты</h3><p class="hint">Нажмите на продукт, чтобы записать, сколько дали и как малыш его принял. ✓ — уже ввели, точки — вводим сейчас.</p>`;
+  for (const g of FOODS) {
+    const early = am != null && am < g.lo;
+    h += `<div class="fgrp${early ? ' early' : ''}"><div class="vhead"><b>${g.ic} ${g.name}</b><span class="vdate">с ${g.lo} мес.</span></div>${g.note ? `<div class="hint" style="margin:0">${g.note}</div>` : ''}
+      <div class="fchips">${g.items.map(([id, n]) => `<button class="${tag(id)}" onclick="editFood(null,'${id}')">${tag(id) === 'ok' ? '✓ ' : tag(id) === 'react' ? '⚠ ' : ''}${n}</button>`).join('')}</div></div>`;
+  }
+  if (own.length) h += `<div class="fgrp"><div class="vhead"><b>🥄 Свои продукты</b></div><div class="fchips">${own.map(x => `<button class="${x.st}" onclick="editFood(null,'${esc(x.fid)}')">${x.st === 'ok' ? '✓ ' : x.st === 'react' ? '⚠ ' : ''}${esc(foodName(x.fid, x.name))}</button>`).join('')}</div></div>`;
+  h += `<div class="btns" style="margin-top:12px"><button class="b ghost" onclick="editFood(null,'')">+ Другой продукт</button></div></div>`;
+  h += `<div class="card"><h3>🍲 Рецепты</h3><p class="hint">До года — без соли и сахара. Всё мягкое, без комочков в начале, потом — мельче вилкой и кусочками.</p>${RECIPES.map(r => `<details class="ckp${am != null && am < r.from ? ' early' : ''}"><summary><b>${r.ic} ${r.name}</b><span class="vdate">с ${r.from} мес.</span></summary>
+    <p class="hint" style="color:var(--text-2)"><b>Нужно:</b> ${r.need}</p><ol class="rcp">${r.steps.map(x => `<li>${x}</li>`).join('')}</ol></details>`).join('')}</div>`;
+  h += `<p class="hint" style="margin:0 0 12px">Сроки — ориентиры «Программы оптимизации вскармливания детей первого года жизни в РФ» (Союз педиатров России, 2019) и рекомендаций ВОЗ. Когда и с чего начинать — решайте с педиатром, особенно если есть аллергия.</p>`;
+  return h;
+}
+const RECIPES = [
+  { ic: '🥒', name: 'Пюре из кабачка', from: 4, need: '1 небольшой кабачок, вода', steps: ['Очистить, убрать семена, нарезать кубиками.', 'Варить в небольшом количестве воды или на пару 10–15 минут до мягкости.', 'Измельчить блендером, разбавить отваром до жидкой консистенции.', 'Первый раз — ½–1 чайная ложка, тёплым.'] },
+  { ic: '🥦', name: 'Пюре из брокколи или цветной капусты', from: 4, need: '5–6 соцветий, вода', steps: ['Разобрать на соцветия, промыть.', 'Варить на пару 10–12 минут.', 'Измельчить, разбавить отваром. Со 2-й недели — пара капель растительного масла.'] },
+  { ic: '🥣', name: 'Гречневая каша на воде', from: 4, need: '1 ст. ложка гречки, 100 мл воды', steps: ['Гречку промыть, подсушить и смолоть в кофемолке.', 'Всыпать в кипящую воду, помешивая, варить 10 минут.', 'Остудить до тёплой. Можно разбавить грудным молоком или смесью, которую малыш уже пьёт.'] },
+  { ic: '🍎', name: 'Печёное яблоко', from: 4, need: '1 зелёное яблоко', steps: ['Вырезать сердцевину, запечь 15–20 минут при 180 °C (или 3–4 минуты в микроволновке).', 'Снять кожицу, мякоть растереть ложкой.'] },
+  { ic: '🎃', name: 'Тыква с яблоком', from: 5, need: '100 г тыквы, ½ яблока', steps: ['Нарезать кубиками, тушить с парой ложек воды 15 минут.', 'Измельчить блендером. Хорошо идёт после того, как оба продукта уже ввели по отдельности.'] },
+  { ic: '🦃', name: 'Пюре из индейки', from: 6, need: '100 г филе индейки, овощной отвар', steps: ['Варить филе 40–50 минут, первую воду через 5 минут слить.', 'Дважды пропустить через блендер, разбавить отваром.', 'Начинать с ½ ч. ложки, добавляя в привычное овощное пюре.'] },
+  { ic: '🍲', name: 'Суп-пюре из овощей с мясом', from: 7, need: 'кабачок, цветная капуста, немного картофеля, 30 г варёного мяса', steps: ['Овощи нарезать и варить 15–20 минут.', 'Добавить варёное мясо, измельчить всё блендером.', 'Капля растительного масла — в тарелку.'] },
+  { ic: '🐟', name: 'Рыбное пюре', from: 8, need: '80 г филе трески или хека', steps: ['Варить на пару 10–15 минут, тщательно проверить на косточки.', 'Измельчить с овощным отваром. Рыба — 1–2 раза в неделю вместо мяса.'] },
+  { ic: '🥕', name: 'Паровые тефтельки', from: 9, need: '100 г фарша индейки, 1 ст. ложка риса (отварного), 1 ч. ложка тёртой моркови', steps: ['Смешать, скатать шарики с грецкий орех.', 'Готовить на пару 20 минут.', 'Давать, размяв вилкой, — так малыш учится жевать.'] },
+  { ic: '🥞', name: 'Сырнички без сахара', from: 10, need: '100 г детского творога, 1 желток, 1 ст. ложка муки, ½ банана', steps: ['Размять банан, смешать с творогом, желтком и мукой.', 'Выложить ложкой на противень с пергаментом.', 'Запекать 15–20 минут при 180 °C. Давать мягкими кусочками.'] },
+];
+let FEDIT = null;
+function editFood(id, fid) {
+  const e = id ? evById(id) : null; if (id && !e) return;
+  fid = e ? e.fid : fid; const known = foodOf(fid), recs = fid ? foodRecs().filter(r => r.fid === fid) : [];
+  FEDIT = { id, fid };
+  const v = e || { s: now(), amt: '', react: 'none' };
+  const title = fid ? esc(foodName(fid, e ? e.name : recs[0] && recs[0].name)) : 'Новый продукт';
+  openSheet(`<h2>${foodIc(fid)} ${title}</h2>
+    ${known && monthsAt(now()) != null && monthsAt(now()) < known.g.lo ? `<p class="hint" style="margin:0 0 10px;color:var(--warn)">Обычно — с ${known.g.lo} мес. Обсудите с педиатром.</p>` : ''}
+    ${recs.length && !id ? `<div class="sec-t" style="margin-top:0">Уже давали</div><ul class="list" style="margin-bottom:10px">${recs.slice().reverse().map(r => `<li onclick="editFood('${r.id}')"><span class="tm">${dayShort(r.s)}</span><span class="tx"><div>${esc(r.amt || 'попробовал')}</div><small>${esc([REACT[r.react] || '', r.note].filter(Boolean).join(' · '))}</small></span></li>`).join('')}</ul><div class="sec-t">Записать ещё</div>` : ''}
+    ${fid ? '' : `<label class="f"><span>Что дали</span><input id="fd_name" placeholder="Например, морковь с яблоком" autocomplete="off"></label>`}
+    <label class="f"><span>Когда</span><input id="fd_s" type="datetime-local" value="${toInput(v.s)}"></label>
+    <label class="f"><span>Сколько</span><input id="f_amt" value="${esc(v.amt || '')}" placeholder="например, 1 ч. ложка">${chipsHtml('amt', ['½ ч. ложки', '1 ч. ложка', '2 ч. ложки', '30 г', '50 г', '100 г', '150 г'].map(x => [x, x]), v.amt)}</label>
+    <div class="f"><span>Как принял</span><input type="hidden" id="f_react" value="${v.react || 'none'}">${chipsHtml('react', Object.entries(REACT), v.react || 'none')}</div>
+    <label class="f"><span>Заметка</span><input id="fd_note" value="${esc(v.note || '')}" placeholder="Например: понравилось, съел всё"></label>
+    <div class="err" id="fd_err"></div>
+    <div class="acts">${id ? '<button class="b del" onclick="delFood()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveFood()">Сохранить</button></div>`);
+}
+function saveFood() {
+  const err = m => { $('#fd_err').textContent = m; };
+  let { id, fid } = FEDIT, name;
+  if (!fid) { name = $('#fd_name').value.trim(); if (!name) return err('Напишите, что дали'); const k = FOODS.flatMap(g => g.items).find(it => it[1].toLowerCase() === name.toLowerCase()); fid = k ? k[0] : 'c:' + name.toLowerCase(); }
+  const s = fromInput($('#fd_s').value); if (s == null) return err('Укажите время'); if (s > now() + 60000) return err('Это время ещё не наступило');
+  const p = { s, e: s, amt: $('#f_amt').value.trim(), react: $('#f_react').value || 'none', note: $('#fd_note').value.trim() };
+  const isNew = !foodStat()[fid];
+  if (id) upd(evById(id), p); else add(Object.assign({ t: 'food', fid }, name && !foodOf(fid) ? { name } : {}, p));
+  closeSheet(); buzz(); render();
+  if (!id && isNew) toast('Новый продукт! Наблюдаем ' + FOOD_DAYS + ' ' + pl(FOOD_DAYS, 'день', 'дня', 'дней'));
+  else if (p.react !== 'none') toast('Записали реакцию — покажите педиатру');
+}
+function delFood() { const e = evById(FEDIT.id); upd(e, { del: true }); closeSheet(); toast('Запись удалена', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } }); render(); }
+
+/* ───────── сводка для педиатра ─────────
+   За 7/14/30 полных дней до сегодняшнего: средние по дням с записями, сон, подгузники, рост, прикорм, вехи, вопросы.
+   Тот же текст уходит в «Отправить» (мессенджер, почта) или копируется. */
+function reportData() {
+  const n = UI.rep, today = sod(now()), b = birthTs();
+  let from = addDays(today, -n); if (b != null && from < sod(b)) from = sod(b);
+  const days = []; for (let d = from; d < today; d = addDays(d, 1)) days.push(d);
+  const sums = days.map(daySum).filter(x => x.feeds + x.diapers + x.naps > 0);
+  const k = sums.length, avg = f => k ? sums.reduce((a, x) => a + f(x), 0) / k : 0;
+  const sleeps = evs().filter(e => e.t === 'sleep' && e.e != null && e.s >= from && e.s < today);
+  const longest = sleeps.reduce((m, e) => Math.max(m, e.e - e.s), 0);
+  const inP = e => e.s >= from && e.s < addDays(today, 1);
+  const g = growths(), gl = [...g].reverse().find(e => e.w), gh = [...g].reverse().find(e => e.h);
+  const gw0 = gl ? [...g].reverse().find(e => e.w && e.s < gl.s - 6 * 864e5) : null;
+  const foods = foodRecs().filter(inP), fst = foodStat();
+  const newFoods = Object.values(fst).filter(x => inP({ s: x.first }));
+  const reacts = foods.filter(e => e.react && e.react !== 'none');
+  const miles = evs().filter(e => e.t === 'mile' && inP(e));
+  const vax = evs().filter(e => e.t === 'vax' && inP(e));
+  const notes = evs().filter(e => DIARY.has(e.t) && e.t !== 'food' && e.note && inP(e)).sort((a, b) => a.s - b.s).slice(-12);
+  const qsOpen = qs().filter(q => !q.done);
+  return { n, from, to: today - 1, k, feeds: avg(x => x.feeds), breast: avg(x => x.L + x.R), ml: avg(x => x.ml), bottles: avg(x => x.bottles), sleep: avg(x => x.sleep), naps: avg(x => x.naps),
+    diapers: avg(x => x.diapers), wet: avg(x => x.wet), dirty: avg(x => x.dirty), pump: avg(x => x.pump), longest, gl, gh, gw0, newFoods, reacts, miles, vax, notes, qsOpen };
+}
+const r1 = v => String(Math.round(v * 10) / 10).replace('.', ',');
+function reportLines(r) {
+  const L = [], sec = (t, a) => { a = a.filter(Boolean); if (a.length) L.push({ t, a }); };
+  sec('Кормление (в среднем за сутки)', [`${r1(r.feeds)} ${pl(Math.round(r.feeds), 'кормление', 'кормления', 'кормлений')}`, r.breast >= 60000 ? `грудь — ${fmtMin(r.breast)} в сутки` : '', r.ml ? `бутылочка — ${Math.round(r.ml)} мл (${r1(r.bottles)} ${pl(Math.round(r.bottles), 'раз', 'раза', 'раз')})` : '', r.pump ? `сцеживание — ${Math.round(r.pump)} мл` : '']);
+  sec('Сон', [r.sleep ? `${fmtMin(r.sleep)} в сутки, ${r1(r.naps)} ${pl(Math.round(r.naps), 'раз', 'раза', 'раз')}` : '', r.longest ? `самый долгий сон — ${fmtMin(r.longest)}` : '']);
+  sec('Подгузники (в среднем за сутки)', [r.diapers ? `${r1(r.diapers)} всего: мокрых ${r1(r.wet)}, грязных ${r1(r.dirty)}` : '']);
+  const pw = r.gl && pctOf('w', r.gl), ph = r.gh && pctOf('h', r.gh);
+  const gain = r.gw0 ? Math.round((r.gl.w - r.gw0.w) * 1000 / ((r.gl.s - r.gw0.s) / 864e5 / 7)) : null;
+  sec('Рост и вес', [r.gl ? `вес ${numRu(r.gl.w, 3)} кг (${dayShort(r.gl.s)})${pw ? ', ' + pw.p + '-й перцентиль ВОЗ' : ''}` : '', gain != null ? `прибавка — около ${gain} г в неделю (с ${dayShort(r.gw0.s)})` : '', r.gh ? `рост ${numRu(r.gh.h, 1)} см (${dayShort(r.gh.s)})${ph ? ', ' + ph.p + '-й перцентиль' : ''}` : '']);
+  sec('Прикорм', [r.newFoods.length ? 'новые продукты: ' + r.newFoods.map(x => foodName(x.fid, x.name) + ' (' + dayShort(x.first) + ')').join(', ') : '', ...r.reacts.map(e => `реакция: ${foodName(e.fid, e.name)} — ${(REACT[e.react] || '').toLowerCase()}, ${dayShort(e.s)}${e.note ? ' (' + e.note + ')' : ''}`)]);
+  sec('Научился', r.miles.map(e => { const m = MILES.find(x => x.id === e.mid); return (m ? m.name : e.mid) + ' — ' + dayShort(e.s); }));
+  sec('Прививки', r.vax.map(e => { const v = VAX.find(x => x.id === e.vid); return (v ? v.name : e.vid) + ' — ' + dayShort(e.s); }));
+  sec('Заметки', r.notes.map(e => dayShort(e.s) + ', ' + hm(e.s) + ' — ' + e.note));
+  sec('Хотим спросить', r.qsOpen.map(q => q.text));
+  return L;
+}
+function reportHead(r) {
+  return `${S.baby.name || 'Малыш'}${ageText() ? ', ' + ageText().replace(/\.$/, '') : ''}. Дневник за ${dayShort(r.from)} — ${dayShort(r.to)} (${r.k} ${pl(r.k, 'день', 'дня', 'дней')} с записями)`;
+}
+function viewReport() {
+  const r = reportData(), L = reportLines(r);
+  let h = `<div class="card"><h3>📋 Сводка для педиатра</h3><p class="hint">Главное за последние дни — показать на приёме или отправить врачу. Сегодняшний день не считается: он ещё не закончился.</p>
+    <div class="seg" style="margin-top:10px">${[7, 14, 30].map(n => `<button class="${UI.rep === n ? 'on' : ''}" onclick="UI.rep=${n};render()">${n} дней</button>`).join('')}</div></div>`;
+  if (!r.k && L.length < 2) return h + `<div class="card"><div class="empty">За эти дни записей нет</div></div>`;
+  h += `<div class="card rep"><p class="st" style="margin-top:0"><b>${esc(reportHead(r))}</b></p>${L.map(s => `<div class="rsec"><div class="sec-t">${esc(s.t)}</div><ul>${s.a.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}
+    <div class="btns" style="margin-top:12px"><button class="b main" onclick="shareReport()">Отправить</button><button class="b" onclick="copyReport()">Копировать</button></div></div>`;
+  return h;
+}
+function reportText() { const r = reportData(); return reportHead(r) + '\n\n' + reportLines(r).map(s => s.t + ':\n' + s.a.map(x => '• ' + x).join('\n')).join('\n\n') + '\n\n— из приложения «Дневник малыша»'; }
+function shareReport() {
+  const t = reportText();
+  if (NATIVE && typeof NATIVE.share === 'function') { NATIVE.share(t); return; }
+  if (navigator.share) { navigator.share({ title: 'Сводка для педиатра', text: t }).catch(() => {}); return; }
+  copyReport();
+}
+function copyReport() {
+  const t = reportText(), ok = () => toast('Скопировано — вставьте в сообщение врачу');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, () => fallbackCopy(t) && ok()); else if (fallbackCopy(t)) ok();
+}
+function fallbackCopy(t) { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); let r = false; try { r = document.execCommand('copy'); } catch (e) {} a.remove(); return r; }
+
+/* ───────── звуки: шум и колыбельные ─────────
+   Без звуковых файлов: всё рисуется в AudioBuffer один раз (шум — 8 с с плавным стыком, мелодии — целиком,
+   как музыкальная шкатулка) и играет по кругу. Таймер и затухание — по часам звука (gain/stop), а не по
+   setTimeout, — поэтому срабатывают, даже если страница в фоне. Настройки — babydiary.snd.v1 (на устройстве). */
+const SND_KEY = 'babydiary.snd.v1';
+const SOUNDS = [
+  { id: 'white', ic: '🌫️', name: 'Белый шум', sub: 'ровный, как радио между станциями', kind: 'noise' },
+  { id: 'pink', ic: '🌬️', name: 'Мягкий шум', sub: 'тише на высоких — как ветер', kind: 'noise' },
+  { id: 'brown', ic: '💨', name: 'Фен', sub: 'низкий гул — многих малышей успокаивает', kind: 'noise' },
+  { id: 'sea', ic: '🌊', name: 'Море', sub: 'накатывающие волны', kind: 'noise' },
+  { id: 'heart', ic: '💗', name: 'Сердце мамы', sub: 'стук сердца, как в животике', kind: 'noise' },
+  { id: 'brahms', ic: '🎶', name: 'Колыбельная Брамса', sub: 'музыкальная шкатулка', kind: 'tune' },
+  { id: 'silent', ic: '⭐', name: 'Тихая ночь', sub: 'музыкальная шкатулка', kind: 'tune' },
+  { id: 'twinkle', ic: '✨', name: 'Мерцай, звёздочка', sub: 'музыкальная шкатулка', kind: 'tune' },
+];
+// мелодии: нота+октава:длительность в восьмых; '-' — пауза
+const TUNES = {
+  brahms: { q: .30, n: 'E4:1 E4:1 G4:4 E4:1 E4:1 G4:4 E4:1 G4:1 C5:2 B4:3 A4:1 A4:2 G4:2 D4:1 E4:1 F4:2 D4:2 D4:1 E4:1 F4:4 D4:1 F4:1 B4:1 A4:1 G4:2 B4:2 C5:4 C4:1 C4:1 C5:4 A4:1 F4:1 G4:4 E4:1 C4:1 F4:2 G4:2 A4:2 G4:4 C4:1 C4:1 C5:4 A4:1 F4:1 G4:4 E4:1 C4:1 F4:2 E4:1 D4:1 C4:6 -:4' },
+  silent: { q: .27, n: 'G4:3 A4:1 G4:2 E4:6 G4:3 A4:1 G4:2 E4:6 D5:4 D5:2 B4:6 C5:4 C5:2 G4:6 A4:4 A4:2 C5:3 B4:1 A4:2 G4:3 A4:1 G4:2 E4:6 A4:4 A4:2 C5:3 B4:1 A4:2 G4:3 A4:1 G4:2 E4:6 D5:4 D5:2 F5:3 D5:1 B4:2 C5:6 E5:6 C5:3 G4:1 E4:2 G4:3 F4:1 D4:2 C4:12 -:6' },
+  twinkle: { q: .34, n: 'C4:2 C4:2 G4:2 G4:2 A4:2 A4:2 G4:4 F4:2 F4:2 E4:2 E4:2 D4:2 D4:2 C4:4 G4:2 G4:2 F4:2 F4:2 E4:2 E4:2 D4:4 G4:2 G4:2 F4:2 F4:2 E4:2 E4:2 D4:4 C4:2 C4:2 G4:2 G4:2 A4:2 A4:2 G4:4 F4:2 F4:2 E4:2 E4:2 D4:2 D4:2 C4:4 -:6' },
+};
+const SND = { ctx: null, src: null, gain: null, lfo: null, id: null, until: 0, bufs: {}, t: null };
+const sndPref = () => Object.assign({ timer: 30, vol: 0.6 }, lsJson(SND_KEY, {}));
+const noteHz = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); const i = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] ? 1 : 0); return 440 * Math.pow(2, (i + (+m[3] + 1) * 12 - 69) / 12); };
+function sndBuffer(ctx, id) {
+  if (SND.bufs[id]) return SND.bufs[id];
+  const R = ctx.sampleRate;
+  let d;
+  if (TUNES[id]) {
+    const T = TUNES[id], notes = T.n.split(' ').map(x => x.split(':')), len = notes.reduce((a, x) => a + +x[1], 0) * T.q;
+    d = new Float32Array(Math.ceil((len + 2) * R)); let t = 0;
+    for (const [n, k] of notes) {
+      if (n !== '-') {
+        const f = noteHz(n), i0 = Math.floor(t * R), dur = Math.min(2.6, +k * T.q + 1.4), N = Math.floor(dur * R);
+        for (let i = 0; i < N && i0 + i < d.length; i++) {
+          const x = i / R, env = Math.min(1, x / 0.006) * Math.exp(-x * 2.2);
+          d[i0 + i] += env * (Math.sin(2 * Math.PI * f * x) + 0.28 * Math.sin(4 * Math.PI * f * x) * Math.exp(-x * 3) + 0.08 * Math.sin(6 * Math.PI * f * x) * Math.exp(-x * 6)) * 0.22;
+        }
+      }
+      t += +k * T.q;
+    }
+  } else if (id === 'heart') {
+    const per = 60 / 68; d = new Float32Array(Math.floor(per * R));
+    const thump = (at, amp) => { const i0 = Math.floor(at * R); for (let i = 0; i < 0.16 * R && i0 + i < d.length; i++) { const x = i / R; d[i0 + i] += amp * Math.sin(2 * Math.PI * (48 + 30 * Math.exp(-x * 30)) * x) * Math.exp(-x * 26) * Math.min(1, x / 0.004); } };
+    thump(0, 0.9); thump(0.27, 0.6);
+  } else {
+    const N = 8 * R, F = Math.floor(0.5 * R), a = new Float32Array(N + F);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, br = 0;
+    for (let i = 0; i < a.length; i++) {
+      const w = Math.random() * 2 - 1;
+      if (id === 'white') a[i] = w * 0.35;
+      else if (id === 'pink') { b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.969 * b2 + w * 0.153852; b3 = 0.8665 * b3 + w * 0.3104856; b4 = 0.55 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.016898; a[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.09; b6 = w * 0.115926; }
+      else { br = (br + 0.02 * w) / 1.02; a[i] = br * 2.6; }
+    }
+    // стык по кругу без щелчка: конец плавно переходит в начало
+    d = a.subarray(0, N);
+    for (let i = 0; i < F; i++) { const k = i / F; d[i] = d[i] * k + a[N + i] * (1 - k); }
+  }
+  const buf = ctx.createBuffer(1, d.length, R); buf.getChannelData(0).set(d);
+  return (SND.bufs[id] = buf);
+}
+function sndPlay(id) {
+  if (SND.id === id) { sndStop(); return; }
+  sndStop(true);
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) { toast('Этот браузер не умеет играть звуки'); return; }
+  const ctx = SND.ctx || (SND.ctx = new AC()); if (ctx.state === 'suspended') ctx.resume();
+  const p = sndPref(), src = ctx.createBufferSource(), g = ctx.createGain(), t0 = ctx.currentTime;
+  src.buffer = sndBuffer(ctx, id); src.loop = true;
+  let out = src;
+  if (id === 'sea') { // волны: медленно меняем громкость
+    const wave = ctx.createGain(), lfo = ctx.createOscillator(), depth = ctx.createGain();
+    lfo.frequency.value = 0.09; depth.gain.value = 0.45; wave.gain.value = 0.55; lfo.connect(depth).connect(wave.gain); lfo.start();
+    src.connect(wave); out = wave; SND.lfo = lfo;
+  }
+  if (id === 'heart') { const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 180; src.connect(lp); out = lp; }
+  out.connect(g).connect(ctx.destination);
+  SND.src = src; SND.gain = g; SND.id = id; SND.until = p.timer ? Date.now() + p.timer * 60000 : 0;
+  sndGain(p.vol, true);
+  src.start(t0);
+  if (p.timer) { src.stop(t0 + p.timer * 60 + 0.1); if (SND.lfo) SND.lfo.stop(t0 + p.timer * 60 + 0.1); }
+  src.onended = () => { if (SND.src === src) { SND.src = null; SND.id = null; SND.until = 0; render(); } };
+  render();
+}
+// громкость с плавным началом; в последние 60 секунд таймера — затухание
+function sndGain(vol, start) {
+  const g = SND.gain, ctx = SND.ctx; if (!g) return;
+  const t = ctx.currentTime; g.gain.cancelScheduledValues(t);
+  if (start) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 3); } else g.gain.setValueAtTime(vol, t);
+  if (SND.until) { const end = t + (SND.until - Date.now()) / 1000, fade = Math.max(t + (start ? 3 : 0), end - 60); g.gain.setValueAtTime(vol, fade); g.gain.linearRampToValueAtTime(0.0001, Math.max(fade + 0.1, end)); }
+}
+function sndStop(quiet) {
+  const src = SND.src, g = SND.gain, ctx = SND.ctx;
+  SND.src = null; SND.id = null; SND.until = 0;
+  if (src && ctx) { const t = ctx.currentTime; try { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0.0001, t + 0.6); src.stop(t + 0.7); if (SND.lfo) SND.lfo.stop(t + 0.7); } catch (e) {} }
+  SND.lfo = null;
+  if (!quiet) render();
+}
+function sndSet(k, v) { const p = sndPref(); p[k] = v; lsSet(SND_KEY, JSON.stringify(p)); if (k === 'vol') { sndGain(v); return; } if (k === 'timer' && SND.src) { const id = SND.id; SND.id = null; sndPlay(id); return; } render(); }
+const sndLeft = () => SND.until ? Math.max(0, SND.until - Date.now()) : null;
+function sndMini() {
+  if (!SND.id) return '';
+  const s = SOUNDS.find(x => x.id === SND.id), left = sndLeft();
+  return `<div class="card snd live" style="--c:var(--c-sleep)"><h3>${s.ic} ${esc(s.name)}</h3><div class="st">${left != null ? 'выключится через <b class="num" data-left="1">' + fmtMin(left) + '</b>' : 'играет без таймера'}</div>
+    <div class="btns"><button class="b" onclick="UI.more='sounds';go('tips')">Звуки</button><button class="b main" onclick="sndStop()">Остановить</button></div></div>`;
+}
+function viewSounds() {
+  const p = sndPref(), left = sndLeft();
+  let h = `<div class="card"><h3>🎵 Звуки для сна</h3><p class="hint">Шум похож на то, что малыш слышал в животике, и заглушает бытовые звуки. Ставьте телефон <b>не ближе 2 метров</b> от кроватки и на небольшую громкость — так советуют педиатры.</p>
+    <div class="f" style="margin:12px 0 4px"><span>Выключить через</span>${chipsHtml('stimer', [[15, '15 мин'], [30, '30 мин'], [45, '45 мин'], [60, '1 час'], [0, 'не выключать']], p.timer)}</div>
+    <label class="f" style="margin:10px 0 0"><span>Громкость</span><input type="range" id="snd_vol" min="0.05" max="1" step="0.05" value="${p.vol}" oninput="sndSet('vol',+this.value)" style="padding:0;min-height:32px;border:0;background:transparent"></label>
+    ${SND.id ? `<p class="st" style="margin:6px 0 0">${left != null ? 'Выключится через <b class="num" data-left="1">' + fmtMin(left) + '</b>, в конце — плавно' : 'Играет без таймера'}</p>` : ''}</div>`;
+  const row = s => `<li class="${SND.id === s.id ? 'on' : ''}" onclick="sndPlay('${s.id}')"><span class="ic">${s.ic}</span><span class="tx"><div>${esc(s.name)}</div><small>${esc(s.sub)}</small></span><span class="play">${SND.id === s.id ? '■' : '▶'}</span></li>`;
+  h += `<div class="card"><h3>Шум</h3><ul class="list snds">${SOUNDS.filter(s => s.kind === 'noise').map(row).join('')}</ul></div>`;
+  h += `<div class="card"><h3>Колыбельные</h3><ul class="list snds">${SOUNDS.filter(s => s.kind === 'tune').map(row).join('')}</ul></div>`;
+  h += `<div class="card"><h3>📖 Спеть самим</h3><p class="hint">Голос мамы и папы малышу милее любой записи. Народные колыбельные:</p>${LULLABIES.map(l => `<details class="ckp"><summary><b>${l.name}</b></summary><p class="lyr">${l.text.map(esc).join('<br>')}</p></details>`).join('')}</div>`;
+  h += `<p class="hint" style="margin:0 0 12px">Звук играет, пока приложение открыто или свёрнуто. Если телефон «усыпляет» приложения в фоне, оставьте его открытым — в ночном режиме экран почти чёрный.</p>`;
+  return h;
+}
+const LULLABIES = [
+  { name: 'Баю-баюшки-баю', text: ['Баю-баюшки-баю,', 'Не ложися на краю.', 'Придёт серенький волчок,', 'Он ухватит за бочок', 'И утащит во лесок,', 'Под ракитовый кусток.', 'К нам, волчок, не ходи,', 'Нашу Машу не буди.'] },
+  { name: 'Котя, котенька, коток', text: ['Котя, котенька, коток,', 'Котя — серенький хвосток!', 'Приди, котик, ночевать,', 'Нашу деточку качать.', 'Уж как я тебе, коту,', 'За работу заплачу:', 'Дам кусок пирога', 'И кувшин молока.'] },
+  { name: 'Ходит сон близ окон', text: ['Ходит сон близ окон,', 'Бродит дрёма возле дома.', 'И глядят, все ли спят?', 'Сон и дрёма, сон и дрёма —', 'Спи, малыш, усни,', 'Сладкий сон к тебе приди.'] },
+  { name: 'Баю-бай, баю-бай, ты, собачка, не лай', text: ['Баю-бай, баю-бай,', 'Ты, собачка, не лай,', 'Белолапа, не скули,', 'Мою детку не буди.', 'Тёмна ноченька, не спится,', 'Моя детонька боится.', 'Ты, собачка, не лай,', 'Мою детку не пугай.'] },
+];
+
+/* ───────── альбом «Первые разы» ─────────
+   Запись 'first' {s, title, fk (из подсказок), note, ph:[id фото]}; вехи ('mile') тоже попадают в альбом, к ним можно
+   добавить фото. Фото — в IndexedDB этого устройства (babydiary-photos: {full ≤1600px, thumb ≤480px, JPEG}),
+   в общий дневник уходит только запись. Потом фото будут на Google Диске (папка «Дневник малыша — фото»). */
+const FIRSTS = [['smile', 'Первая улыбка', '😊'], ['walk1', 'Первая прогулка', '🌳'], ['bath', 'Первое купание', '🛁'], ['laugh', 'Первый смех', '😄'], ['guests', 'Первые гости', '🎈'],
+  ['tooth', 'Первый зубик', '🦷'], ['food1', 'Первый прикорм', '🥄'], ['trip', 'Первая поездка', '🚗'], ['snow', 'Первый снег', '❄️'], ['sea', 'Первый раз на море', '🌊'],
+  ['hair', 'Первая стрижка', '✂️'], ['shoes', 'Первые ботиночки', '👟'], ['bday', 'Первый день рождения', '🎂']];
+const PH = { db: null, url: new Map() };
+function phDb() {
+  if (!PH.db) PH.db = new Promise((res, rej) => { const r = indexedDB.open('babydiary-photos', 1); r.onupgradeneeded = () => r.result.createObjectStore('p'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  return PH.db;
+}
+function phTx(mode, fn) {
+  return phDb().then(db => new Promise((res, rej) => {
+    const tx = db.transaction('p', mode), r = fn(tx.objectStore('p')), fail = () => rej(tx.error || (r && r.error) || new Error('не удалось сохранить фото'));
+    r.onsuccess = () => res(r.result); r.onerror = fail; tx.onabort = fail;
+  }));
+}
+const phPut = (id, rec) => phTx('readwrite', st => st.put(rec, id));
+const phGet = id => phTx('readonly', st => st.get(id));
+const phDel = id => phTx('readwrite', st => st.delete(id));
+async function phUrl(id, size) {
+  const k = id + ':' + size; if (PH.url.has(k)) return PH.url.get(k);
+  const r = await phGet(id).catch(() => null); if (!r) return null;
+  const u = URL.createObjectURL(r[size] || r.full); PH.url.set(k, u); return u;
+}
+// после каждой отрисовки: подставить фото в <img data-ph>
+function hydratePhotos() {
+  for (const img of document.querySelectorAll('img[data-ph]')) {
+    const id = img.dataset.ph, sz = img.dataset.sz || 'thumb';
+    if (UI.demo && DEMO_PH[id]) { img.src = DEMO_PH[id]; continue; }
+    phUrl(id, sz).then(u => { if (u) img.src = u; else img.closest('.ph').classList.add('miss'); });
+  }
+}
+function loadImage(file) {
+  return new Promise((res, rej) => { const u = URL.createObjectURL(file), i = new Image(); i.onload = () => res(i); i.onerror = () => { URL.revokeObjectURL(u); rej(new Error('не получилось открыть фото')); }; i.src = u; });
+}
+function shrink(img, max, q) {
+  const k = Math.min(1, max / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height)), c = document.createElement('canvas');
+  c.width = Math.round((img.naturalWidth || img.width) * k); c.height = Math.round((img.naturalHeight || img.height) * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', q));
+}
+async function savePhoto(file) {
+  const img = await loadImage(file), id = 'ph' + uid();
+  const full = await shrink(img, 1600, 0.82), thumb = await shrink(img, 480, 0.78);
+  await phPut(id, { full, thumb, at: Date.now() });
+  return id;
+}
+const albumItems = () => evs().filter(e => e.t === 'first' || e.t === 'mile').sort((a, b) => a.s - b.s);
+const firstTitle = e => e.t === 'mile' ? (MILES.find(x => x.id === e.mid) || {}).name || 'Веха' : e.title || 'Первый раз';
+const firstIc = e => e.t === 'mile' ? (MILES.find(x => x.id === e.mid) || {}).ic || '⭐' : (FIRSTS.find(x => x[0] === e.fk) || [0, 0, '📸'])[2];
+function ageGroup(ts) {
+  const b = birthTs(); if (b == null) return '';
+  const d = new Date(b), t = new Date(ts); let m = (t.getFullYear() - d.getFullYear()) * 12 + t.getMonth() - d.getMonth(); if (t.getDate() < d.getDate()) m--;
+  return m < 1 ? 'Первый месяц' : m >= 12 ? (m === 12 ? 'Год' : 'Больше года') : m + ' ' + pl(m, 'месяц', 'месяца', 'месяцев');
+}
+function viewAlbum() {
+  const demo = UI.demo, list = demo ? demoAlbum() : albumItems();
+  let h = demo ? `<div class="card demo"><h3>👀 Так будет выглядеть альбом</h3><p class="hint">Это пример с нарисованными картинками — ваши записи не менялись.</p><div class="btns" style="margin-top:10px"><button class="b main" onclick="UI.demo=false;render()">Закрыть пример</button></div></div>`
+    : `<div class="card"><h3>📸 Первые разы</h3><p class="hint">Улыбка, первая прогулка, первый зубик — с фото и парой слов. Отмеченные вехи развития тоже здесь.</p>
+    <div class="btns" style="margin-top:10px"><button class="b main" onclick="editFirst()">+ Добавить</button>${list.length ? '' : '<button class="b" onclick="UI.demo=true;render()">Посмотреть пример</button>'}</div></div>`;
+  if (!list.length) return h;
+  let grp = '';
+  h += `<div class="alb">`;
+  for (const e of list) {
+    const g = ageGroup(e.s);
+    if (g !== grp) { h += `${grp ? '</div>' : ''}<div class="sec-t">${esc(g)}</div><div class="agrid">`; grp = g; }
+    const ph = (e.ph || [])[0];
+    h += `<button class="atile" onclick="${demo ? '' : `viewFirst('${e.id}')`}">${ph ? `<span class="ph"><img data-ph="${ph}" alt=""></span>` : `<span class="ph none">${firstIc(e)}</span>`}
+      <span class="cap"><b>${esc(firstTitle(e))}</b><small>${dayShort(e.s)}${ageAt(e.s) ? ' · ' + esc(ageAt(e.s)) : ''}</small></span></button>`;
+  }
+  h += `</div></div>`;
+  if (!demo) { const used = new Set(list.map(e => e.fk)), rest = FIRSTS.filter(f => !used.has(f[0]));
+    if (rest.length) h += `<div class="card"><h3>Ещё будет</h3><div class="fchips">${rest.map(f => `<button onclick="editFirst(null,'${f[0]}')">${f[2]} ${f[1]}</button>`).join('')}</div></div>`;
+    h += `<p class="hint" style="margin:0 0 12px">Фото пока хранятся только на этом телефоне (в уменьшенном виде, примерно 0,3 МБ каждое). Скоро они будут сохраняться на ваш Google Диск, и их увидит второй родитель.</p>`; }
+  return h;
+}
+function viewFirst(id) {
+  const e = evById(id); if (!e) return; const ph = (e.ph || [])[0];
+  openSheet(`${ph ? `<div class="ph big"><img data-ph="${ph}" data-sz="full" alt=""></div>` : ''}
+    <h2 style="margin-top:${ph ? 12 : 0}px">${firstIc(e)} ${esc(firstTitle(e))}</h2>
+    <p class="st">${dayTitle(e.s).replace(/^Сегодня, |^Вчера, /, '')}${ageAt(e.s) ? ' · ' + esc(ageAt(e.s)) : ''}${e.by && e.by !== DEV && devName(e.by) ? ' · ✎ ' + esc(devName(e.by)) : ''}</p>
+    ${e.note ? `<p style="white-space:pre-wrap;margin:0 0 12px">${esc(e.note)}</p>` : ''}
+    <div class="acts"><button class="b ghost" onclick="closeSheet()">Закрыть</button><button class="b main" onclick="editFirst('${id}')">Изменить</button></div>`);
+  hydratePhotos();
+}
+let AEDIT = null;
+function editFirst(id, fk) {
+  const e = id ? evById(id) : null; if (id && !e) return;
+  const f = fk ? FIRSTS.find(x => x[0] === fk) : null;
+  AEDIT = { id, fk: e ? e.fk : fk || '', ph: e ? (e.ph || []).slice() : [], mile: e && e.t === 'mile' };
+  const used = new Set(albumItems().map(x => x.fk));
+  openSheet(`<h2>📸 ${id ? 'Изменить' : 'Первый раз'}</h2>
+    ${AEDIT.mile ? `<p class="st" style="margin-top:0"><b>${esc(firstTitle(e))}</b> — веха развития</p>` : `<label class="f"><span>Что случилось впервые</span><input id="a_title" value="${esc(e ? e.title : f ? f[1] : '')}" placeholder="Например, первая улыбка" autocomplete="off"></label>
+    ${id ? '' : `<div class="fchips" style="margin:-4px 0 12px">${FIRSTS.filter(x => !used.has(x[0])).slice(0, 8).map(x => `<button type="button" onclick="$('#a_title').value='${x[1]}';AEDIT.fk='${x[0]}'">${x[2]} ${x[1]}</button>`).join('')}</div>`}`}
+    <label class="f"><span>Когда</span><input id="a_d" type="date" value="${toInput(e ? e.s : now()).slice(0, 10)}"></label>
+    <div class="f"><span>Фото</span><div id="a_ph">${aPhHtml()}</div><input type="file" id="a_file" accept="image/*" hidden onchange="addAPhoto(this.files[0])"></div>
+    <label class="f"><span>Пара слов на память</span><textarea id="a_note" placeholder="Где, как это было…">${esc(e ? e.note || '' : '')}</textarea></label>
+    <div class="err" id="a_err"></div>
+    <div class="acts">${id && !AEDIT.mile ? '<button class="b del" onclick="delFirst()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" id="a_save" onclick="saveFirst()">Сохранить</button></div>`);
+  hydratePhotos();
+}
+function aPhHtml() {
+  const p = AEDIT.ph[0];
+  return p ? `<div class="ph pick"><img data-ph="${p}" alt=""><button type="button" class="phx" onclick="AEDIT.ph=[];$('#a_ph').innerHTML=aPhHtml()" aria-label="Убрать фото">×</button></div>`
+    : `<button type="button" class="b ghost" style="width:100%" onclick="$('#a_file').click()">📷 Выбрать или снять фото</button>`;
+}
+async function addAPhoto(file) {
+  if (!file) return;
+  $('#a_ph').innerHTML = '<p class="hint">Уменьшаем фото…</p>'; $('#a_save').disabled = true;
+  try { const id = await savePhoto(file); AEDIT.ph = [id]; } catch (e) { $('#a_err').textContent = 'Не получилось добавить фото: ' + e.message; }
+  if (!$('#a_ph')) return; $('#a_ph').innerHTML = aPhHtml(); $('#a_save').disabled = false; hydratePhotos();
+}
+function saveFirst() {
+  const err = m => { $('#a_err').textContent = m; }, { id, mile } = AEDIT;
+  const d = parseDay($('#a_d').value); if (!d) return err('Укажите дату');
+  const s = +d + 12 * 3600e3; if (sod(s) > sod(now())) return err('Эта дата ещё не наступила');
+  const p = { s, e: s, note: $('#a_note').value.trim(), ph: AEDIT.ph };
+  if (!mile) { p.title = $('#a_title').value.trim(); if (!p.title) return err('Напишите, что случилось впервые'); const f = FIRSTS.find(x => x[1] === p.title); p.fk = f ? f[0] : AEDIT.fk && (FIRSTS.find(x => x[0] === AEDIT.fk) || [])[1] === p.title ? AEDIT.fk : ''; }
+  if (id) upd(evById(id), p); else { add(Object.assign({ t: 'first' }, p)); toast('Добавили в альбом 💛'); }
+  closeSheet(); buzz(); render();
+}
+function delFirst() { const e = evById(AEDIT.id); upd(e, { del: true }); closeSheet(); toast('Удалено из альбома', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } }); render(); }
+// фото, на которые больше не ссылается ни одна запись (даже удалённая), — стираем
+const phOrphans = keys => { const keep = new Set(S.events.flatMap(e => e.ph || [])); return (keys || []).filter(k => !keep.has(k) && !(AEDIT && AEDIT.ph.includes(k))); };
+async function phGc() {
+  try {
+    for (const k of phOrphans(await phTx('readonly', st => st.getAllKeys()))) await phDel(k);
+  } catch (e) {}
+}
+// пример альбома: картинки рисуются на месте (пастельный фон, солнце, облака, большой значок)
+const DEMO_PH = {};
+function demoPic(seed, ic, c1, c2) {
+  const c = document.createElement('canvas'); c.width = 480; c.height = 600; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 480, 600); g.addColorStop(0, c1); g.addColorStop(1, c2); x.fillStyle = g; x.fillRect(0, 0, 480, 600);
+  let r = seed; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  x.fillStyle = 'rgba(255,255,255,.35)'; for (let i = 0; i < 6; i++) { x.beginPath(); x.arc(rnd() * 480, rnd() * 600, 40 + rnd() * 90, 0, 7); x.fill(); }
+  x.fillStyle = 'rgba(255,244,200,.85)'; x.beginPath(); x.arc(380, 110, 54, 0, 7); x.fill();
+  x.fillStyle = 'rgba(255,255,255,.55)'; x.beginPath(); x.ellipse(240, 600, 340, 150, 0, 0, 7); x.fill();
+  x.font = '190px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(ic, 240, 330);
+  return c.toDataURL('image/jpeg', 0.85);
+}
+function demoAlbum() {
+  const b = birthTs() || sod(now()) - 200 * 864e5, at = d => b + d * 864e5 + 12 * 3600e3;
+  const it = [[3, 'Первое купание', '🛁', '#bfe3ff', '#e8f6ff', 'Сначала испугался, а потом заулыбался.'], [14, 'Первая прогулка', '🌳', '#c8f0d0', '#fff3d6', 'Спал весь час в коляске.'],
+    [38, 'Первая улыбка', '😊', '#ffd6e4', '#fff1e0', 'Улыбнулся папе утром!'], [75, 'Первый смех', '😄', '#ffe7b3', '#ffd3df', ''], [120, 'Держит голову', '💪', '#d9d3ff', '#e3f6ff', ''],
+    [160, 'Первый прикорм', '🥄', '#d8f5c2', '#fff0c9', 'Кабачок — сначала скривился, потом попросил ещё.'], [185, 'Первый зубик', '🦷', '#e0f0ff', '#ffe6ef', ''], [200, 'Первый снег', '❄️', '#dfeeff', '#ffffff', 'Ловил снежинки варежкой.']];
+  return it.filter(x => at(x[0]) <= now()).map(([d, title, ic, c1, c2, note], i) => { const id = 'demo' + i; if (!DEMO_PH[id]) DEMO_PH[id] = i % 4 === 3 ? null : demoPic(i * 7 + 3, ic, c1, c2); return { id, t: 'first', s: at(d), title, note, ph: DEMO_PH[id] ? [id] : [], fk: (FIRSTS.find(f => f[1] === title) || [])[0], _ic: ic }; });
+}
+
+/* ───────── виджет на экране телефона (Android) ─────────
+   Страница отдаёт телефону состояние (setWidget): идёт ли кормление и сон, когда были последние, следующая грудь.
+   Касание виджета пишет в очередь телефона готовые записи с ID (WidgetStore.java); страница при запуске и при
+   возвращении забирает их (applyInbox) и подтверждает (ack). Повторная доставка не дублирует: ID уже есть. */
+function widgetState() {
+  const f = activeOf('feed'), g = f && openSeg(f), sl = activeOf('sleep'), lf = lastOf('feed', e => e.e != null), ld = lastOf('diaper');
+  return { feed: f && f.kind === 'breast' ? { id: f.id, s: f.s, side: g ? g.side : '' } : null, lastFeed: lf ? lf.s : 0, next: nextSide() || 'L',
+    sleep: sl ? { id: sl.id, s: sl.s } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: S.baby.name || '' };
+}
+function pushWidget() {
+  if (!NATIVE || typeof NATIVE.setWidget !== 'function') return;
+  const j = JSON.stringify(widgetState()); if (j === pushWidget.last) return;
+  try { if (NATIVE.setWidget(j) !== false) pushWidget.last = j; } catch (e) {}
+}
+function applyInbox() {
+  if (!NATIVE || typeof NATIVE.inbox !== 'function') return 0;
+  let q = []; try { q = JSON.parse(NATIVE.inbox() || '[]'); } catch (e) { return 0; }
+  if (!q.length) return 0;
+  const done = [];
+  for (const o of q) {
+    try {
+      const ev = o.ev || {};
+      if (o.op === 'feed' && !evById(ev.id) && !activeOf('feed')) add({ id: ev.id, t: 'feed', kind: 'breast', s: ev.s, e: null, segs: [{ side: ev.side === 'R' ? 'R' : 'L', s: ev.s, e: null }] });
+      else if (o.op === 'feedStop') { const f = evById(o.ref); if (f && f.e == null) { const sg = openSeg(f); if (sg) sg.e = Math.max(sg.s, o.at); upd(f, { e: Math.max(f.s, o.at), segs: f.segs }); } }
+      else if (o.op === 'sleep' && !evById(ev.id) && !activeOf('sleep')) add({ id: ev.id, t: 'sleep', s: ev.s, e: null });
+      else if (o.op === 'sleepStop') { const s = evById(o.ref); if (s && s.e == null) upd(s, { e: Math.max(s.s + 60000, o.at) }); }
+      else if (o.op === 'diaper' && !evById(ev.id)) add({ id: ev.id, t: 'diaper', s: ev.s, e: ev.s, wet: !!ev.wet, dirty: !!ev.dirty });
+    } catch (e) {}
+    done.push(o.id);
+  }
+  try { NATIVE.ack(JSON.stringify(done)); } catch (e) {}
+  pushWidget.last = null; // виджету — свежее состояние при следующей отрисовке
+  return done.length;
+}
+window.babyInbox = () => { if (applyInbox() && $('#sheetWrap').hidden) render(); };
 
 /* ───────── Google: вход и общий дневник ─────────
    Дневник — в таблице «Дневник малыша» на Google Диске того, кто вошёл первым. Права узкие (drive.file):
@@ -1562,7 +2092,7 @@ function checkApk(force) {
   }).catch(() => { if (force) toast('Не удалось проверить — нет связи с GitHub'); });
 }
 function boot() {
-  render(); launch();
+  applyInbox(); render(); launch(); setTimeout(phGc, 5000);
   if (NATIVE) { let a = null; try { a = NATIVE.takeAction(); } catch (e) {} if (a) launch(a); setTimeout(checkApk, 3000); }
   if (GAUTH_RET) {
     const g = GAUTH_RET; GAUTH_RET = null;
@@ -1578,7 +2108,7 @@ function boot() {
   setInterval(() => { if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need') sync(); }, 30000);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || !$('#sheetWrap').hidden) return;
-    S = load(); render();
+    S = load(); applyInbox(); render();
     if (REMOTE) { gsAutoUntil = Date.now() + 8000; sync(); }
     checkApk();
   });
