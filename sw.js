@@ -1,6 +1,6 @@
 /* Работа без интернета: страница и значки берутся из памяти телефона и обновляются в фоне.
    Запросы к Google (другие адреса) не трогаем — их ведёт сама страница. */
-const CACHE = 'babydiary-v5';
+const CACHE = 'babydiary-v6';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
