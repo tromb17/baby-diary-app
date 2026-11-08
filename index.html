@@ -272,6 +272,53 @@ input[type=range]{accent-color:var(--c-sleep);width:100%}
 .atile .cap small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 .card.demo{border:1.5px dashed color-mix(in srgb,var(--c-sleep) 50%,transparent)}
 :root[data-night] .ph img{filter:brightness(.6) sepia(.3)}
+/* чат */
+.chatb{position:relative}
+.badge{position:absolute;top:4px;right:2px;min-width:17px;height:17px;border-radius:9px;background:var(--c-feed);color:#fff;font:700 11px/17px system-ui;font-style:normal;text-align:center;padding:0 4px}
+body.inchat{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+.chatbar{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:29;display:flex;align-items:flex-end;gap:6px;padding:8px 10px;background:var(--surface);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.chatbar textarea{flex:1;min-width:0;resize:none;border:1px solid var(--line);background:var(--solid);border-radius:20px;padding:10px 14px;min-height:42px;max-height:120px;line-height:1.35}
+.chatbar .csend{flex:none;width:44px;height:44px;border-radius:50%;padding:0;font-size:18px}
+.chatbar .icon-btn{font-size:20px}
+.cday{text-align:center;font-size:12px;color:var(--muted);margin:14px 0 6px}
+.msg{display:flex;flex-direction:column;margin:4px 0;max-width:82%}
+.msg.me{margin-left:auto;align-items:flex-end} .msg.them{align-items:flex-start}
+.bub{border-radius:18px;padding:9px 13px;background:var(--surface);border:1px solid var(--line);white-space:pre-wrap;word-wrap:break-word;overflow:hidden;cursor:pointer}
+.msg.me .bub{background:color-mix(in srgb,var(--accent) 18%,var(--solid));border-color:color-mix(in srgb,var(--accent) 30%,transparent);border-bottom-right-radius:6px}
+.msg.them .bub{border-bottom-left-radius:6px}
+.bub .cph{display:block;aspect-ratio:auto;height:220px;margin:-9px -13px 6px;width:calc(100% + 26px);min-width:220px;border-radius:0}
+.bub .cph:last-child{margin-bottom:-9px}
+.mt{font-size:11.5px;color:var(--muted);margin:2px 6px 0}
+/* книжка */
+.bookbar{display:flex;gap:8px;margin-bottom:10px} .bookbar .b{flex:1}
+.book{margin:0 auto;width:148mm}
+.bpage{width:148mm;height:210mm;padding:12mm 12mm 14mm;margin:0 0 6mm;background:#fffaf3;color:#3a2e26;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 12px rgba(60,40,20,.18);font-family:Georgia,"Times New Roman",serif;page-break-after:always;break-after:page}
+.bph{width:100%;flex:0 1 auto;height:128mm;border-radius:4mm;overflow:hidden;background:#f1e7da;position:relative}
+.bph img{width:100%;height:100%;object-fit:cover;display:block}
+.bph.miss::after{content:'фото не найдено';position:absolute;inset:0;display:grid;place-items:center;color:#a08c7a;font-size:11pt}
+.bemo{font-size:60mm;line-height:1;margin:20mm 0 8mm}
+.bgrp{align-self:flex-start;font-size:9pt;letter-spacing:.14em;text-transform:uppercase;color:#b0835a;margin:0 0 4mm} .bgrp.dim{opacity:.55}
+.bt{font-size:20pt;margin:7mm 0 1.5mm;text-align:center;line-height:1.15}
+.bd{font-size:10pt;color:#9a8574}
+.bn{font-size:11.5pt;font-style:italic;text-align:center;margin-top:5mm;line-height:1.45;color:#5a4a3e;max-width:115mm}
+.bno{position:absolute;bottom:6mm;left:0;right:0;text-align:center;font-size:8.5pt;color:#c0a993}
+.bcover{justify-content:center;background:linear-gradient(170deg,#fff4e6,#ffe7ef 55%,#e8f3ff)}
+.bcover .bph{height:110mm;border-radius:50% / 40%;width:100mm;border:3mm solid #fff;box-shadow:0 3mm 8mm rgba(80,50,30,.15)}
+.btitle{font-size:13pt;letter-spacing:.2em;text-transform:uppercase;color:#b0835a;margin-top:9mm}
+.bname{font-size:32pt;margin-top:3mm}
+.bsub{font-size:11pt;color:#9a8574;margin-top:2mm}
+ul.bms{list-style:none;padding:0;margin:0;width:100%;font-size:11pt}
+ul.bms li{display:flex;justify-content:space-between;gap:4mm;padding:2mm 0;border-bottom:.3mm dotted #d8c6b4}
+ul.bms b{font-weight:normal;color:#9a8574;white-space:nowrap}
+@page{size:A5;margin:0}
+@media print{
+  html,body{background:#fff!important;padding:0!important;min-height:0}
+  .zoo,.top,.tabs,.chatbar,.toast,.noprint,.sheet-wrap{display:none!important}
+  main{padding:0!important;max-width:none}
+  .book{zoom:1!important;width:auto}
+  .bpage{margin:0;box-shadow:none}
+  :root[data-night] .bph img{filter:none}
+}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -304,10 +351,12 @@ input[type=range]{accent-color:var(--c-sleep);width:100%}
   <div class="ava" id="ava">👶</div>
   <div class="who"><h1 id="bName">Дневник малыша</h1><div class="age" id="bAge"></div></div>
   <button class="syncbtn" id="syncBtn" onclick="syncInfo()" aria-label="Связь с Google" hidden><i class="syncdot" id="syncDot"></i></button>
+  <button class="icon-btn chatb" id="chatBtn" onclick="go('chat')" aria-label="Семейный чат" title="Семейный чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><i class="badge" id="chatN" hidden></i></button>
   <button class="icon-btn" id="nightBtn" onclick="toggleNight()" aria-label="Ночной режим" title="Ночной режим"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   <button class="icon-btn" onclick="openSettings()" aria-label="Настройки" title="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </header>
 <main id="view"></main>
+<div class="chatbar" id="chatbar" hidden><button class="icon-btn" onclick="$('#c_file').click()" aria-label="Фото">📷</button><textarea id="c_in" rows="1" placeholder="Сообщение" oninput="chatGrow(this)" onkeydown="chatKey(event)"></textarea><button class="b main csend" onclick="sendMsg()" aria-label="Отправить">➤</button><input type="file" id="c_file" accept="image/*" hidden onchange="sendPhoto(this.files[0])"></div>
 <nav class="tabs" id="tabs"></nav>
 <div class="sheet-wrap" id="sheetWrap" hidden><div class="sheet-bg" onclick="closeSheet()"></div><div class="sheet" id="sheet" role="dialog"></div></div>
 <div class="toast" id="toast" hidden></div>
@@ -499,7 +548,7 @@ const TABS = [
 function renderTabs() {
   $('#tabs').innerHTML = TABS.map(([id, t, p]) => `<button class="${UI.tab === id ? 'on' : ''}" onclick="go('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`).join('');
 }
-function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); render(); window.scrollTo(0, 0); }
+function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); if (tab === 'chat') { CHAT.stick = true; if (REMOTE) sync(); } render(); if (tab !== 'chat') window.scrollTo(0, 0); }
 
 function render() {
   applyNight();
@@ -508,8 +557,8 @@ function render() {
   syncShow();
   renderTabs();
   const v = $('#view');
-  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : viewNow();
-  tick(); hydratePhotos(); pushWidget();
+  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : viewNow();
+  tick(); hydratePhotos(); chatShow(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
 }
 
 // живые цифры: data-base (уже набежало, мс) + data-from (идёт с …); data-ago — «… назад»
@@ -670,6 +719,7 @@ function evInfo(e) {
   if (e.t === 'check') { const c = CHECKS.find(x => x.id === e.cid); return { c: '', ic: '📋', tx: 'Осмотр ' + (c ? checkTitle(c) : e.cid) + ': отмечено ' + (e.done || []).length + (c ? ' из ' + checkItems(c).length : ''), sub: '' }; }
   if (e.t === 'mile') { const m = MILES.find(x => x.id === e.mid); return { c: '', ic: '⭐', tx: m ? m.name : e.mid, sub: '' }; }
   if (e.t === 'food') return { c: 'food', ic: foodIc(e.fid), tx: foodName(e.fid, e.name) + (e.amt ? ' — ' + e.amt : ''), sub: e.react && e.react !== 'none' ? '⚠ ' + REACT[e.react] : '' };
+  if (e.t === 'msg') return { c: '', ic: '💬', tx: (e.text || 'Фото').slice(0, 80), sub: '' };
   if (e.t === 'first') return { c: '', ic: '📸', tx: e.title || 'Первый раз', sub: '' };
   return { c: '', ic: '•', tx: e.t, sub: '' };
 }
@@ -791,6 +841,9 @@ function openSettings() {
     <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
     <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать автоматически по расписанию</label>
     <div class="two" id="s_ntimes"><label class="f"><span>Включать в</span><input id="s_nfrom" type="time" value="${esc(p.from)}"></label><label class="f"><span>Выключать в</span><input id="s_nto" type="time" value="${esc(p.to)}"></label></div>
+    ${NATIVE && typeof NATIVE.schedule === 'function' ? `<div class="sec-t">Напоминания о приёме врача</div>
+      <label class="chk"><input type="checkbox" id="s_neve" ${notifPref().eve ? 'checked' : ''}> Накануне в 20:00</label>
+      <label class="chk"><input type="checkbox" id="s_nbef" ${notifPref().before ? 'checked' : ''}> За 2 часа до приёма</label>` : ''}
     ${settingsShare(me)}
     <div class="sec-t">Копия дневника</div>
     <p class="hint" style="margin:0 0 10px">Файл со всеми записями. Загруженная копия не затирает дневник, а добавляется к нему.</p>
@@ -816,6 +869,7 @@ function saveSettings() {
   const meName = $('#s_me') ? $('#s_me').value.trim() : null;
   if (meName != null && meName !== devName(DEV)) setMe({ name: meName });
   const p = nightPref(); Object.assign(p, { auto, from: from || p.from, to: to || p.to }); delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
+  if ($('#s_neve')) lsSet(NOTIFKEY, JSON.stringify({ eve: $('#s_neve').checked, before: $('#s_nbef').checked }));
   closeSheet(); render();
 }
 function exportData() {
@@ -1609,20 +1663,22 @@ const LULLABIES = [
 const FIRSTS = [['smile', 'Первая улыбка', '😊'], ['walk1', 'Первая прогулка', '🌳'], ['bath', 'Первое купание', '🛁'], ['laugh', 'Первый смех', '😄'], ['guests', 'Первые гости', '🎈'],
   ['tooth', 'Первый зубик', '🦷'], ['food1', 'Первый прикорм', '🥄'], ['trip', 'Первая поездка', '🚗'], ['snow', 'Первый снег', '❄️'], ['sea', 'Первый раз на море', '🌊'],
   ['hair', 'Первая стрижка', '✂️'], ['shoes', 'Первые ботиночки', '👟'], ['bday', 'Первый день рождения', '🎂']];
-const PH = { db: null, url: new Map() };
+// mem — фото этого запуска: работают, даже если хранилище браузера недоступно (приватный режим) или не ответило
+const PH = { db: null, url: new Map(), mem: new Map() };
 function phDb() {
   if (!PH.db) PH.db = new Promise((res, rej) => { const r = indexedDB.open('babydiary-photos', 1); r.onupgradeneeded = () => r.result.createObjectStore('p'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
   return PH.db;
 }
 function phTx(mode, fn) {
-  return phDb().then(db => new Promise((res, rej) => {
+  const work = phDb().then(db => new Promise((res, rej) => {
     const tx = db.transaction('p', mode), r = fn(tx.objectStore('p')), fail = () => rej(tx.error || (r && r.error) || new Error('не удалось сохранить фото'));
     r.onsuccess = () => res(r.result); r.onerror = fail; tx.onabort = fail;
   }));
+  return Promise.race([work, new Promise((_, rej) => setTimeout(() => rej(new Error('хранилище не ответило')), 4000))]);
 }
-const phPut = (id, rec) => phTx('readwrite', st => st.put(rec, id));
-const phGet = id => phTx('readonly', st => st.get(id));
-const phDel = id => phTx('readwrite', st => st.delete(id));
+const phPut = (id, rec) => { PH.mem.set(id, rec); return phTx('readwrite', st => st.put(rec, id)); };
+const phGet = id => PH.mem.has(id) ? Promise.resolve(PH.mem.get(id)) : phTx('readonly', st => st.get(id));
+const phDel = id => { PH.mem.delete(id); return phTx('readwrite', st => st.delete(id)); };
 async function phUrl(id, size) {
   const k = id + ':' + size; if (PH.url.has(k)) return PH.url.get(k);
   const r = await phGet(id).catch(() => null); if (!r) return null;
@@ -1633,7 +1689,7 @@ function hydratePhotos() {
   for (const img of document.querySelectorAll('img[data-ph]')) {
     const id = img.dataset.ph, sz = img.dataset.sz || 'thumb';
     if (UI.demo && DEMO_PH[id]) { img.src = DEMO_PH[id]; continue; }
-    phUrl(id, sz).then(u => { if (u) img.src = u; else img.closest('.ph').classList.add('miss'); });
+    phUrl(id, sz).then(u => u || phFetch(id)).then(u => { if (u) img.src = u; else { const b = img.closest('.ph,.bph'); if (b) b.classList.add('miss'); } });
   }
 }
 function loadImage(file) {
@@ -1648,7 +1704,8 @@ function shrink(img, max, q) {
 async function savePhoto(file) {
   const img = await loadImage(file), id = 'ph' + uid();
   const full = await shrink(img, 1600, 0.82), thumb = await shrink(img, 480, 0.78);
-  await phPut(id, { full, thumb, at: Date.now() });
+  await phPut(id, { full, thumb, at: Date.now() }).catch(() => {}); // не сохранилось на устройстве — фото в памяти и уйдёт в таблицу
+  phQueue(id); schedulePush();
   return id;
 }
 const albumItems = () => evs().filter(e => e.t === 'first' || e.t === 'mile').sort((a, b) => a.s - b.s);
@@ -1661,9 +1718,9 @@ function ageGroup(ts) {
 }
 function viewAlbum() {
   const demo = UI.demo, list = demo ? demoAlbum() : albumItems();
-  let h = demo ? `<div class="card demo"><h3>👀 Так будет выглядеть альбом</h3><p class="hint">Это пример с нарисованными картинками — ваши записи не менялись.</p><div class="btns" style="margin-top:10px"><button class="b main" onclick="UI.demo=false;render()">Закрыть пример</button></div></div>`
+  let h = demo ? `<div class="card demo"><h3>👀 Так будет выглядеть альбом</h3><p class="hint">Это пример с нарисованными картинками — ваши записи не менялись.</p><div class="btns" style="margin-top:10px"><button class="b" onclick="openBook()">📖 Книжка</button><button class="b main" onclick="UI.demo=false;render()">Закрыть пример</button></div></div>`
     : `<div class="card"><h3>📸 Первые разы</h3><p class="hint">Улыбка, первая прогулка, первый зубик — с фото и парой слов. Отмеченные вехи развития тоже здесь.</p>
-    <div class="btns" style="margin-top:10px"><button class="b main" onclick="editFirst()">+ Добавить</button>${list.length ? '' : '<button class="b" onclick="UI.demo=true;render()">Посмотреть пример</button>'}</div></div>`;
+    <div class="btns" style="margin-top:10px"><button class="b main" onclick="editFirst()">+ Добавить</button>${list.length ? '<button class="b" onclick="openBook()">📖 Книжка для печати</button>' : '<button class="b" onclick="UI.demo=true;render()">Посмотреть пример</button>'}</div></div>`;
   if (!list.length) return h;
   let grp = '';
   h += `<div class="alb">`;
@@ -1677,7 +1734,7 @@ function viewAlbum() {
   h += `</div></div>`;
   if (!demo) { const used = new Set(list.map(e => e.fk)), rest = FIRSTS.filter(f => !used.has(f[0]));
     if (rest.length) h += `<div class="card"><h3>Ещё будет</h3><div class="fchips">${rest.map(f => `<button onclick="editFirst(null,'${f[0]}')">${f[2]} ${f[1]}</button>`).join('')}</div></div>`;
-    h += `<p class="hint" style="margin:0 0 12px">Фото пока хранятся только на этом телефоне (в уменьшенном виде, примерно 0,3 МБ каждое). Скоро они будут сохраняться на ваш Google Диск, и их увидит второй родитель.</p>`; }
+    h += `<p class="hint" style="margin:0 0 12px">Фото хранятся на телефоне в уменьшенном виде (≈0,3 МБ). В общем дневнике копия уходит в вашу Google Таблицу — её видит второй родитель.</p>`; }
   return h;
 }
 function viewFirst(id) {
@@ -1788,6 +1845,194 @@ function applyInbox() {
   return done.length;
 }
 window.babyInbox = () => { if (applyInbox() && $('#sheetWrap').hidden) render(); };
+
+/* ───────── семейный чат ─────────
+   Сообщение — событие 'msg' {s, text, ph:[id фото]} того, кто написал (by). Ходит через ту же таблицу, что и дневник:
+   у второго родителя появляется при синхронизации (в чате — раз в 10 с, иначе раз в 30 с и при открытии).
+   Прочитано — до какого времени (babydiary.chatread.v1, на устройстве). Уведомлений на закрытый телефон нет:
+   для этого нужен сервер (Firebase Cloud Functions, тариф Blaze) — см. CLAUDE.md. */
+const CHATREAD = 'babydiary.chatread.v1';
+const CHAT = { seen: null, stick: true };
+const msgs = () => evs().filter(e => e.t === 'msg').sort((a, b) => a.s - b.s);
+const chatRead = () => +lsGet(CHATREAD) || 0;
+const unread = () => { const r = chatRead(); return msgs().filter(m => m.by !== DEV && m.s > r); };
+const whoName = by => by === DEV ? 'Вы' : devName(by) || 'Второй родитель';
+function viewChat() {
+  const list = msgs();
+  let h = '';
+  if (!REMOTE) h += `<div class="card"><h3>💬 Семейный чат</h3><p class="hint">Чат — для общего дневника: войдите через Google и пригласите второго родителя (⚙ Настройки). Сообщения, написанные сейчас, уйдут, когда дневник станет общим.</p>
+    ${gOK() ? `<div class="btns" style="margin-top:10px"><button class="b" onclick="openSettings()">Открыть настройки</button></div>` : ''}</div>`;
+  if (!list.length) return h + `<div class="empty" style="padding:40px 0">Здесь будут ваши сообщения друг другу —<br>«купи смесь», «уснул в 14:20», фото.</div>`;
+  let day = null;
+  h += `<div class="chat">`;
+  for (const m of list) {
+    const d = sod(m.s);
+    if (d !== day) { h += `<div class="cday">${esc(dayTitle(d))}</div>`; day = d; }
+    const me = m.by === DEV, ph = (m.ph || [])[0];
+    h += `<div class="msg ${me ? 'me' : 'them'}"><div class="bub" onclick="msgTap('${m.id}')">${ph ? `<span class="ph cph"><img data-ph="${ph}" alt=""></span>` : ''}${m.text ? `<div class="mtx">${esc(m.text)}</div>` : ''}</div>
+      <div class="mt">${me ? '' : esc(whoName(m.by)) + ' · '}${hm(m.s)}${me && OUT_HAS(m.id) ? ' · ⏳' : ''}</div></div>`;
+  }
+  return h + `</div>`;
+}
+const OUT_HAS = id => !!REMOTE && id in lsJson(OUTKEY, {});
+function chatShow() {
+  const on = UI.tab === 'chat', bar = $('#chatbar');
+  bar.hidden = !on; document.body.classList.toggle('inchat', on);
+  const n = unread().length, b = $('#chatN'); b.textContent = n > 9 ? '9+' : n; b.hidden = !n || on;
+  if (on) {
+    const l = msgs(), mx = l.length ? l[l.length - 1].s : 0; if (mx > chatRead()) lsSet(CHATREAD, String(mx));
+    if (CHAT.stick) requestAnimationFrame(() => window.scrollTo(0, document.body.scrollHeight));
+  } else {
+    // новое сообщение, пока чат закрыт — подсказка внизу
+    const last = unread().pop();
+    if (CHAT.seen == null) CHAT.seen = last ? last.s : 0;
+    else if (last && last.s > CHAT.seen) { CHAT.seen = last.s; toast('💬 ' + whoName(last.by) + ': ' + (last.text || 'фото').slice(0, 60), { label: 'Открыть', fn: () => go('chat') }); }
+  }
+}
+function sendMsg() {
+  const i = $('#c_in'), text = i.value.trim(); if (!text) return;
+  add({ t: 'msg', s: now(), e: now(), text }); i.value = ''; chatGrow(i); CHAT.stick = true; buzz(); render();
+}
+async function sendPhoto(file) {
+  if (!file) return; $('#c_file').value = '';
+  toast('Уменьшаем фото…');
+  try { const id = await savePhoto(file); add({ t: 'msg', s: now(), e: now(), text: $('#c_in').value.trim(), ph: [id] }); $('#c_in').value = ''; CHAT.stick = true; buzz(); render(); toast('Фото отправлено'); }
+  catch (e) { toast('Не получилось добавить фото: ' + e.message); }
+}
+function chatGrow(t) { t.style.height = 'auto'; t.style.height = Math.min(120, t.scrollHeight) + 'px'; }
+function chatKey(ev) { if (ev.key === 'Enter' && !ev.shiftKey && !('ontouchstart' in window)) { ev.preventDefault(); sendMsg(); } }
+function msgTap(id) {
+  const m = evById(id); if (!m) return; const ph = (m.ph || [])[0], me = m.by === DEV;
+  if (!ph && !me) return;
+  openSheet(`${ph ? `<div class="ph big"><img data-ph="${ph}" data-sz="full" alt=""></div>` : ''}
+    ${m.text ? `<p style="white-space:pre-wrap;margin:12px 0">${esc(m.text)}</p>` : ''}<p class="hint" style="margin:8px 0 12px">${esc(whoName(m.by))} · ${esc(dayTitle(m.s))}, ${hm(m.s)}</p>
+    <div class="acts">${me ? `<button class="b del" onclick="delMsg('${id}')">Удалить</button>` : ''}<button class="b ghost" onclick="closeSheet()">Закрыть</button></div>`);
+  hydratePhotos();
+}
+function delMsg(id) { const m = evById(id); upd(m, { del: true }); closeSheet(); toast('Сообщение удалено', { label: 'Вернуть', fn: () => { upd(m, { del: false }); render(); } }); render(); }
+window.addEventListener('scroll', () => { if (UI.tab === 'chat') CHAT.stick = window.innerHeight + window.scrollY >= document.body.scrollHeight - 80; }, { passive: true });
+
+/* ───────── фото в общем дневнике ─────────
+   Фото (альбом, чат) кладём в ту же таблицу, лист «Фото»: строка = id | частей | части base64 (по 45 000 знаков —
+   в ячейке до 50 000). Копия — 1024 px, JPEG ≈ 0,1–0,2 МБ. Так второй родитель видит фото без отдельного доступа к Диску
+   (права drive.file дают ему только выбранную таблицу). Очередь отправки — babydiary.phout.v1 [{id, at}];
+   отправляем, только если фото есть в записях (пока окно правки открыто — ждём, до часа). Нет фото на устройстве —
+   скачиваем по id (phFetch) и сохраняем у себя. */
+const PHOUT = 'babydiary.phout.v1', GS_PH = 'Фото', PH_CHUNK = 45000;
+const PHX = { idx: null, idxAt: 0, wait: new Map(), tab: false };
+function phQueue(id) { const q = lsJson(PHOUT, []); if (!q.some(x => x.id === id)) { q.push({ id, at: Date.now() }); lsSet(PHOUT, JSON.stringify(q)); } }
+const phUsed = id => S.events.some(e => !e.del && (e.ph || []).includes(id));
+function blobB64(b) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(b); }); }
+function b64Blob(s, type) { const bin = atob(s), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], { type: type || 'image/jpeg' }); }
+async function photoRow(id, blob) { const s = await blobB64(blob), parts = []; for (let i = 0; i < s.length; i += PH_CHUNK) parts.push(s.slice(i, i + PH_CHUNK)); return [id, parts.length, ...parts]; }
+const rowBlob = row => b64Blob(row.slice(2, 2 + (+row[1] || 0)).join(''));
+async function gsPhotoTab() {
+  if (PHX.tab) return;
+  const meta = await gsApi('?fields=sheets.properties(title)');
+  if (!(meta.sheets || []).some(s => s.properties.title === GS_PH)) await gsApi(':batchUpdate', { method: 'POST', body: { requests: [{ addSheet: { properties: { title: GS_PH } } }] } });
+  PHX.tab = true;
+}
+async function pushPhotos() {
+  let q = lsJson(PHOUT, []); if (!q.length) return;
+  for (const it of q.slice(0, 3)) {
+    let drop = false;
+    if (phUsed(it.id)) {
+      const rec = await phGet(it.id).catch(() => null);
+      if (rec) {
+        await gsPhotoTab();
+        const src = rec.full, img = await loadImage(src), mid = (img.naturalWidth > 1024 || img.naturalHeight > 1024) ? await shrink(img, 1024, 0.74) : src;
+        await gsApi('/values/' + encodeURIComponent(GS_PH + '!A1') + ':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS', { method: 'POST', body: { values: [await photoRow(it.id, mid)] } });
+        if (PHX.idx) PHX.idx = null;
+      }
+      drop = true;
+    } else if (Date.now() - it.at > 3600e3) drop = true;
+    if (drop) { q = lsJson(PHOUT, []).filter(x => x.id !== it.id); lsSet(PHOUT, JSON.stringify(q)); }
+  }
+}
+// фото, которого нет на устройстве: найти строку на листе «Фото», собрать, сохранить у себя
+function phFetch(id) {
+  if (!REMOTE) return Promise.resolve(null);
+  if (PHX.wait.has(id)) return PHX.wait.get(id);
+  const p = (async () => {
+    if (!PHX.idx || (!PHX.idx.has(id) && Date.now() - PHX.idxAt > 60000)) {
+      const r = await gsApi('/values/' + encodeURIComponent(GS_PH + '!A:A')).catch(() => ({}));
+      PHX.idx = new Map((r.values || []).map((v, i) => [v[0], i + 1])); PHX.idxAt = Date.now();
+    }
+    const n = PHX.idx.get(id); if (!n) return null;
+    const r = await gsApi('/values/' + encodeURIComponent(GS_PH + '!A' + n + ':AZ' + n));
+    const row = (r.values || [])[0]; if (!row || row[0] !== id) { PHX.idx = null; return null; }
+    const full = rowBlob(row);
+    (async () => { try { const thumb = await shrink(await loadImage(full), 480, 0.78); await phPut(id, { full, thumb, at: Date.now(), remote: 1 }); } catch (e) {} })();
+    const u = URL.createObjectURL(full); PH.url.set(id + ':full', u); PH.url.set(id + ':thumb', u); return u;
+  })().catch(() => null).finally(() => setTimeout(() => PHX.wait.delete(id), 30000));
+  PHX.wait.set(id, p); return p;
+}
+
+/* ───────── напоминания о приёме врача (Android) ─────────
+   План на 45 дней: накануне в 20:00 и за 2 часа (настройка — babydiary.notif.v1, на устройстве).
+   Телефон ставит будильник на ближайшее (Notifier.java), после перезагрузки — заново. В браузере уведомлений нет. */
+const NOTIFKEY = 'babydiary.notif.v1';
+const notifPref = () => Object.assign({ eve: true, before: true }, lsJson(NOTIFKEY, {}));
+function notifPlan() {
+  const p = notifPref(), t = now(), out = [], nq = qs().filter(q => !q.done).length;
+  for (const v of visits()) {
+    if (v.concl || v.s <= t || v.s > t + 45 * 864e5) continue;
+    const where = [hm(v.s), v.place].filter(Boolean).join(', '), qtxt = nq ? ' Вопросов к врачу: ' + nq + '.' : '';
+    const eve = addDays(sod(v.s), -1) + 20 * 3600e3;
+    if (p.eve && eve > t) out.push({ id: 've:' + v.id, at: eve, title: 'Завтра — ' + (v.doc || 'врач'), text: where + '.' + qtxt, action: 'docs' });
+    const bf = v.s - 2 * 3600e3;
+    if (p.before && bf > t) out.push({ id: 'vb:' + v.id, at: bf, title: 'Через 2 часа — ' + (v.doc || 'врач'), text: where + '.' + qtxt + ' Не забудьте полис и прививочный сертификат.', action: 'docs' });
+  }
+  return out.sort((a, b) => a.at - b.at);
+}
+function pushNotif() {
+  if (!NATIVE || typeof NATIVE.schedule !== 'function') return;
+  const plan = notifPlan(), j = JSON.stringify(plan); if (j === pushNotif.last) return;
+  pushNotif.last = j;
+  try { NATIVE.schedule(j); if (plan.length && typeof NATIVE.askNotify === 'function') NATIVE.askNotify(); } catch (e) {}
+}
+
+/* ───────── книжка «Наш первый год» для печати ─────────
+   Страницы A5: обложка, по странице на «первый раз» (фото, название, дата и возраст, пара слов), в конце — вехи и рост.
+   Печать: в браузере window.print(), в Android — NATIVE.print (системное окно печати, можно «Сохранить как PDF»).
+   На экране страницы уменьшаются (zoom), при печати — в натуральную величину; всё остальное при печати скрыто (@media print). */
+function bookItems() { return UI.demo ? demoAlbum() : albumItems(); }
+function viewBook() {
+  const list = bookItems(), name = S.baby.name || 'Малыш', b = birthTs();
+  const cover = list.find(e => (e.ph || []).length);
+  const born = b ? (S.baby.sex === 'f' ? 'Родилась ' : S.baby.sex === 'm' ? 'Родился ' : 'День рождения — ') + new Date(b).getDate() + ' ' + MONTHS[new Date(b).getMonth()] + ' ' + new Date(b).getFullYear() : '';
+  let pg = 1, h = `<div class="noprint bookbar"><button class="b ghost" onclick="UI.tab='dev';UI.dev='album';render()">← Альбом</button><button class="b main" onclick="printBook()">🖨 Печать или PDF</button></div>
+    <p class="hint noprint" style="margin:0 0 12px">Формат A5 — половина обычного листа. В окне печати можно выбрать принтер или «Сохранить как PDF», а потом заказать печать фотокниги.</p>
+    <div class="book" id="book">`;
+  h += `<section class="bpage bcover">${cover ? `<div class="bph"><img data-ph="${cover.ph[0]}" data-sz="full" alt=""></div>` : `<div class="bemo">👶</div>`}
+    <div class="btitle">Наш первый год</div><div class="bname">${esc(name)}</div>${born ? `<div class="bsub">${esc(born)}</div>` : ''}</section>`;
+  let grp = '';
+  for (const e of list) {
+    const g = ageGroup(e.s), ph = (e.ph || [])[0]; pg++;
+    h += `<section class="bpage">${g !== grp ? `<div class="bgrp">${esc(g)}</div>` : '<div class="bgrp dim">' + esc(g) + '</div>'}
+      ${ph ? `<div class="bph"><img data-ph="${ph}" data-sz="full" alt=""></div>` : `<div class="bemo">${firstIc(e)}</div>`}
+      <div class="bt">${esc(firstTitle(e))}</div><div class="bd">${new Date(e.s).getDate()} ${MONTHS[new Date(e.s).getMonth()]} ${new Date(e.s).getFullYear()}${ageAt(e.s) ? ' · ' + esc(ageAt(e.s)) : ''}</div>
+      ${e.note ? `<div class="bn">${esc(e.note)}</div>` : ''}<div class="bno">${pg}</div></section>`;
+    grp = g;
+  }
+  const done = milesDone(), ms = MILES.filter(x => done[x.id]).sort((a, c) => done[a.id].s - done[c.id].s), g = growths(), g0 = g.find(e => e.w || e.h), g1 = [...g].reverse().find(e => e.w || e.h);
+  if (!UI.demo && (ms.length || (g0 && g1 && g0 !== g1))) {
+    pg++;
+    h += `<section class="bpage"><div class="bgrp">Чему мы научились</div><ul class="bms">${ms.map(x => `<li><span>${x.ic} ${esc(x.name)}</span><b>${esc(ageAt(done[x.id].s))}</b></li>`).join('')}</ul>
+      ${g0 && g1 && g0 !== g1 ? `<div class="bgrp" style="margin-top:8mm">Как мы росли</div><p class="bn" style="font-style:normal">${dayShort(g0.s)}: ${esc(growthTxt(g0))}<br>${dayShort(g1.s)}: ${esc(growthTxt(g1))}</p>` : ''}<div class="bno">${pg}</div></section>`;
+  }
+  return h + `</div>`;
+}
+function openBook() { UI.tab = 'book'; render(); window.scrollTo(0, 0); }
+function bookZoom() { const b = $('#book'); if (!b) return; const w = Math.min(560, $('#view').clientWidth - 32); b.style.zoom = (w / (148 / 25.4 * 96)).toFixed(3); }
+async function printBook() {
+  hydratePhotos();
+  // дождаться всех фото, иначе в PDF будут пустые места
+  for (let i = 0; i < 50; i++) { const imgs = [...document.querySelectorAll('#book img')]; if (imgs.every(x => x.complete && x.naturalWidth || x.closest('.ph,.bph').classList.contains('miss'))) break; await new Promise(r => setTimeout(r, 100)); }
+  const title = 'Наш первый год — ' + (S.baby.name || 'малыш');
+  if (NATIVE && typeof NATIVE.print === 'function') { NATIVE.print(title); return; }
+  const t = document.title; document.title = title; window.print(); document.title = t;
+}
 
 /* ───────── Google: вход и общий дневник ─────────
    Дневник — в таблице «Дневник малыша» на Google Диске того, кто вошёл первым. Права узкие (drive.file):
@@ -1924,11 +2169,13 @@ function syncInfo() {
 function schedulePush() { if (!REMOTE) return; clearTimeout(SYNC.timer); SYNC.timer = setTimeout(sync, 1500); }
 async function sync() {
   if (!REMOTE) return;
-  if (SYNC.busy) { SYNC.again = true; return SYNC.busy; }
+  // уже идёт: попросить ещё один проход и дождаться и его — иначе свежие строки придут только в следующий раз
+  if (SYNC.busy) { SYNC.again = true; await SYNC.busy; if (SYNC.busy) await SYNC.busy; return; }
   SYNC.busy = (async () => {
     setSync('busy');
     try {
       await push();
+      await pushPhotos().catch(() => {});
       const ch = await pull();
       setSync('ok');
       if (ch && $('#sheetWrap').hidden) render();
@@ -1982,15 +2229,16 @@ async function gsCreate() {
   let tz = 'Europe/Moscow'; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch (e) {}
   const head = { values: GS_HEAD.map(h => ({ userEnteredValue: { stringValue: h }, userEnteredFormat: { textFormat: { bold: true } } })) };
   const r = await gsApi(SHEETS_API, { method: 'POST', body: { properties: { title: GS_TITLE, locale: 'ru_RU', timeZone: tz },
-    sheets: [{ properties: { title: GS_TAB, gridProperties: { frozenRowCount: 1 } }, data: [{ startRow: 0, startColumn: 0, rowData: [head] }] }] } });
+    sheets: [{ properties: { title: GS_TAB, gridProperties: { frozenRowCount: 1 } }, data: [{ startRow: 0, startColumn: 0, rowData: [head] }] }, { properties: { title: GS_PH } }] } });
   return r.spreadsheetId;
 }
 async function connect(id, msg) {
   const u = await gsApi('https://openidconnect.googleapis.com/v1/userinfo');
-  REMOTE = { sheet: id, email: u.email || '' }; lsSet(RKEY, JSON.stringify(REMOTE));
+  REMOTE = { sheet: id, email: u.email || '' }; lsSet(RKEY, JSON.stringify(REMOTE)); PHX.tab = false; PHX.idx = null;
   if (u.email && (S.devs[DEV] || {}).email !== u.email) setMe({ email: u.email });
   // всё, что есть на устройстве, — в очередь (повторы не страшны: читается последняя версия)
   const o = lsJson(OUTKEY, {}); for (const k of allIds()) { const r = recOf(k); if (r) o[k] = r.u; } lsSet(OUTKEY, JSON.stringify(o));
+  for (const e of S.events) for (const ph of e.del ? [] : e.ph || []) phQueue(ph);
   closeSheet(); await sync(); render();
   if (msg) toast(msg);
 }
@@ -2075,6 +2323,8 @@ function launch(act) {
   if (a === 'sleep') toggleSleep();
   else if (a === 'feed') { const n = nextSide() || 'L'; if (!activeOf('feed')) breast(n); }
   else if (a === 'day') go('day');
+  else if (a === 'docs') { UI.health = 'docs'; go('health'); }
+  else if (a === 'chat') go('chat');
 }
 // ярлык Android, когда приложение уже открыто
 window.babyAction = () => { let a = null; try { a = NATIVE && NATIVE.takeAction(); } catch (e) {} if (a) { closeSheet(); launch(a); } };
@@ -2105,7 +2355,7 @@ function boot() {
   setInterval(() => { if (!$('#sheetWrap').hidden) { tick(); return; } const n = isNight(); if (n !== document.documentElement.hasAttribute('data-night')) applyNight(); tick(); }, 1000);
   setInterval(() => { if ($('#sheetWrap').hidden) render(); }, 60000);
   // общий дневник: пока приложение открыто — забираем записи второго родителя раз в 30 секунд
-  setInterval(() => { if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need') sync(); }, 30000);
+  let tk = 0; setInterval(() => { tk++; if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need' && (UI.tab === 'chat' || tk % 3 === 0)) sync(); }, 10000);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || !$('#sheetWrap').hidden) return;
     S = load(); applyInbox(); render();
