@@ -2484,10 +2484,20 @@ async function gsLogin() {
 // первый вход: своя таблица (созданная приложением раньше или выбранная в окне Google) — или новая
 async function gsSetup() {
   setSync('busy');
-  const q = "name='" + GS_TITLE + "' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false";
-  const f = (await gsApi(DRIVE_API + '?q=' + encodeURIComponent(q) + '&spaces=drive&orderBy=createdTime&fields=files(id)')).files || [];
-  let id = f[0] && f[0].id, made = false;
-  if (!id) { id = await gsCreate(); made = true; }
+  const q = "name='" + GS_TITLE + "' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false",
+    find = async x => ((await gsApi(DRIVE_API + '?q=' + encodeURIComponent(q + x) + '&spaces=drive&orderBy=createdTime&fields=files(id)')).files || [])[0];
+  const f = await find(" and 'me' in owners");
+  let id = f && f.id, made = false;
+  if (!id) {
+    // своей нет, но с человеком поделились общим дневником: открыть его можно только через окно выбора Google
+    const sh = await find(" and not 'me' in owners");
+    if (sh) {
+      const picked = await canOpen(sh.id) ? sh.id : await pickSheet(sh.id);
+      if (!picked) { setSync('off'); return; }
+      return connect(picked, 'Готово: теперь у вас общий дневник');
+    }
+    id = await gsCreate(); made = true;
+  }
   await connect(id, made ? 'Готово: дневник сохраняется в таблицу «' + GS_TITLE + '» на вашем Google Диске' : 'Вход выполнен — дневник из вашей таблицы «' + GS_TITLE + '»');
 }
 async function gsCreate() {
@@ -2511,16 +2521,23 @@ async function connect(id, msg) {
 function openJoin(id) {
   openSheet(`<h2>👪 Общий дневник</h2><p style="color:var(--text-2);margin:0">Вас пригласили вести дневник малыша вместе. Войдите через Google тем аккаунтом, на который пришло приглашение, и выберите таблицу «${GS_TITLE}».</p>
     <p class="hint" style="margin-top:10px">Записи, которые уже есть на этом телефоне, добавятся в общий дневник.</p>
+    <p class="hint" style="margin-top:6px">Если Google пишет про файлы cookie или окно выбора не открывается — откройте эту ссылку в Chrome (Яндекс Браузер и некоторые другие блокируют окно Google).</p>
     <div class="acts" style="margin-top:16px"><button class="b ghost" onclick="closeSheet()">Позже</button><button class="b main" onclick="gsJoin('${esc(id)}')">Войти через Google</button></div>`);
 }
 async function gsJoin(id) {
   if (!tokOk() && !window.__gtest && !NATIVE) return gsRedirect({ interactive: true, first: true, join: id || '-' });
   try {
     if (NATIVE && !tokOk()) await gsAuth(true);
-    const picked = await pickSheet(id && id !== '-' ? id : '');
+    const own = id && id !== '-' ? id : '';
+    const picked = own && await canOpen(own) ? own : await pickSheet(own);
     if (!picked) return;
     await connect(picked, 'Готово: теперь у вас общий дневник');
   } catch (e) { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось открыть общий дневник: ' + e.message); }
+}
+// доступ к общей таблице уже есть (выбирали в окне Google раньше — например, в браузере до ярлыка на экране)
+async function canOpen(id) {
+  try { await gsApi(SHEETS_API + '/' + encodeURIComponent(id) + '?fields=spreadsheetId'); return true; }
+  catch (e) { if (e.status === 403 || e.status === 404) return false; throw e; }
 }
 function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('нет связи')); document.head.appendChild(s); }); }
 // окно Google «выберите таблицу»: выбор даёт приложению доступ к чужой (приглашённой) таблице
@@ -2540,23 +2557,29 @@ async function pickSheet(id) {
       .build().setVisible(true);
   });
 }
-const joinLink = () => gRedirectUri() + '?join=' + encodeURIComponent(REMOTE.sheet);
+const SITE_URL = 'https://tromb17.github.io/baby-diary-app/';
+const joinLink = () => (/^https:\/\/[^/]*github\.io\//.test(location.href) ? gRedirectUri() : SITE_URL) + '?join=' + encodeURIComponent(REMOTE.sheet);
+const inviteText = () => 'Давай вести дневник малыша вместе! Открой ссылку и войди через Google (тем адресом, на который пришло это письмо), потом выбери таблицу «' + GS_TITLE + '»:\n\n' + joinLink();
 async function invite() {
   const em = $('#s_inv').value.trim(), err = m => { $('#s_ierr').textContent = m; };
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return err('Проверьте адрес почты');
   if (em.toLowerCase() === (REMOTE.email || '').toLowerCase()) return err('Это ваш адрес — нужен адрес второго родителя');
   err(''); $('#s_invb').disabled = true;
   try {
-    const msg = 'Давай вести дневник малыша вместе! Открой ссылку и войди через Google: ' + joinLink();
-    await gsApi(DRIVE_API + '/' + REMOTE.sheet + '/permissions?sendNotificationEmail=true&fields=id&emailMessage=' + encodeURIComponent(msg),
+    await gsApi(DRIVE_API + '/' + REMOTE.sheet + '/permissions?sendNotificationEmail=false&fields=id',
       { method: 'POST', body: { role: 'writer', type: 'user', emailAddress: em } });
-    $('#s_inv').value = ''; toast('Приглашение отправлено на ' + em);
+    $('#s_inv').value = '';
+    const mail = 'mailto:' + encodeURIComponent(em) + '?subject=' + encodeURIComponent('Дневник малыша — общий дневник') + '&body=' + encodeURIComponent(inviteText());
+    openMail(mail);
+    toast('Доступ открыт. Осталось отправить письмо со ссылкой на ' + em + ' — оно открылось в почте');
   } catch (e) { err('Не получилось: ' + e.message); }
   finally { const b = $('#s_invb'); if (b) b.disabled = false; }
 }
+function openMail(u) { if (NATIVE && typeof NATIVE.openUrl === 'function') NATIVE.openUrl(u); else location.href = u; }
 function shareLink() {
   const l = joinLink();
-  if (navigator.share) navigator.share({ title: 'Дневник малыша', text: 'Присоединяйся к дневнику малыша', url: l }).catch(() => {});
+  if (NATIVE && typeof NATIVE.share === 'function') { NATIVE.share(inviteText()); return; }
+  if (navigator.share) navigator.share({ title: 'Дневник малыша', text: inviteText() }).catch(() => {});
   else { try { navigator.clipboard.writeText(l); } catch (e) {} toast('Ссылка скопирована'); }
 }
 function gsLogout() {
@@ -2576,7 +2599,7 @@ function settingsShare(me) {
     <label class="f"><span>Пригласить второго родителя — его почта Google</span><input id="s_inv" type="email" inputmode="email" placeholder="name@gmail.com" autocomplete="off"></label>
     <div class="err" id="s_ierr"></div>
     <div class="btns"><button class="b" id="s_invb" onclick="invite()">Пригласить</button><button class="b ghost" onclick="shareLink()">Отправить ссылку</button></div>
-    <p class="hint" style="margin:8px 0 0">Сначала пригласите по почте — ему придёт письмо со ссылкой. Ссылка открывает дневник только тем, кого пригласили.</p>
+    <p class="hint" style="margin:8px 0 0">«Пригласить» открывает доступ и готовит письмо со ссылкой на дневник — останется нажать «Отправить». Ссылка работает только для тех, кого пригласили.</p>
     <div class="btns" style="margin-top:12px"><button class="b ghost" onclick="gsLogout()">Выйти из Google</button></div>`;
 }
 
