@@ -370,6 +370,55 @@ body.withsnd{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
 body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
 :root[data-night] .sndbar{background:#3a2e4a;box-shadow:none}
 @media print{.sndbar{display:none!important}}
+/* звук: пауза */
+.sndbar .sb-p{margin-right:2px;font-size:10px;letter-spacing:-1px}
+.sndbar.paused{background:color-mix(in srgb,var(--c-sleep) 70%,#777)}
+/* звёзды мерцают */
+.zoo svg.tw{filter:blur(.4px);animation:tw 4s ease-in-out infinite}
+.zoo svg.tw.dot{filter:none}
+@keyframes tw{0%,100%{opacity:.95;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
+@media (prefers-reduced-motion:reduce){.zoo svg.tw{animation:none}}
+/* чат */
+.chint{text-align:center;font-size:11.5px;color:var(--muted);margin:2px 0 8px}
+/* сон: сегодня и прогноз */
+.srow.today .sd{color:var(--c-sleep);font-weight:700;font-size:11.5px}
+.strip i.sleep.live{opacity:.5}
+.fcast .slist li b{color:var(--c-sleep);font-variant-numeric:tabular-nums}
+.fcast .slist li.over{opacity:.6} .fcast .slist li.nt{background:color-mix(in srgb,var(--c-sleep) 14%,transparent)}
+/* скачки по дням */
+.lleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--text-2);margin:8px 0}
+.lleg span{display:flex;align-items:center;gap:5px}
+.lleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.lleg u,.ld u{width:6px;height:6px;border-radius:50%;background:var(--c-feed);display:inline-block}
+.ltl{display:flex;align-items:flex-end;gap:2px;height:96px;overflow-x:auto;overflow-y:hidden;padding:4px 2px 18px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.ld{position:relative;flex:0 0 12px;height:100%;border:0;background:transparent;padding:0;display:flex;align-items:flex-end;cursor:pointer}
+.ld i{display:block;width:100%;border-radius:4px 4px 2px 2px}
+.ld.p0 i,.lleg .p0{height:18%;background:#ffd66b} .ld.p1 i,.lleg .p1{height:42%;background:#9fc7ef}
+.ld.p2 i,.lleg .p2{height:68%;background:#8b8fd8} .ld.p3 i,.lleg .p3{height:100%;background:#6c5ba8}
+.lleg i{height:10px!important}
+.ld.past i{opacity:.45}
+.ld.td i{outline:2px solid var(--accent);outline-offset:1px}
+.ld.sel i{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text)}
+.ld u{position:absolute;left:3px;top:-2px}
+.ld em{position:absolute;bottom:-17px;left:0;font-style:normal;font-size:10px;color:var(--muted)}
+.lax{font-size:10.5px;color:var(--muted);text-align:right;margin-top:-2px}
+.lnav{display:flex;gap:6px;margin:8px 0}
+.lnav .b{flex:1;padding:8px 4px;font-size:13px}
+.lmemo{background:var(--surface-2);border-radius:14px;padding:12px}
+.lm-h{display:flex;gap:10px;align-items:center}
+.lm-ic{font-size:30px;line-height:1}
+.lm-p{font-weight:700;color:var(--c-sleep)}
+/* картинки к прикорму */
+.fpic{display:block;flex:none}
+.fpic.sm{width:62px;height:52px}
+.fpic.lg{width:150px;height:125px;margin:2px auto 4px}
+ul.ways li{align-items:center}
+ul.ways li > div{display:flex;flex-direction:column;gap:2px}
+ul.ways li > div b{width:auto}
+details.rcpd summary{align-items:center}
+details.rcpd summary .fpic.sm{width:44px;height:38px}
+details.rcpd[open] summary .fpic.sm{visibility:hidden;width:0}
+p.lyr.tale{margin:4px 0}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -396,6 +445,7 @@ body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
   <!-- звёзды и облачко -->
   <svg viewBox="0 0 24 24" style="width:46px;top:210px;left:42%"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg>
   <svg viewBox="0 0 24 24" style="width:30px;top:470px;left:58%"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffc6a0"/></svg>
+  <svg class="tw" viewBox="0 0 24 24" style="width:18px;top:96px;left:12%;animation-delay:0s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:14px;top:300px;left:84%;animation-delay:1.2s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffe9a8"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:22px;top:420px;left:20%;animation-delay:2.1s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffc6a0"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:12px;top:520px;left:46%;animation-delay:0.6s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:16px;top:640px;left:6%;animation-delay:1.8s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffe08a"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:20px;top:700px;left:70%;animation-delay:2.7s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:12px;top:860px;left:38%;animation-delay:0.3s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffc6a0"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:18px;top:940px;left:88%;animation-delay:1.5s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffe08a"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:14px;top:1020px;left:16%;animation-delay:2.4s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:24px;top:1100px;left:60%;animation-delay:0.9s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffe9a8"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:12px;top:40px;left:62%;animation-delay:3.1s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:16px;top:250px;left:30%;animation-delay:1.1s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffe08a"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:10px;top:380px;left:94%;animation-delay:2.2s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffc6a0"/></svg><svg class="tw" viewBox="0 0 24 24" style="width:14px;top:1200px;left:40%;animation-delay:0.4s"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#ffd66b"/></svg><svg class="tw dot" viewBox="0 0 10 10" style="width:7px;top:160px;left:72%;animation-delay:0.5s"><circle cx="5" cy="5" r="4" fill="#ffe7a0"/></svg><svg class="tw dot" viewBox="0 0 10 10" style="width:6px;top:340px;left:52%;animation-delay:1.9s"><circle cx="5" cy="5" r="4" fill="#ffe7a0"/></svg><svg class="tw dot" viewBox="0 0 10 10" style="width:8px;top:590px;left:28%;animation-delay:2.6s"><circle cx="5" cy="5" r="4" fill="#ffe7a0"/></svg><svg class="tw dot" viewBox="0 0 10 10" style="width:6px;top:780px;left:92%;animation-delay:1.3s"><circle cx="5" cy="5" r="4" fill="#ffe7a0"/></svg><svg class="tw dot" viewBox="0 0 10 10" style="width:7px;top:990px;left:50%;animation-delay:0.2s"><circle cx="5" cy="5" r="4" fill="#ffe7a0"/></svg><svg class="tw dot" viewBox="0 0 10 10" style="width:6px;top:1160px;left:8%;animation-delay:2.0s"><circle cx="5" cy="5" r="4" fill="#ffe7a0"/></svg>
   <svg viewBox="0 0 64 40" style="width:130px;top:24px;left:22%"><path d="M16 36a12 12 0 0 1-1-24A16 16 0 0 1 45 10a12 12 0 0 1 3 26z" fill="#ffffff" opacity=".9"/></svg>
 </div>
 <header class="top">
@@ -627,7 +677,7 @@ function viewNow() {
   const f = activeOf('feed'), sl = activeOf('sleep');
   if (f) h += liveFeed(f);
   if (sl) h += `<div class="card sleep live"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Спит<span class="more">график →</span></h3>
-    <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>
+    <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}${(x => x ? '<br>' + x : '')(forecastLine())}</div>
     <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">☀️</span>Проснулся</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
 
   // кормление
@@ -648,6 +698,7 @@ function viewNow() {
       const mins = (now() - aw) / 60000;
       st = `Проснулся в ${hm(aw)}, не спит уже <b>${fmtMin(now() - aw)}</b>`;
       if (w) st += mins > w[3] ? `<br><span class="warn">Пора укладывать</span> — ориентир для возраста ${w[1]}` : `<br>Ориентир бодрствования: ${w[1]}`;
+      const fl = forecastLine(); if (fl) st += '<br>' + fl;
     }
     h += `<div class="card sleep"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Сон<span class="more">график →</span></h3><div class="st tap" onclick="go('sleep')">${st}</div>
       <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">🌙</span>Уснул</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
@@ -1124,7 +1175,7 @@ const VAX = [
   { id: 'hibr', age: 18, name: 'Гемофильная инфекция — ревакцинация', dis: 'гемофильная инфекция типа b', need: 'all' },
 ];
 const VAX_AGE = a => a === 0 ? 'При рождении' : a < 1 ? '3–7 дней' : (a === 4.5 ? '4,5' : a) + ' ' + pl(Math.floor(a), 'месяц', 'месяца', 'месяцев');
-const NEED = { all: ['Обязательная', 'по национальному календарю'], risk: ['Группы риска', 'по решению врача'], opt: ['По желанию', 'платно, рекомендуют педиатры'] };
+const NEED = { all: ['По нац. календарю', 'бесплатно в поликлинике'], risk: ['Группы риска', 'по решению врача'], opt: ['По желанию', 'платно, рекомендуют педиатры'] };
 const vaxDone = () => { const m = {}; for (const e of evs()) if (e.t === 'vax') m[e.vid] = e; return m; };
 const vaxDue = a => { const b = birthTs(); return b == null ? null : a < 1 ? b + (a === 0 ? 0 : 3 * 864e5) : +new Date(new Date(b).setMonth(new Date(b).getMonth() + Math.floor(a))) + (a % 1 ? 15 * 864e5 : 0); };
 // пора / скоро: обязательные, срок которых наступил (или через ≤ 14 дней) и которые не отмечены
@@ -1135,7 +1186,7 @@ function vaxSoon() {
 function viewVax() {
   if (!birthTs()) return needBirth('рассчитать даты прививок');
   const done = vaxDone(), t = now(), ages = [...new Set(VAX.map(v => v.age))];
-  let h = `<div class="vleg"><span class="vtag all">Обязательная</span><span class="vtag risk">Группы риска</span><span class="vtag opt">По желанию</span></div>`;
+  let h = `<div class="vleg"><span class="vtag all">По национальному календарю</span><span class="vtag risk">Группы риска</span><span class="vtag opt">По желанию</span></div>`;
   for (const a of ages) {
     const due = vaxDue(a), items = VAX.filter(v => v.age === a);
     const allDone = items.filter(v => v.need === 'all').every(v => done[v.id]);
@@ -1207,8 +1258,8 @@ function viewMiles() {
   const item = (x, st) => { const d = done[x.id];
     return `<li class="${st}" onclick="editMile('${x.id}')"><span class="ic">${x.ic}</span><span class="tx"><div>${esc(x.name)}</div><small>${d ? '✓ ' + dayShort(d.s) + ' — в ' + esc(ageAt(d.s)) + (d.note ? ' · ' + esc(d.note) : '') : 'обычно ' + mRu(x.lo) + '–' + mRu(x.hi) + ' мес.' + (x.note ? ' · ' + esc(x.note) : '')}</small></span>${d ? '<span class="vchk on">✓</span>' : '<span class="vchk"></span>'}</li>`; };
   const sec = (t, list, st, hint) => list.length ? `<div class="card"><h3>${t}</h3>${hint ? `<p class="hint">${hint}</p>` : ''}<ul class="list mlist">${list.map(x => item(x, st)).join('')}</ul></div>` : '';
-  h += sec('Сейчас самое время', now_, 'cur');
   h += sec('Стоит обсудить с педиатром', late, 'late', 'Обычно к этому возрасту уже получается. Чаще всего это просто свой темп, но лучше спокойно рассказать врачу на ближайшем приёме.');
+  h += sec('Сейчас самое время', now_, 'cur');
   h += sec('Уже умеет', MILES.filter(x => done[x.id]).sort((a, b) => done[a.id].s - done[b.id].s), 'ok');
   h += sec('Впереди', later, 'next');
   h += `<p class="hint" style="margin:0 0 12px">Источники: окна двигательного развития ВОЗ (WHO Motor Development Study, 2006); вехи CDC «Learn the Signs. Act Early» (2022). Это не диагноз — при любых сомнениях обращайтесь к педиатру.</p>`;
@@ -1479,22 +1530,22 @@ function viewFood() {
   }
   if (own.length) h += `<div class="fgrp"><div class="vhead"><b>🥄 Свои продукты</b></div><div class="fchips">${own.map(x => `<button class="${x.st}" onclick="editFood(null,'${esc(x.fid)}')">${x.st === 'ok' ? '✓ ' : x.st === 'react' ? '⚠ ' : ''}${esc(foodName(x.fid, x.name))}</button>`).join('')}</div></div>`;
   h += `<div class="btns" style="margin-top:12px"><button class="b ghost" onclick="editFood(null,'')">+ Другой продукт</button></div></div>`;
-  h += `<div class="card"><h3>🍲 Рецепты</h3><p class="hint">До года — без соли и сахара. Всё мягкое, без комочков в начале, потом — мельче вилкой и кусочками.</p>${RECIPES.map(r => `<details class="ckp${am != null && am < r.from ? ' early' : ''}"><summary><b>${r.ic} ${r.name}</b><span class="vdate">с ${r.from} мес.</span></summary>
-    <p class="hint" style="color:var(--text-2)"><b>Нужно:</b> ${r.need}</p><ol class="rcp">${r.steps.map(x => `<li>${x}</li>`).join('')}</ol></details>`).join('')}</div>`;
+  h += `<div class="card"><h3>🍲 Рецепты</h3><p class="hint">До года — без соли и сахара. Всё мягкое, без комочков в начале, потом — мельче вилкой и кусочками.</p>${RECIPES.map(r => `<details class="ckp rcpd${am != null && am < r.from ? ' early' : ''}"><summary>${foodPic(r.pic[0], r.pic[1], 'sm')}<b>${r.name}</b><span class="vdate">с ${r.from} мес.</span></summary>
+    <div class="rpic">${foodPic(r.pic[0], r.pic[1], 'lg')}</div><p class="hint" style="color:var(--text-2)"><b>Нужно:</b> ${r.need}</p><ol class="rcp">${r.steps.map(x => `<li>${x}</li>`).join('')}</ol></details>`).join('')}</div>`;
   h += `<p class="hint" style="margin:0 0 12px">Сроки — ориентиры «Программы оптимизации вскармливания детей первого года жизни в РФ» (Союз педиатров России, 2019) и рекомендаций ВОЗ. Когда и с чего начинать — решайте с педиатром, особенно если есть аллергия.</p>`;
   return h;
 }
 const RECIPES = [
-  { ic: '🥒', name: 'Пюре из кабачка', from: 4, need: '1 небольшой кабачок, вода', steps: ['Очистить, убрать семена, нарезать кубиками.', 'Варить в небольшом количестве воды или на пару 10–15 минут до мягкости.', 'Измельчить блендером, разбавить отваром до жидкой консистенции.', 'Первый раз — ½–1 чайная ложка, тёплым.'] },
-  { ic: '🥦', name: 'Пюре из брокколи или цветной капусты', from: 4, need: '5–6 соцветий, вода', steps: ['Разобрать на соцветия, промыть.', 'Варить на пару 10–12 минут.', 'Измельчить, разбавить отваром. Со 2-й недели — пара капель растительного масла.'] },
-  { ic: '🥣', name: 'Гречневая каша на воде', from: 4, need: '1 ст. ложка гречки, 100 мл воды', steps: ['Гречку промыть, подсушить и смолоть в кофемолке.', 'Всыпать в кипящую воду, помешивая, варить 10 минут.', 'Остудить до тёплой. Можно разбавить грудным молоком или смесью, которую малыш уже пьёт.'] },
-  { ic: '🍎', name: 'Печёное яблоко', from: 4, need: '1 зелёное яблоко', steps: ['Вырезать сердцевину, запечь 15–20 минут при 180 °C (или 3–4 минуты в микроволновке).', 'Снять кожицу, мякоть растереть ложкой.'] },
-  { ic: '🎃', name: 'Тыква с яблоком', from: 5, need: '100 г тыквы, ½ яблока', steps: ['Нарезать кубиками, тушить с парой ложек воды 15 минут.', 'Измельчить блендером. Хорошо идёт после того, как оба продукта уже ввели по отдельности.'] },
-  { ic: '🦃', name: 'Пюре из индейки', from: 6, need: '100 г филе индейки, овощной отвар', steps: ['Варить филе 40–50 минут, первую воду через 5 минут слить.', 'Дважды пропустить через блендер, разбавить отваром.', 'Начинать с ½ ч. ложки, добавляя в привычное овощное пюре.'] },
-  { ic: '🍲', name: 'Суп-пюре из овощей с мясом', from: 7, need: 'кабачок, цветная капуста, немного картофеля, 30 г варёного мяса', steps: ['Овощи нарезать и варить 15–20 минут.', 'Добавить варёное мясо, измельчить всё блендером.', 'Капля растительного масла — в тарелку.'] },
-  { ic: '🐟', name: 'Рыбное пюре', from: 8, need: '80 г филе трески или хека', steps: ['Варить на пару 10–15 минут, тщательно проверить на косточки.', 'Измельчить с овощным отваром. Рыба — 1–2 раза в неделю вместо мяса.'] },
-  { ic: '🥕', name: 'Паровые тефтельки', from: 9, need: '100 г фарша индейки, 1 ст. ложка риса (отварного), 1 ч. ложка тёртой моркови', steps: ['Смешать, скатать шарики с грецкий орех.', 'Готовить на пару 20 минут.', 'Давать, размяв вилкой, — так малыш учится жевать.'] },
-  { ic: '🥞', name: 'Сырнички без сахара', from: 10, need: '100 г детского творога, 1 желток, 1 ст. ложка муки, ½ банана', steps: ['Размять банан, смешать с творогом, желтком и мукой.', 'Выложить ложкой на противень с пергаментом.', 'Запекать 15–20 минут при 180 °C. Давать мягкими кусочками.'] },
+  { ic: '🥒', name: 'Пюре из кабачка', pic: ['zucchini', 'puree'], from: 4, need: '1 небольшой кабачок, вода', steps: ['Очистить, убрать семена, нарезать кубиками.', 'Варить в небольшом количестве воды или на пару 10–15 минут до мягкости.', 'Измельчить блендером, разбавить отваром до жидкой консистенции.', 'Первый раз — ½–1 чайная ложка, тёплым.'] },
+  { ic: '🥦', name: 'Пюре из брокколи или цветной капусты', pic: ['broc', 'puree'], from: 4, need: '5–6 соцветий, вода', steps: ['Разобрать на соцветия, промыть.', 'Варить на пару 10–12 минут.', 'Измельчить, разбавить отваром. Со 2-й недели — пара капель растительного масла.'] },
+  { ic: '🥣', name: 'Гречневая каша на воде', pic: ['buckwheat', 'porridge'], from: 4, need: '1 ст. ложка гречки, 100 мл воды', steps: ['Гречку промыть, подсушить и смолоть в кофемолке.', 'Всыпать в кипящую воду, помешивая, варить 10 минут.', 'Остудить до тёплой. Можно разбавить грудным молоком или смесью, которую малыш уже пьёт.'] },
+  { ic: '🍎', name: 'Печёное яблоко', pic: ['apple', 'mash'], from: 4, need: '1 зелёное яблоко', steps: ['Вырезать сердцевину, запечь 15–20 минут при 180 °C (или 3–4 минуты в микроволновке).', 'Снять кожицу, мякоть растереть ложкой.'] },
+  { ic: '🎃', name: 'Тыква с яблоком', pic: ['pumpkin', 'puree'], from: 5, need: '100 г тыквы, ½ яблока', steps: ['Нарезать кубиками, тушить с парой ложек воды 15 минут.', 'Измельчить блендером. Хорошо идёт после того, как оба продукта уже ввели по отдельности.'] },
+  { ic: '🦃', name: 'Пюре из индейки', pic: ['turkey', 'puree'], from: 6, need: '100 г филе индейки, овощной отвар', steps: ['Варить филе 40–50 минут, первую воду через 5 минут слить.', 'Дважды пропустить через блендер, разбавить отваром.', 'Начинать с ½ ч. ложки, добавляя в привычное овощное пюре.'] },
+  { ic: '🍲', name: 'Суп-пюре из овощей с мясом', pic: ['carrot', 'porridge'], from: 7, need: 'кабачок, цветная капуста, немного картофеля, 30 г варёного мяса', steps: ['Овощи нарезать и варить 15–20 минут.', 'Добавить варёное мясо, измельчить всё блендером.', 'Капля растительного масла — в тарелку.'] },
+  { ic: '🐟', name: 'Рыбное пюре', pic: ['cod', 'puree'], from: 8, need: '80 г филе трески или хека', steps: ['Варить на пару 10–15 минут, тщательно проверить на косточки.', 'Измельчить с овощным отваром. Рыба — 1–2 раза в неделю вместо мяса.'] },
+  { ic: '🥕', name: 'Паровые тефтельки', pic: ['turkey', 'balls'], from: 9, need: '100 г фарша индейки, 1 ст. ложка риса (отварного), 1 ч. ложка тёртой моркови', steps: ['Смешать, скатать шарики с грецкий орех.', 'Готовить на пару 20 минут.', 'Давать, размяв вилкой, — так малыш учится жевать.'] },
+  { ic: '🥞', name: 'Сырнички без сахара', pic: ['cottage', 'patty'], from: 10, need: '100 г детского творога, 1 желток, 1 ст. ложка муки, ½ банана', steps: ['Размять банан, смешать с творогом, желтком и мукой.', 'Выложить ложкой на противень с пергаментом.', 'Запекать 15–20 минут при 180 °C. Давать мягкими кусочками.'] },
 ];
 let FEDIT = null;
 function editFood(id, fid) {
@@ -1615,7 +1666,7 @@ const TUNES = {
   silent: { q: .27, n: 'G4:3 A4:1 G4:2 E4:6 G4:3 A4:1 G4:2 E4:6 D5:4 D5:2 B4:6 C5:4 C5:2 G4:6 A4:4 A4:2 C5:3 B4:1 A4:2 G4:3 A4:1 G4:2 E4:6 A4:4 A4:2 C5:3 B4:1 A4:2 G4:3 A4:1 G4:2 E4:6 D5:4 D5:2 F5:3 D5:1 B4:2 C5:6 E5:6 C5:3 G4:1 E4:2 G4:3 F4:1 D4:2 C4:12 -:6' },
   twinkle: { q: .34, n: 'C4:2 C4:2 G4:2 G4:2 A4:2 A4:2 G4:4 F4:2 F4:2 E4:2 E4:2 D4:2 D4:2 C4:4 G4:2 G4:2 F4:2 F4:2 E4:2 E4:2 D4:4 G4:2 G4:2 F4:2 F4:2 E4:2 E4:2 D4:4 C4:2 C4:2 G4:2 G4:2 A4:2 A4:2 G4:4 F4:2 F4:2 E4:2 E4:2 D4:2 D4:2 C4:4 -:6' },
 };
-const SND = { ctx: null, src: null, gain: null, lfo: null, id: null, until: 0, bufs: {}, t: null };
+const SND = { ctx: null, src: null, gain: null, lfo: null, id: null, until: 0, bufs: {}, t: null, paused: 0 };
 const sndPref = () => Object.assign({ timer: 30, vol: 0.6 }, lsJson(SND_KEY, {}));
 const noteHz = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); const i = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] ? 1 : 0); return 440 * Math.pow(2, (i + (+m[3] + 1) * 12 - 69) / 12); };
 function sndBuffer(ctx, id) {
@@ -1658,6 +1709,7 @@ function sndBuffer(ctx, id) {
 function sndPlay(id) {
   if (SND.id === id) { sndStop(); return; }
   sndStop(true);
+  if (SND.paused) { SND.paused = 0; if (SND.ctx) SND.ctx.resume(); }
   const AC = window.AudioContext || window.webkitAudioContext; if (!AC) { toast('Этот браузер не умеет играть звуки'); return; }
   const ctx = SND.ctx || (SND.ctx = new AC()); if (ctx.state === 'suspended') ctx.resume();
   const p = sndPref(), src = ctx.createBufferSource(), g = ctx.createGain(), t0 = ctx.currentTime;
@@ -1687,12 +1739,20 @@ function sndGain(vol, start) {
 function sndStop(quiet) {
   const src = SND.src, g = SND.gain, ctx = SND.ctx;
   SND.src = null; SND.id = null; SND.until = 0;
+  if (SND.paused) { SND.paused = 0; try { if (src) src.stop(); if (SND.lfo) SND.lfo.stop(); } catch (e) {} SND.lfo = null; if (ctx) ctx.resume(); if (!quiet) render(); return; }
   if (src && ctx) { const t = ctx.currentTime; try { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0.0001, t + 0.6); src.stop(t + 0.7); if (SND.lfo) SND.lfo.stop(t + 0.7); } catch (e) {} }
   SND.lfo = null;
   if (!quiet) render();
 }
 function sndSet(k, v) { const p = sndPref(); p[k] = v; lsSet(SND_KEY, JSON.stringify(p)); if (k === 'vol') { sndGain(v); return; } if (k === 'timer' && SND.src) { const id = SND.id; SND.id = null; sndPlay(id); return; } render(); }
-const sndLeft = () => SND.until ? Math.max(0, SND.until - Date.now()) : null;
+const sndLeft = () => SND.until ? Math.max(0, SND.until - (SND.paused || Date.now())) : null;
+// пауза: останавливаем часы звука (ctx.suspend) — таймер и затухание сдвигаются сами
+function sndPause() {
+  const ctx = SND.ctx; if (!SND.id || !ctx) return;
+  if (SND.paused) { if (SND.until) SND.until += Date.now() - SND.paused; SND.paused = 0; ctx.resume(); }
+  else { SND.paused = Date.now(); ctx.suspend(); }
+  render();
+}
 function spurtCard() {
   const s = spurtNow(); if (!s) return '';
   return `<div class="card spurt" onclick="UI.tab='dev';UI.dev='spurts';render()" style="cursor:pointer"><h3>🌱 Возможен скачок роста (${s[2]})</h3><p class="hint">Пару дней малыш может чаще просить есть и капризничать — это нормально. Подробнее — нажмите.</p></div>`;
@@ -1708,11 +1768,14 @@ function viewSounds() {
   let h = `<div class="card"><h3>🎵 Звуки для сна</h3><p class="hint">Шум похож на то, что малыш слышал в животике, и заглушает бытовые звуки. Ставьте телефон <b>не ближе 2 метров</b> от кроватки и на небольшую громкость — так советуют педиатры.</p>
     <div class="f" style="margin:12px 0 4px"><span>Выключить через</span>${chipsHtml('stimer', [[15, '15 мин'], [30, '30 мин'], [45, '45 мин'], [60, '1 час'], [0, 'не выключать']], p.timer)}</div>
     <label class="f" style="margin:10px 0 0"><span>Громкость</span><input type="range" id="snd_vol" min="0.05" max="1" step="0.05" value="${p.vol}" oninput="sndSet('vol',+this.value)" style="padding:0;min-height:32px;border:0;background:transparent"></label>
-    ${SND.id ? `<p class="st" style="margin:6px 0 0">${left != null ? 'Выключится через <b class="num" data-left="1">' + fmtMin(left) + '</b>, в конце — плавно' : 'Играет без таймера'}</p>` : ''}</div>`;
-  const row = s => `<li class="${SND.id === s.id ? 'on' : ''}" onclick="sndPlay('${s.id}')"><span class="ic">${s.ic}</span><span class="tx"><div>${esc(s.name)}</div><small>${esc(s.sub)}</small></span><span class="play">${SND.id === s.id ? '■' : '▶'}</span></li>`;
+    ${SND.id ? `<p class="st" style="margin:6px 0 0">${SND.paused ? 'На паузе' : left != null ? 'Выключится через <b class="num" data-left="1">' + fmtMin(left) + '</b>, в конце — плавно' : 'Играет без таймера'}</p>
+      <div class="btns" style="margin-top:8px"><button class="b" onclick="sndPause()">${SND.paused ? '▶ Продолжить' : '❚❚ Пауза'}</button><button class="b" onclick="sndStop()">■ Стоп</button></div>` : ''}</div>`;
+  const row = s => `<li class="${SND.id === s.id ? 'on' : ''}" onclick="sndPlay('${s.id}')"><span class="ic">${s.ic}</span><span class="tx"><div>${esc(s.name)}</div><small>${esc(s.sub)}</small></span><span class="play">${SND.id === s.id ? (SND.paused ? '❚❚' : '■') : '▶'}</span></li>`;
   h += `<div class="card"><h3>Шум</h3><ul class="list snds">${SOUNDS.filter(s => s.kind === 'noise').map(row).join('')}</ul></div>`;
   h += `<div class="card"><h3>Колыбельные</h3><ul class="list snds">${SOUNDS.filter(s => s.kind === 'tune').map(row).join('')}</ul></div>`;
-  h += `<div class="card"><h3>📖 Спеть самим</h3><p class="hint">Голос мамы и папы малышу милее любой записи. Народные колыбельные:</p>${LULLABIES.map(l => `<details class="ckp"><summary><b>${l.name}</b></summary><p class="lyr">${l.text.map(esc).join('<br>')}</p></details>`).join('')}</div>`;
+  const txt = l => `<details class="ckp"><summary><b>${l.name}</b>${l.by ? `<span class="vdate">${esc(l.by)}</span>` : ''}</summary><p class="lyr">${l.text.map(esc).join('<br>')}</p></details>`;
+  h += `<div class="card"><h3>📖 Спеть самим</h3><p class="hint">Голос мамы и папы малышу милее любой записи. Народные колыбельные и стихи классиков:</p>${LULLABIES.map(txt).join('')}</div>`;
+  h += `<div class="card"><h3>📚 Сказки на ночь</h3><p class="hint">Короткие народные сказки — рассказывайте медленно и тихо, с одинаковыми словами каждый раз: повторение успокаивает.</p>${TALES.map(t => `<details class="ckp"><summary><b>${t.ic} ${t.name}</b></summary><p class="lyr tale">${t.text.map(esc).join('</p><p class="lyr tale">')}</p></details>`).join('')}</div>`;
   h += `<p class="hint" style="margin:0 0 12px">Звук играет, пока приложение открыто или свёрнуто. Если телефон «усыпляет» приложения в фоне, оставьте его открытым — в ночном режиме экран почти чёрный.</p>`;
   return h;
 }
@@ -1721,6 +1784,20 @@ const LULLABIES = [
   { name: 'Котя, котенька, коток', text: ['Котя, котенька, коток,', 'Котя — серенький хвосток!', 'Приди, котик, ночевать,', 'Нашу деточку качать.', 'Уж как я тебе, коту,', 'За работу заплачу:', 'Дам кусок пирога', 'И кувшин молока.'] },
   { name: 'Ходит сон близ окон', text: ['Ходит сон близ окон,', 'Бродит дрёма возле дома.', 'И глядят, все ли спят?', 'Сон и дрёма, сон и дрёма —', 'Спи, малыш, усни,', 'Сладкий сон к тебе приди.'] },
   { name: 'Баю-бай, баю-бай, ты, собачка, не лай', text: ['Баю-бай, баю-бай,', 'Ты, собачка, не лай,', 'Белолапа, не скули,', 'Мою детку не буди.', 'Тёмна ноченька, не спится,', 'Моя детонька боится.', 'Ты, собачка, не лай,', 'Мою детку не пугай.'] },
+  { name: 'Люли, люли, люленьки', text: ['Люли, люли, люленьки,', 'Прилетели гуленьки.', 'Сели гули на кровать,', 'Стали гули ворковать.', 'Стали гули ворковать,', 'Стал малыш наш засыпать.'] },
+  { name: 'Ой, люли, люли, люли', text: ['Ой, люли, люли, люли,', 'Прилетели журавли.', 'Журавли-то мохноноги', 'Не нашли пути-дороги.', 'Они сели на ворота,', 'А ворота скрип-скрип.', 'Не будите нашу деточку —', 'Наша деточка спит.'] },
+  { name: 'Баю-баю, баиньки', text: ['Баю-баю, баиньки,', 'Купим сыну валенки,', 'Наденем на ноженьки,', 'Пустим по дороженьке.', 'Будет сынок ходить,', 'Новы валенки носить.'] },
+  { name: 'Уж ты, котенька-коток', text: ['Уж ты, котенька-коток,', 'Котик, серенький лобок,', 'Приди, котик, ночевать,', 'Нашу детоньку качать.', 'Ты, котик, не скреби,', 'Нашу деточку не буди.'] },
+  { name: 'Спи, дитя моё, усни!', by: 'А. Майков', text: ['Спи, дитя моё, усни!', 'Сладкий сон к себе мани:', 'В няньки я тебе взяла', 'Ветер, солнце и орла.', 'Улетел орёл домой;', 'Солнце скрылось под водой;', 'Ветер, после трёх ночей,', 'Мчится к матери своей.', 'Ветра спрашивает мать:', '«Где изволил пропадать?', 'Али звёзды воевал?', 'Али волны всё гонял?»', '«Не гонял я волн морских,', 'Звёзд не трогал золотых;', 'Я дитя оберегал,', 'Колыбелечку качал!»'] },
+  { name: 'Спи, младенец мой прекрасный', by: 'М. Лермонтов', text: ['Спи, младенец мой прекрасный,', 'Баюшки-баю.', 'Тихо смотрит месяц ясный', 'В колыбель твою.', 'Стану сказывать я сказки,', 'Песенку спою;', 'Ты ж дремли, закрывши глазки,', 'Баюшки-баю.'] },
+];
+// народные сказки — короткий пересказ для самых маленьких
+const TALES = [
+  { ic: '🥕', name: 'Репка', text: ['Посадил дед репку. Выросла репка большая-пребольшая.', 'Стал дед репку тянуть: тянет-потянет — вытянуть не может. Позвал дед бабку.', 'Бабка за дедку, дедка за репку — тянут-потянут, вытянуть не могут. Позвала бабка внучку.', 'Внучка за бабку, бабка за дедку, дедка за репку — тянут-потянут, вытянуть не могут. Позвала внучка Жучку.', 'Жучка за внучку, внучка за бабку… Позвала Жучка кошку, а кошка — мышку.', 'Мышка за кошку, кошка за Жучку, Жучка за внучку, внучка за бабку, бабка за дедку, дедка за репку — тянут-потянут… и вытянули репку!', 'Вот как дружно получилось. А теперь все спать.'] },
+  { ic: '🥚', name: 'Курочка Ряба', text: ['Жили-были дед да баба. И была у них курочка Ряба.', 'Снесла курочка яичко — не простое, а золотое.', 'Дед бил-бил — не разбил. Баба била-била — не разбила.', 'Мышка бежала, хвостиком махнула — яичко упало и разбилось. Плачет дед, плачет баба.', 'А курочка кудахчет: «Не плачь, дед, не плачь, баба! Я снесу вам яичко другое — не золотое, а простое».', 'Обрадовались дед с бабой — и пошли спать.'] },
+  { ic: '🟡', name: 'Колобок', text: ['Испекла бабушка колобок и положила на окошко остывать.', 'Колобок полежал-полежал да и покатился — с окошка на завалинку, с завалинки на травку, по дорожке в лес.', 'Катится, а навстречу заяц: «Колобок, колобок, я тебя съем!» А колобок поёт: «Я от дедушки ушёл, я от бабушки ушёл — и от тебя уйду!» И покатился дальше.', 'Встретил волка, встретил медведя — и от них укатился с песенкой.', 'А навстречу лиса: «Ах, какая славная песенка! Сядь ко мне на носок да спой ещё разок».', 'Колобок прыг ей на носок… да вспомнил, что дома бабушка ждёт, — и покатился обратно домой. Лёг на окошко и заснул.'] },
+  { ic: '🏠', name: 'Теремок', text: ['Стоит в поле теремок. Бежит мимо мышка-норушка: «Кто-кто в теремочке живёт?» Никто не отвечает. Стала мышка там жить.', 'Прискакала лягушка-квакушка: «Кто-кто в теремочке живёт?» — «Я, мышка-норушка. А ты кто?» — «А я лягушка-квакушка». — «Иди ко мне жить!»', 'Потом прибежал зайчик-побегайчик, пришла лисичка-сестричка, волчок — серый бочок.', 'Пришёл медведь — а в теремок не помещается. Тогда звери вместе построили новый теремок, большой-пребольшой.', 'Стали жить все вместе, дружно. Вечером свет погасили — и уснули.'] },
+  { ic: '🧤', name: 'Рукавичка', text: ['Шёл дед лесом, и обронил рукавичку.', 'Прибежала мышка, залезла в рукавичку: «Тут я буду жить». Прискакала лягушка: «Пусти и меня!» — «Иди».', 'Потом прибежал зайчик, пришла лисичка, волчок, кабан, а за ним — медведь. Тесно, тепло, весело!', 'А дед хватился рукавички и пошёл назад. Собачка впереди бежит — «гав-гав!». Звери испугались и разбежались по своим домикам.', 'Дед поднял рукавичку и пошёл домой. А звери в своих норках уснули. И ты спи.'] },
 ];
 
 /* ───────── альбом «Первые разы» ─────────
@@ -1926,7 +2003,9 @@ const CHATREAD = 'babydiary.chatread.v1';
 const CHAT = { seen: null, stick: true };
 const msgs = () => evs().filter(e => e.t === 'msg').sort((a, b) => a.s - b.s);
 const chatRead = () => +lsGet(CHATREAD) || 0;
-const unread = () => { const r = chatRead(); return msgs().filter(m => m.by !== DEV && m.s > r); };
+// «моё» — с этого телефона или с другого, но с того же аккаунта Google
+const isMe = by => by === DEV || (!!REMOTE && !!REMOTE.email && (S.devs[by] || {}).email === REMOTE.email);
+const unread = () => { const r = chatRead(); return msgs().filter(m => !isMe(m.by) && m.s > r); };
 const whoName = by => by === DEV ? 'Вы' : devName(by) || 'Второй родитель';
 function viewChat() {
   const list = msgs();
@@ -1935,11 +2014,11 @@ function viewChat() {
     ${gOK() ? `<div class="btns" style="margin-top:10px"><button class="b" onclick="openSettings()">Открыть настройки</button></div>` : ''}</div>`;
   if (!list.length) return h + `<div class="empty" style="padding:40px 0">Здесь будут ваши сообщения друг другу —<br>«купи смесь», «уснул в 14:20», фото.</div>`;
   let day = null;
-  h += `<div class="chat">`;
+  h += `<div class="chat"><div class="chint">Нажмите на сообщение, чтобы удалить его или фото</div>`;
   for (const m of list) {
     const d = sod(m.s);
     if (d !== day) { h += `<div class="cday">${esc(dayTitle(d))}</div>`; day = d; }
-    const me = m.by === DEV, ph = (m.ph || [])[0];
+    const me = isMe(m.by), ph = (m.ph || [])[0];
     h += `<div class="msg ${me ? 'me' : 'them'}"><div class="bub" onclick="msgTap('${m.id}')">${ph ? `<span class="ph cph"><img data-ph="${ph}" alt=""></span>` : ''}${m.text ? `<div class="mtx">${esc(m.text)}</div>` : ''}</div>
       <div class="mt">${me ? '' : esc(whoName(m.by)) + ' · '}${hm(m.s)}${me && OUT_HAS(m.id) ? ' · ⏳' : ''}</div></div>`;
   }
@@ -1973,14 +2052,14 @@ async function sendPhoto(file) {
 function chatGrow(t) { t.style.height = 'auto'; t.style.height = Math.min(120, t.scrollHeight) + 'px'; }
 function chatKey(ev) { if (ev.key === 'Enter' && !ev.shiftKey && !('ontouchstart' in window)) { ev.preventDefault(); sendMsg(); } }
 function msgTap(id) {
-  const m = evById(id); if (!m) return; const ph = (m.ph || [])[0], me = m.by === DEV;
-  if (!ph && !me) return;
+  const m = evById(id); if (!m) return; const ph = (m.ph || [])[0], me = isMe(m.by);
   openSheet(`${ph ? `<div class="ph big"><img data-ph="${ph}" data-sz="full" alt=""></div>` : ''}
-    ${m.text ? `<p style="white-space:pre-wrap;margin:12px 0">${esc(m.text)}</p>` : ''}<p class="hint" style="margin:8px 0 12px">${esc(whoName(m.by))} · ${esc(dayTitle(m.s))}, ${hm(m.s)}</p>
-    <div class="acts">${me ? `<button class="b del" onclick="delMsg('${id}')">Удалить</button>` : ''}<button class="b ghost" onclick="closeSheet()">Закрыть</button></div>`);
+    ${m.text ? `<p style="white-space:pre-wrap;margin:12px 0">${esc(m.text)}</p>` : ''}<p class="hint" style="margin:8px 0 12px">${esc(whoName(m.by))} · ${esc(dayTitle(m.s))}, ${hm(m.s)}${me ? '' : '<br>Удалится у всех, кто ведёт дневник.'}</p>
+    <div class="acts">${ph && m.text ? `<button class="b ghost" onclick="delMsgPhoto('${id}')">Удалить фото</button>` : ''}<button class="b del" onclick="delMsg('${id}')">${ph && !m.text ? 'Удалить фото' : 'Удалить'}</button><button class="b ghost" onclick="closeSheet()">Закрыть</button></div>`);
   hydratePhotos();
 }
 function delMsg(id) { const m = evById(id); upd(m, { del: true }); closeSheet(); toast('Сообщение удалено', { label: 'Вернуть', fn: () => { upd(m, { del: false }); render(); } }); render(); }
+function delMsgPhoto(id) { const m = evById(id), ph = m.ph; upd(m, { ph: [] }); closeSheet(); toast('Фото удалено', { label: 'Вернуть', fn: () => { upd(m, { ph }); render(); } }); render(); }
 window.addEventListener('scroll', () => { if (UI.tab === 'chat') CHAT.stick = window.innerHeight + window.scrollY >= document.body.scrollHeight - 80; }, { passive: true });
 
 /* ───────── фото в общем дневнике ─────────
@@ -2158,8 +2237,9 @@ function viewSleep() {
   const n = UI.sdays || 7, st = sleepStats(n), m = ageM(), norm = m != null ? pick(SLEEP, m) : null, wk = m != null ? pick(WAKE, m) : null, H = 3600e3;
   let h = `<div class="daynav"><button onclick="go('now')" aria-label="Назад">‹</button><h2>Сон</h2><span style="width:44px"></span></div>`;
   const sl = activeOf('sleep');
-  h += `<div class="card sleep ${sl ? 'live' : ''}"><h3><span class="dot"></span>${sl ? 'Спит' : 'Сейчас не спит'}</h3>${sl ? `<div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>` : `<p class="st">${nextSleepHint() || 'Записей сна пока нет.'}</p>`}
+  h += `<div class="card sleep ${sl ? 'live' : ''}"><h3><span class="dot"></span>${sl ? 'Спит' : 'Сейчас не спит'}</h3>${sl ? `<div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>` : `<p class="st">${forecastLine() || nextSleepHint() || 'Записей сна пока нет.'}</p>`}
     <div class="btns"><button class="b main" onclick="toggleSleep()">${sl ? '☀️ Проснулся' : '🌙 Уснул'}</button><button class="b" onclick="addKind('sleep',now())">+ Сон задним числом</button></div></div>`;
+  h += forecastCard();
   h += `<div class="seg" style="margin-bottom:12px">${[7, 14].map(x => `<button class="${n === x ? 'on' : ''}" onclick="UI.sdays=${x};render()">${x} дней</button>`).join('')}</div>`;
   if (!st.k) return h + `<div class="card"><div class="empty">За эти дни сна не записано</div></div>`;
   const inNorm = norm ? (st.tot / H < norm[2] ? 'low' : st.tot / H > norm[3] ? 'high' : 'ok') : '';
@@ -2169,12 +2249,189 @@ function viewSleep() {
     <table class="norm" style="margin-top:10px"><tr><td>Ночью (21–7)</td><td><b>${fmtMin(st.night)}</b></td></tr><tr><td>Днём</td><td><b>${fmtMin(st.day)}</b>, ${r1(st.naps)} ${pl(Math.round(st.naps), 'раз', 'раза', 'раз')}</td></tr>
     ${st.wake ? `<tr><td>Бодрствование днём</td><td><b>${fmtMin(st.wake)}</b>${wk ? ` <span class="hint">(ориентир ${wk[1]})</span>` : ''}</td></tr>` : ''}<tr><td>Самый долгий сон</td><td><b>${fmtMin(st.longest)}</b></td></tr></table>
     <p class="hint">Считаются дни с записями (${st.k} из ${st.rows.length}). Ориентиры — National Sleep Foundation, AASM/AAP; у каждого малыша свой ритм.</p></div>`;
-  h += `<div class="card"><h3>График</h3><div class="sgrid">${st.rows.slice().reverse().map(r => {
+  // сегодня — в графике и в списке (в средние не идёт: день ещё не закончился)
+  const T0 = sod(now()), tl = evs().filter(e => e.t === 'sleep' && e.s < now() && (e.e ?? now()) > T0).sort((x, y) => x.s - y.s);
+  const rowsV = [{ d: T0, list: tl, tot: tl.reduce((x, e) => x + Math.min(now(), e.e ?? now()) - Math.max(T0, e.s), 0), has: tl.length > 0, today: true }, ...st.rows.slice().reverse()];
+  h += `<div class="card"><h3>График</h3><div class="sgrid">${rowsV.map(r => {
     const p = x => ((Math.max(r.d, Math.min(addDays(r.d, 1), x)) - r.d) / 864e5 * 100).toFixed(2) + '%';
-    return `<div class="srow"><span class="sd">${WD[new Date(r.d).getDay()].slice(0, 2)} ${new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep" style="left:${p(e.s)};width:calc(${p(e.e)} - ${p(e.s)})"></i>`).join('')}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
+    return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WD[new Date(r.d).getDay()].slice(0, 2) + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
   }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div></div>`;
-  h += `<div class="card"><h3>Все сны</h3>${st.rows.slice().reverse().filter(r => r.has).map(r => `<div class="sec-t">${esc(dayTitle(r.d))} · ${fmtMin(r.tot)}</div><ul class="list">${r.list.filter(e => e.s >= r.d).map(rowHtml).join('')}</ul>`).join('')}</div>`;
+  h += `<div class="card"><h3>Все сны</h3>${rowsV.filter(r => r.has).map(r => `<div class="sec-t">${esc(dayTitle(r.d))} · ${fmtMin(r.tot)}</div><ul class="list">${r.list.filter(e => e.s >= r.d).map(rowHtml).join('')}</ul>`).join('')}</div>`;
   return h;
+}
+
+/* ───────── прогноз сна по истории ─────────
+   Последние 14 дней: бодрствование после пробуждения в похожее время дня (±1,5 ч), длина снов в похожее время,
+   время начала ночного сна — медианы (устойчивы к выбросам). Цепочка: проснётся → уснёт → … → ночной сон.
+   Мало записей (меньше 6 снов) — нет прогноза, тогда ориентир по возрасту (nextSleepHint). */
+const minOfDay = ts => { const d = new Date(ts); return d.getHours() * 60 + d.getMinutes(); };
+const median = a => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y), k = s.length >> 1; return s.length % 2 ? s[k] : (s[k - 1] + s[k]) / 2; };
+const isNightSleep = e => (e.e - e.s) >= 4 * 3600e3 && (minOfDay(e.s) >= 18 * 60 || minOfDay(e.s) < 3 * 60);
+const nightStartish = ts => minOfDay(ts) >= 19 * 60 || minOfDay(ts) < 4 * 60;
+function sleepModel() {
+  const from = addDays(sod(now()), -14);
+  const ss = evs().filter(e => e.t === 'sleep' && e.e != null && e.s >= from).sort((a, b) => a.s - b.s);
+  const gaps = [], naps = [], nights = [], nightDur = [];
+  for (let i = 0; i < ss.length; i++) {
+    const e = ss[i], night = isNightSleep(e);
+    if (night) { const m = minOfDay(e.s); nights.push(m < 12 * 60 ? m + 1440 : m); nightDur.push(e.e - e.s); } else naps.push([minOfDay(e.s), e.e - e.s]);
+    if (i) { const g = e.s - ss[i - 1].e; if (g > 10 * 60000 && g < 8 * 3600e3 && !night) gaps.push([minOfDay(ss[i - 1].e), g]); }
+  }
+  return { n: ss.length, gaps, naps, nights, nightDur };
+}
+// значение «в похожее время дня»: сначала ±90 мин, если таких меньше 2 — по всем
+function nearMed(list, m) {
+  const d = x => Math.min(Math.abs(x[0] - m), 1440 - Math.abs(x[0] - m)), near = list.filter(x => d(x) <= 90);
+  return median((near.length >= 2 ? near : list).map(x => x[1]));
+}
+function sleepForecast() {
+  const M = sleepModel(); if (M.n < 6 || !M.gaps.length) return null;
+  const T = now(), bedM = median(M.nights), out = [], sl = activeOf('sleep');
+  let bedAt = bedM != null ? sod(T) + bedM * 60000 : null;
+  let t;
+  if (sl) {
+    if (nightStartish(sl.s)) { const d = median(M.nightDur); if (d) out.push({ k: 'wake', s: sl.s + d, night: true }); return { list: out, n: M.n }; }
+    const d = nearMed(M.naps, minOfDay(sl.s)); if (!d) return null;
+    t = sl.s + d; out.push({ k: 'wake', s: t });
+  } else { t = lastAwake(); if (!t) return null; }
+  if (bedAt != null && bedAt < T - 2 * 3600e3 && bedM < 1440) bedAt = null; // ночной сон сегодня уже прошёл
+  for (let i = 0; i < 6; i++) {
+    const g = nearMed(M.gaps, minOfDay(t)); if (!g) break;
+    const s = t + g;
+    if (bedAt != null && s >= bedAt - 40 * 60000) break;
+    if (bedAt == null && minOfDay(s) >= 20 * 60) break;
+    if (sod(s) !== sod(T)) break;
+    const d = nearMed(M.naps, minOfDay(s)); if (!d) break;
+    out.push({ k: 'nap', s, e: s + d }); t = s + d;
+  }
+  if (bedAt != null && bedAt > T - 30 * 60000) out.push({ k: 'night', s: bedAt });
+  return { list: out, n: M.n };
+}
+function forecastLine() {
+  const f = sleepForecast(); if (!f || !f.list.length) return '';
+  const x = f.list[0];
+  if (x.k === 'wake') return `🔮 По истории сна — проснётся около <b>${hm(x.s)}</b>`;
+  return x.s < now() ? `🔮 Пора укладывать: по истории сна в это время обычно уже спит (около ${hm(x.s)})` : `🔮 Следующий сон — около <b>${hm(x.s)}</b> (по истории сна)`;
+}
+function forecastCard() {
+  const f = sleepForecast();
+  if (!f) return `<div class="card"><h3>🔮 Прогноз сна</h3><p class="hint">Появится, когда наберётся хотя бы 6 записанных снов за последние 2 недели: приложение посмотрит, сколько малыш обычно бодрствует и спит в разное время дня.</p></div>`;
+  if (!f.list.length) return '';
+  const row = x => x.k === 'wake' ? `<li><b>≈ ${hm(x.s)}</b><span>проснётся${x.night ? ' (утро)' : ''}</span></li>`
+    : x.k === 'night' ? `<li class="nt"><b>≈ ${hm(x.s)}</b><span>ночной сон</span></li>`
+    : `<li class="${x.s < now() ? 'over' : ''}"><b>≈ ${hm(x.s)}</b><span>${x.s < now() ? 'обычно уже спит' : 'уснёт'} · ~${fmtMin(x.e - x.s)}</span></li>`;
+  return `<div class="card fcast"><h3>🔮 Прогноз на сегодня</h3><ul class="slist">${f.list.map(row).join('')}</ul>
+    <p class="hint">По записям за 2 недели (${f.n} ${pl(f.n, 'сон', 'сна', 'снов')}): сколько малыш обычно бодрствует и спит в это время дня. Это примерно, ±30 минут — смотрите на признаки усталости.</p></div>`;
+}
+
+/* ───────── скачки развития по дням (таймлайн) ─────────
+   По книге «Чудесные недели» (ван де Рейт, Плоой): 8 скачков за первый год+, недели — от рождения (у недоношенных — от ПДР).
+   Внутри скачка: первая треть — самое беспокойное время, середина — легче, конец — отступает; потом спокойный период
+   до следующего. Научных подтверждений такому точному расписанию мало — это подсказка, а не правило. */
+const LEAP = [
+  { w: [4.5, 5.5], name: 'Мир ощущений', learn: 'Органы чувств работают по-новому: малыш дольше смотрит, иначе реагирует на звуки и запахи, может впервые осознанно улыбнуться.', help: 'Больше контакта «кожа к коже», тишина, приглушённый свет, кормление по требованию.' },
+  { w: [7.5, 9.5], name: 'Мир узоров', learn: 'Замечает узоры и формы: разглядывает свои ладошки, лампы, полоски; пробует новые звуки.', help: 'Контрастные картинки, разговоры лицом к лицу, рассматривать ладошки вместе.' },
+  { w: [11.5, 12.5], name: 'Плавные переходы', learn: 'Движения и голос становятся плавнее: следит за предметом, поворачивает голову, «поёт».', help: 'Медленные игры с погремушкой, укачивание, песенки и потешки.' },
+  { w: [14.5, 19.5], name: 'Мир событий', learn: 'Понимает короткие «события»: мяч катится, ложка падает. Хватает, тянет в рот, переворачивается. Самый долгий скачок — часто хуже спит (тот самый «регресс сна в 4 месяца»).', help: 'Одинаковые ритуалы перед сном, игрушки, которые можно схватить и потрясти. Терпение: это пройдёт.' },
+  { w: [22.5, 26.5], name: 'Взаимосвязи', learn: 'Понимает расстояние: мама ушла — значит, далеко. Отсюда тревога разлуки и плач, когда вы выходите из комнаты.', help: 'Игра «Ку-ку», говорите, куда уходите, и возвращайтесь — малыш учится, что вы всегда вернётесь.' },
+  { w: [33.5, 37.5], name: 'Категории', learn: 'Делит мир на группы: животные, игрушки, еда. Внимательно рассматривает и сравнивает.', help: 'Называйте предметы, книжки с картинками, игра «Где собачка?».' },
+  { w: [41.5, 46.5], name: 'Последовательности', learn: 'Понимает порядок действий: сначала взять, потом положить. Складывает, собирает, вставляет одно в другое.', help: 'Пирамидки, кубики, «положи в коробку». Давайте пробовать и ошибаться.' },
+  { w: [50.5, 54.5], name: 'Программы', learn: 'Понимает целые «программы»: одеваемся — значит, гулять; ужин — ванна — сон. Хочет участвовать сам.', help: 'Предсказуемый день, маленькие поручения: подать носок, «помочь» вытереть стол.' },
+];
+const LEAP_DAYS = 56 * 7;
+const PHASE = [
+  ['☀️', 'Спокойный период', 'Обычно хорошее настроение: малыш с удовольствием играет, пробует новые умения, лучше спит.'],
+  ['🌤', 'Скачок отступает', 'Становится спокойнее, малыш показывает новое умение. Капризы ещё бывают, но реже.'],
+  ['🌦', 'Середина скачка', 'Капризов обычно меньше, чем в начале, но настроение переменчивое. Уже видно первые новые умения.'],
+  ['⛈', 'Самое беспокойное время', 'Может чаще плакать, «висеть» на груди, хуже спать и проситься на руки. Это временно — мозг осваивает новое.'],
+];
+// день от рождения → { p: 0–3, i: номер скачка (или следующего), left: дней до конца/до следующего }
+function leapAt(d) {
+  for (let i = 0; i < LEAP.length; i++) {
+    const a = Math.round(LEAP[i].w[0] * 7), b = Math.round(LEAP[i].w[1] * 7);
+    if (d < a) return { p: 0, i, next: a - d };
+    if (d < b) { const x = (d - a) / (b - a); return { p: x < 1 / 3 ? 3 : x < 2 / 3 ? 2 : 1, i, left: b - d, a, b }; }
+  }
+  return { p: 0, i: -1 };
+}
+function leapMemo(d) {
+  const b = birthTs(), L = leapAt(d), ph = PHASE[L.p], ts = addDays(sod(b), d), w = Math.floor(d / 7), dd = d % 7;
+  const today = sod(now()) === ts;
+  let h = `<div class="lm-h"><span class="lm-ic">${ph[0]}</span><div><b>${today ? 'Сегодня' : esc(dayTitle(ts))}</b> · ${w} нед.${dd ? ' ' + dd + ' дн.' : ''}<div class="lm-p">${ph[1]}</div></div></div><p class="st" style="margin:8px 0 0">${ph[2]}</p>`;
+  if (L.p) {
+    const x = LEAP[L.i];
+    h += `<p class="st" style="margin:8px 0 0"><b>Скачок ${L.i + 1} — «${esc(x.name)}»</b> (≈ ${String(x.w[0]).replace('.', ',')}–${String(x.w[1]).replace('.', ',')} нед.), до конца — ${L.left} ${pl(L.left, 'день', 'дня', 'дней')}.</p>
+      <p class="hint" style="margin:6px 0 0"><b>Чему учится:</b> ${esc(x.learn)}</p><p class="hint" style="margin:4px 0 0"><b>Что помогает:</b> ${esc(x.help)}</p>`;
+  } else if (L.i >= 0) {
+    const x = LEAP[L.i];
+    h += `<p class="hint" style="margin:8px 0 0">Следующий скачок — «${esc(x.name)}», примерно через ${L.next} ${pl(L.next, 'день', 'дня', 'дней')} (${dayShort(addDays(sod(b), d + L.next))}).</p>`;
+  } else h += `<p class="hint" style="margin:8px 0 0">Главные скачки первого года позади.</p>`;
+  const sp = SPURTS.find(s => d >= s[0] && d <= s[1]);
+  if (sp) h += `<p class="hint" style="margin:6px 0 0">🍼 И скачок роста (${sp[2]}): может чаще просить есть.</p>`;
+  return h;
+}
+function leapTimeline() {
+  const b = birthTs(), td = Math.round((sod(now()) - sod(b)) / 864e5);
+  if (UI.lday == null) UI.lday = Math.max(0, Math.min(LEAP_DAYS - 1, td));
+  let bars = '';
+  for (let d = 0; d < LEAP_DAYS; d++) {
+    const L = leapAt(d), sp = SPURTS.some(s => d >= s[0] && d <= s[1]);
+    bars += `<button class="ld p${L.p}${d === td ? ' td' : ''}${d === UI.lday ? ' sel' : ''}${d < td ? ' past' : ''}" data-d="${d}" onclick="leapPick(${d})" aria-label="день ${d}"><i></i>${sp ? '<u></u>' : ''}${d % 7 === 0 ? `<em>${d / 7}</em>` : ''}</button>`;
+  }
+  setTimeout(() => leapScroll(true), 0);
+  return `<div class="card leapc"><h3>🧩 Скачки развития по дням</h3>
+    <p class="hint">По книге «Чудесные недели» (Х. ван де Рейт, Ф. Плоой). Выше столбик — беспокойнее. Листайте и нажимайте на день — внизу подскажем, что примерно происходит.</p>
+    <div class="lleg"><span><i class="p3"></i>беспокойно</span><span><i class="p2"></i>легче</span><span><i class="p1"></i>отступает</span><span><i class="p0"></i>спокойно</span><span><u></u>скачок роста</span></div>
+    <div class="ltl" id="ltl">${bars}</div><div class="lax">недели жизни</div>
+    <div class="lnav"><button class="b ghost" onclick="leapStep(-7)">‹ неделя</button><button class="b ghost" onclick="leapPick(${Math.max(0, Math.min(LEAP_DAYS - 1, td))},1)">Сегодня</button><button class="b ghost" onclick="leapStep(7)">неделя ›</button></div>
+    <div class="lmemo" id="lmemo">${leapMemo(UI.lday)}</div>
+    <p class="hint" style="margin:10px 0 0">Научных подтверждений у такого точного расписания мало, у каждого малыша свой ритм. Если малыш капризничает и по календарику «сходится» — скорее всего, это временно. Но температура, отказ от еды, вялость — повод позвонить педиатру.</p></div>`;
+}
+function leapScroll(center) {
+  const el = $('#ltl'), s = el && el.querySelector('.ld.sel'); if (!s) return;
+  const x = s.offsetLeft - el.offsetLeft, w = el.clientWidth;
+  if (center || x < el.scrollLeft + 20 || x > el.scrollLeft + w - 40) el.scrollLeft = Math.max(0, x - w / 2);
+}
+function leapPick(d, center) {
+  UI.lday = d; const el = $('#ltl'); if (!el) return;
+  for (const b of el.querySelectorAll('.ld.sel')) b.classList.remove('sel');
+  const s = el.querySelector(`.ld[data-d="${d}"]`); if (s) s.classList.add('sel');
+  $('#lmemo').innerHTML = leapMemo(d); leapScroll(!!center);
+}
+function leapStep(n) { leapPick(Math.max(0, Math.min(LEAP_DAYS - 1, (UI.lday || 0) + n))); }
+
+/* ───────── картинки к прикорму ─────────
+   Одна мультяшная манера на всё: обводка, пастельный круг, у миски и главного кусочка — рожица.
+   Вид — по ступени: пюре, с комочками, каша, капли масла, брусочки, кубики, шарики, котлетки, чашка, печенье, хлеб, омлет. */
+const FCOL = { zucchini: ['#dcefae', '#7fb34a'], cauli: ['#f6efd8', '#d4c08a'], broc: ['#b5da84', '#5f9a3a'], pumpkin: ['#ffc067', '#ec8526'], carrot: ['#ffb070', '#ee7424'], potato: ['#f7e5a8', '#d2ae5e'],
+  buckwheat: ['#d2a273', '#8f5f35'], rice: ['#fbf8ef', '#ddd2b6'], corn: ['#ffe27a', '#e9b62c'], oat: ['#efdcb8', '#c6a878'], multi: ['#e8cfa2', '#b8925a'],
+  apple: ['#f7efa2', '#8cc63f'], pear: ['#eef0a6', '#b4c548'], banana: ['#fff0a6', '#efcd36'], plum: ['#d29ac3', '#7d3f78'], peach: ['#ffcaa4', '#ff9466'], apricot: ['#ffc47c', '#f2953a'],
+  oilv: ['#ffe58a', '#dcb73e'], butter: ['#fff1a8', '#e8cf70'], turkey: ['#f2d4c2', '#cf9c80'], rabbit: ['#f4ded2', '#d4ab96'], beef: ['#cf917a', '#97553f'], chicken: ['#f3d8ba', '#d3a676'], pork: ['#f6cbc3', '#d2948a'],
+  cottage: ['#fdfbf3', '#ddd2b8'], yolk: ['#ffd34a', '#eea31a'], cookie: ['#ebc183', '#c08443'], bread: ['#f3d59e', '#c58744'], cod: ['#f8f5ef', '#d6cebf'], hake: ['#f8f5ef', '#d6cebf'], pollock: ['#f8f5ef', '#d6cebf'],
+  kefir: ['#ffffff', '#dfe3ee'], yogurt: ['#fffaf0', '#e8dcc2'] };
+const FCOL_G = { veg: 'zucchini', cereal: 'oat', fruit: 'apple', oil: 'oilv', meat: 'turkey', milk: 'cottage', bread: 'cookie', fish: 'cod', sour: 'kefir' };
+function foodPic(fid, form, cls) {
+  const f = foodOf(fid), c = FCOL[fid] || FCOL[FCOL_G[f ? f.g.g : 'veg']] || ['#f3e3c3', '#c9a46b'], [lt, dk] = c, O = '#6b4f3a', sw = 'stroke="' + O + '" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"';
+  const face = (x, y, s = 1) => `<circle cx="${x - 7 * s}" cy="${y}" r="${1.9 * s}" fill="${O}"/><circle cx="${x + 7 * s}" cy="${y}" r="${1.9 * s}" fill="${O}"/><path d="M${x - 3.5 * s} ${y + 4 * s}q${3.5 * s} ${3 * s} ${7 * s} 0" fill="none" ${sw}/><circle cx="${x - 12 * s}" cy="${y + 4 * s}" r="${2.6 * s}" fill="#f6a5b5" opacity=".7"/><circle cx="${x + 12 * s}" cy="${y + 4 * s}" r="${2.6 * s}" fill="#f6a5b5" opacity=".7"/>`;
+  const bowl = inner => `<path d="M16 50h88c0 24-20 38-44 38S16 74 16 50z" fill="#fff" ${sw}/>${face(60, 68)}<ellipse cx="60" cy="50" rx="44" ry="9" fill="${lt}" ${sw}/>${inner}`;
+  const plate = inner => `<ellipse cx="60" cy="70" rx="50" ry="17" fill="#fff" ${sw}/><ellipse cx="60" cy="68" rx="36" ry="10" fill="#f7f1e8"/>${inner}`;
+  const spoon = `<path d="M84 47l16-26" ${sw} stroke-width="5" stroke="${O}"/><path d="M84 47l16-26" stroke="#e9eef3" stroke-width="2.2" stroke-linecap="round"/>`;
+  let g;
+  switch (form) {
+    case 'mash': g = bowl(`<circle cx="44" cy="49" r="3.2" fill="${dk}"/><circle cx="58" cy="47" r="2.6" fill="${dk}"/><circle cx="70" cy="51" r="3" fill="${dk}"/><circle cx="52" cy="53" r="2.2" fill="${dk}"/><circle cx="80" cy="48" r="2.4" fill="${dk}"/>${spoon}`); break;
+    case 'porridge': g = bowl(`<path d="M40 49q8-5 16 0t16 0" fill="none" stroke="${dk}" stroke-width="2" stroke-linecap="round"/><path d="M48 34q-4-6 0-12M60 32q-4-6 0-12M72 34q-4-6 0-12" fill="none" stroke="#c9b9a8" stroke-width="2.4" stroke-linecap="round"/>${spoon}`); break;
+    case 'drops': g = bowl(`<path d="M60 18c6 9 9 13 9 17a9 9 0 0 1-18 0c0-4 3-8 9-17z" fill="${dk}" ${sw}/><path d="M80 30c4 6 6 9 6 11a6 6 0 0 1-12 0c0-2 2-5 6-11z" fill="${lt}" ${sw}/>`); break;
+    case 'sticks': g = plate(`<rect x="22" y="55" width="40" height="11" rx="5.5" transform="rotate(-14 42 60)" fill="${lt}" ${sw}/><rect x="56" y="56" width="42" height="11" rx="5.5" transform="rotate(10 77 61)" fill="${lt}" ${sw}/><rect x="36" y="62" width="44" height="13" rx="6.5" fill="${lt}" ${sw}/><path d="M38 64h40" stroke="${dk}" stroke-width="3" stroke-linecap="round"/>${face(58, 70, .7)}`); break;
+    case 'cubes': g = plate(`${[[30, 58], [48, 54], [66, 57], [84, 60], [40, 68], [74, 69]].map(([x, y], i) => `<rect x="${x - 7}" y="${y - 7}" width="14" height="14" rx="3.5" fill="${lt}" ${sw}/>${i === 5 ? '' : `<path d="M${x - 4} ${y - 4}h5" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>`}`).join('')}<rect x="50" y="57" width="20" height="20" rx="5" fill="${lt}" ${sw}/>${face(60, 66, .55)}`); break;
+    case 'balls': g = plate(`<circle cx="38" cy="62" r="11" fill="${dk}" ${sw}/><circle cx="82" cy="62" r="11" fill="${dk}" ${sw}/><circle cx="60" cy="63" r="14" fill="${dk}" ${sw}/><path d="M33 57a6 6 0 0 1 6-3M77 57a6 6 0 0 1 6-3" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/>${face(60, 62, .7).replace(/fill="#6b4f3a"/g, 'fill="#fff"')}`); break;
+    case 'patty': { const [pl1, pd] = f && f.g.g === 'milk' ? ['#f6d28e', '#d9984c'] : [lt, dk]; g = plate(`<ellipse cx="42" cy="63" rx="17" ry="9" fill="${pd}" ${sw}/><ellipse cx="74" cy="64" rx="19" ry="10" fill="${pl1}" ${sw}/><circle cx="68" cy="61" r="1.6" fill="${pd}"/><circle cx="82" cy="65" r="1.6" fill="${pd}"/>${face(74, 63, .6)}`); } break;
+    case 'omelet': g = plate(`<path d="M28 64q4-14 18-12q6-8 16-2q12-6 18 4q12 2 10 12q-2 10-30 10t-32-12z" fill="#ffe27a" ${sw}/><path d="M44 66q8 4 16 0" fill="none" stroke="#f2c235" stroke-width="2.5" stroke-linecap="round"/>${face(60, 62, .65)}`); break;
+    case 'cup': g = `<path d="M34 34h44l-4 46q-1 6-7 6H45q-6 0-7-6z" fill="#fff" ${sw}/><path d="M78 44q14 0 13 12t-15 12" fill="none" ${sw}/><path d="M37 41h38l-3 38q-1 5-6 5H46q-5 0-6-5z" fill="${lt === '#ffffff' ? '#e8eefa' : lt}"/><path d="M35 36h42" fill="none" ${sw}/>${face(56, 62)}`; break;
+    case 'cookie': g = plate(`<circle cx="44" cy="62" r="15" fill="${lt}" ${sw}/><circle cx="76" cy="64" r="13" fill="${lt}" ${sw}/><circle cx="38" cy="58" r="1.8" fill="${dk}"/><circle cx="48" cy="66" r="1.8" fill="${dk}"/><circle cx="72" cy="60" r="1.6" fill="${dk}"/><circle cx="82" cy="67" r="1.6" fill="${dk}"/>${face(44, 61, .55)}`); break;
+    case 'bread': g = plate(`<path d="M38 72V54q-8-2-8-9q0-10 30-10t30 10q0 7-8 9v18z" fill="${dk}" ${sw}/><path d="M43 69V52q-6-2-6-7q0-6 23-6t23 6q0 5-6 7v17z" fill="${lt}"/>${face(60, 56, .7)}`); break;
+    default: g = bowl(`<path d="M38 49q10-5 22 0t22 0" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>${spoon}`);
+  }
+  return `<svg class="fpic ${cls || ''}" viewBox="0 0 120 100" aria-hidden="true"><circle cx="60" cy="54" r="46" fill="${lt}" opacity=".55"/>${g}</svg>`;
 }
 
 /* ───────── скачки роста и «чудесные недели» ─────────
@@ -2182,20 +2439,16 @@ function viewSleep() {
    по материалам WIC/USDA и консультантов по ГВ. «Чудесные недели» (van de Rijt, Plooij) — популярная книга, научных
    подтверждений мало: показываем мягко, с пометкой. Недели — от дня рождения (у недоношенных — от ПДР). */
 const SPURTS = [[7, 10, '7–10 дней'], [14, 21, '2–3 недели'], [39, 45, '6 недель'], [84, 95, '3 месяца'], [175, 190, '6 месяцев']];
-const LEAPS = [5, 8, 12, 19, 26, 37, 46, 55];
 function spurtNow() { const b = birthTs(); if (b == null) return null; const d = Math.round((sod(now()) - b) / 864e5); return SPURTS.find(s => d >= s[0] - 1 && d <= s[1] + 1) || null; }
 function viewSpurts() {
   const b = birthTs(); if (b == null) return needBirth('подсказывать про скачки роста');
-  const d = Math.round((sod(now()) - b) / 864e5), w = d / 7, cur = spurtNow();
+  const d = Math.round((sod(now()) - b) / 864e5), cur = spurtNow();
   let h = `<div class="card ${cur ? 'feed live' : ''}"><h3>${cur ? '🌱 Сейчас возможен скачок роста' : '🌱 Скачки роста'}</h3>
     <p class="hint">Несколько дней малыш просит грудь или бутылочку чаще (бывает каждые 30–60 минут, особенно вечером), беспокоится, может спать больше или хуже. Это нормально и не значит, что не хватает молока — если хорошо писает (от 6 мокрых подгузников) и прибавляет в весе.</p>
     <ul class="slist">${SPURTS.map(s => { const st = d > s[1] + 1 ? 'past' : d >= s[0] - 1 ? 'now' : ''; return `<li class="${st}"><b>${s[2]}</b><span>${st === 'past' ? 'прошёл' : st === 'now' ? 'сейчас' : 'с ' + dayShort(b + s[0] * 864e5)}</span></li>`; }).join('')}</ul>
     <p class="hint">Что помогает: кормить по требованию, больше контакта «кожа к коже», отдыхать, когда спит малыш. Сроки у всех разные — это ориентир.</p>
     <div class="src">Источник: WIC Breastfeeding Support (USDA), консультанты по грудному вскармливанию</div></div>`;
-  const nl = LEAPS.findIndex(x => x + 1 >= w);
-  h += `<div class="card adv"><h3>🧩 «Чудесные недели»</h3><p class="hint">Популярная книга Х. ван де Рейт и Ф. Плоой: в эти недели малыш учится новому и бывает капризнее («скачок развития»). Научных подтверждений у такого точного расписания мало — воспринимайте как подсказку, а не правило.</p>
-    <div class="leaps">${LEAPS.map((x, i) => `<span class="${w > x + 1 ? 'past' : i === nl ? 'now' : ''}">${x}<small>нед.</small></span>`).join('')}</div>
-    <p class="hint">Сейчас — ${Math.floor(w)} ${pl(Math.floor(w), 'неделя', 'недели', 'недель')}. У недоношенных малышей недели считают от предполагаемой даты родов.</p></div>`;
+  h += leapTimeline();
   return h;
 }
 
@@ -2241,10 +2494,12 @@ const WAYS = {
   fish: [[8, 'Однородное пюре из отварной рыбы без косточек с овощами, 1–2 раза в неделю вместо мяса'], [10, 'Рыбное суфле, паровые фрикадельки'], [12, 'Мелкие кусочки отварной рыбы']],
   sour: [[8, 'Детский кефир или йогурт без сахара из чашки или ложкой, вечером'], [12, 'Можно с фруктовым пюре']],
 };
+// вид картинки для каждой ступени
+const WAYF = { veg: ['puree', 'mash', 'sticks', 'cubes'], cereal: ['porridge', 'porridge', 'porridge', 'porridge'], fruit: ['puree', 'mash', 'sticks', 'cubes'], oil: ['drops', 'drops'], meat: ['puree', 'balls', 'patty'], milk: ['mash', 'patty', 'omelet'], bread: ['cookie', 'bread'], fish: ['puree', 'balls', 'cubes'], sour: ['cup', 'cup'] };
 function foodWays(fid) {
   const f = foodOf(fid); if (!f || !WAYS[f.g.g]) return '';
   const am = monthsAt(now()), w = WAYS[f.g.g], cur = am == null ? -1 : w.reduce((k, x, i) => am >= x[0] ? i : k, -1);
-  return `<div class="sec-t" style="margin-top:0">Как предложить</div><ul class="ways">${w.map((x, i) => `<li class="${i === cur ? 'now' : am != null && am < x[0] ? 'later' : ''}"><b>с ${x[0]} мес.</b><span>${esc(x[1])}</span></li>`).join('')}</ul>
+  return `<div class="sec-t" style="margin-top:0">Как предложить</div><ul class="ways">${w.map((x, i) => `<li class="${i === cur ? 'now' : am != null && am < x[0] ? 'later' : ''}">${foodPic(fid, (WAYF[f.g.g] || [])[i], 'sm')}<div><b>с ${x[0]} мес.</b><span>${esc(x[1])}</span></div></li>`).join('')}</ul>
     <p class="hint" style="margin:-4px 0 12px">Кусочки — только мягкие, малыш сидит, взрослый рядом. Без соли и сахара до года. Источник: ВОЗ; Программа вскармливания (Союз педиатров России).</p>`;
 }
 
@@ -2295,7 +2550,8 @@ function sndBar() {
   const b = $('#sndbar'); if (!b) return;
   if (!SND.id) { b.hidden = true; document.body.classList.remove('withsnd'); return; }
   const s = SOUNDS.find(x => x.id === SND.id), left = sndLeft();
-  b.innerHTML = `<button class="sb-t" onclick="UI.more='sounds';go('tips')">${s.ic} ${esc(s.name)}${left != null ? ` · <span class="num" data-left="1">${left < 60000 ? 'минуту' : fmtMin(left)}</span>` : ''}</button><button class="sb-x" onclick="sndStop()" aria-label="Остановить">■</button>`;
+  b.innerHTML = `<button class="sb-t" onclick="UI.more='sounds';go('tips')">${s.ic} ${esc(s.name)}${SND.paused ? ' · пауза' : left != null ? ` · <span class="num" data-left="1">${left < 60000 ? 'минуту' : fmtMin(left)}</span>` : ''}</button><button class="sb-x sb-p" onclick="sndPause()" aria-label="${SND.paused ? 'Продолжить' : 'Пауза'}">${SND.paused ? '▶' : '❚❚'}</button><button class="sb-x" onclick="sndStop()" aria-label="Остановить">■</button>`;
+  b.classList.toggle('paused', !!SND.paused);
   b.hidden = false; document.body.classList.add('withsnd');
 }
 
@@ -2514,7 +2770,13 @@ async function connect(id, msg) {
   // всё, что есть на устройстве, — в очередь (повторы не страшны: читается последняя версия)
   const o = lsJson(OUTKEY, {}); for (const k of allIds()) { const r = recOf(k); if (r) o[k] = r.u; } lsSet(OUTKEY, JSON.stringify(o));
   for (const e of S.events) for (const ph of e.del ? [] : e.ph || []) phQueue(ph);
-  closeSheet(); await sync(); render();
+  closeSheet(); await sync();
+  // тот же аккаунт Google на другом телефоне — подпись («Мама») берём оттуда, заново не спрашиваем
+  if (!devName(DEV) && u.email) {
+    const twin = Object.entries(S.devs).filter(([k, d]) => k !== DEV && d.email === u.email && d.name).sort((x, y) => (y[1].u || 0) - (x[1].u || 0))[0];
+    if (twin) setMe({ name: twin[1].name });
+  }
+  render();
   if (msg) toast(msg);
   if (!devName(DEV)) askRole();
 }
