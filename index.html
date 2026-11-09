@@ -419,6 +419,27 @@ details.rcpd summary{align-items:center}
 details.rcpd summary .fpic.sm{width:44px;height:38px}
 details.rcpd[open] summary .fpic.sm{visibility:hidden;width:0}
 p.lyr.tale{margin:4px 0}
+/* прикорм: разделы, отметки «давали», аллергены */
+details.fsec{border-top:1px solid var(--line);padding:6px 0 2px;margin-top:8px}
+details.fsec summary{display:flex;justify-content:space-between;align-items:center;gap:8px;list-style:none;cursor:pointer;font-size:15.5px;padding:6px 0}
+details.fsec summary::-webkit-details-marker{display:none}
+details.fsec summary::before{content:'›';width:12px;color:var(--muted);transition:transform .15s}
+details.fsec[open] summary::before{transform:rotate(90deg)}
+details.fsec summary b{flex:1}
+details.fsec .fgrp{margin-top:2px;padding-top:8px}
+.fchips button{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 4px}
+.fchips button sup{color:var(--warn);font-weight:700;font-size:11px}
+.fpic.xs{width:30px;height:26px}
+i.tr{display:inline-flex;gap:2px;margin-left:2px}
+i.tr b{width:7px;height:7px;border-radius:50%;border:1.3px solid currentColor;opacity:.45}
+i.tr b.on{background:var(--good);border-color:var(--good);opacity:1}
+i.tr.bad b.on{background:var(--warn);border-color:var(--warn)}
+.algs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.algs span{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:6px 11px;font-size:13.5px}
+.algs span.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent);background:color-mix(in srgb,var(--good) 12%,transparent);font-weight:600}
+.algs span.react{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent);font-weight:600}
+ul.nolist,ul.rules{margin:8px 0 2px;padding-left:20px;font-size:14px;line-height:1.5;color:var(--text-2)}
+ul.nolist li::marker{content:'✕  ';color:var(--warn);font-weight:700}
 /* ночью — крупнее */
 :root[data-night] body{font-size:17px}
 :root[data-night] .b{padding:18px 8px;font-size:18px;border-radius:16px}
@@ -1477,20 +1498,38 @@ function viewDev() {
    Сроки — ориентиры «Программы оптимизации вскармливания детей первого года жизни в РФ» (Союз педиатров России, 2019)
    по опубликованным пересказам; ВОЗ — с 6 месяцев. Запись 'food' {s, fid (id продукта или 'c:<имя>'), name (своё),
    amt (сколько, текстом), react: none|rash|tummy|stool|other, note}. Новый продукт наблюдаем FOOD_DAYS дней. */
+// Разделы и возраст — как в популярных трекерах ввода прикорма (образец — docs/ref/трекер-прикорма.jpg), по программе
+// Союза педиатров России. Продукт: [id, название, как предлагать (ключ WAYS; по умолчанию — у группы), аллерген (ALG)].
+// id старых продуктов не менять — по ним хранятся записи.
+const FSEC = { fruit: ['🍐', 'Фрукты и ягоды'], veg: ['🥦', 'Овощи и зелень'], prot: ['🍗', 'Белки'], carb: ['🥣', 'Углеводы'], fat: ['🫒', 'Жиры, орехи, семена'] };
 const FOODS = [
-  { g: 'veg', name: 'Овощи', ic: '🥦', lo: 4, items: [['zucchini', 'Кабачок'], ['cauli', 'Цветная капуста'], ['broc', 'Брокколи'], ['pumpkin', 'Тыква'], ['carrot', 'Морковь'], ['potato', 'Картофель']] },
-  { g: 'cereal', name: 'Каши без молока', ic: '🥣', lo: 4, items: [['buckwheat', 'Гречневая каша'], ['rice', 'Рисовая каша'], ['corn', 'Кукурузная каша'], ['oat', 'Овсяная каша'], ['multi', 'Каша из нескольких злаков']], note: 'сначала безглютеновые: гречневая, рисовая, кукурузная' },
-  { g: 'fruit', name: 'Фрукты', ic: '🍏', lo: 4, items: [['apple', 'Яблоко'], ['pear', 'Груша'], ['banana', 'Банан'], ['plum', 'Слива'], ['peach', 'Персик'], ['apricot', 'Абрикос']], note: 'после овощей и каш' },
-  { g: 'oil', name: 'Масло', ic: '🫒', lo: 4, items: [['oilv', 'Растительное масло'], ['butter', 'Сливочное масло']], note: 'по несколько капель — в пюре и кашу' },
-  { g: 'meat', name: 'Мясо', ic: '🍗', lo: 6, items: [['turkey', 'Индейка'], ['rabbit', 'Кролик'], ['beef', 'Говядина'], ['chicken', 'Курица'], ['pork', 'Нежирная свинина']] },
-  { g: 'milk', name: 'Творог и желток', ic: '🥚', lo: 6, items: [['cottage', 'Детский творог'], ['yolk', 'Желток']] },
-  { g: 'bread', name: 'Печенье и хлеб', ic: '🍪', lo: 6, items: [['cookie', 'Детское печенье'], ['bread', 'Пшеничный хлеб']], note: 'хлеб — ближе к 8 месяцам' },
-  { g: 'fish', name: 'Рыба', ic: '🐟', lo: 8, items: [['cod', 'Треска'], ['hake', 'Хек'], ['pollock', 'Минтай']] },
-  { g: 'sour', name: 'Кисломолочное', ic: '🥛', lo: 8, items: [['kefir', 'Детский кефир'], ['yogurt', 'Йогурт без добавок']] },
+  { sec: 'fruit', lo: 4, lab: '4–6 мес.', g: 'fruit', items: [['apple', 'Яблоко'], ['pear', 'Груша'], ['prune', 'Чернослив']], note: 'после овощей и каш' },
+  { sec: 'fruit', lo: 7, lab: '7–8 мес.', g: 'fruit', items: [['peach', 'Персик'], ['banana', 'Банан'], ['apricot', 'Абрикос'], ['plum', 'Слива']] },
+  { sec: 'fruit', lo: 9, lab: '9–11 мес.', g: 'berry', items: [['currant', 'Смородина'], ['rosehip', 'Шиповник', 'rosehip'], ['cherry', 'Вишня'], ['strawberry', 'Клубника'], ['nectarine', 'Нектарин', 'fruit'], ['sweetcherry', 'Черешня']] },
+  { sec: 'fruit', lo: 12, lab: 'с 12 мес.', g: 'fruit', items: [['pineapple', 'Ананас'], ['orange', 'Апельсин'], ['melon', 'Дыня'], ['watermelon', 'Арбуз'], ['grapefruit', 'Грейпфрут'], ['kiwi', 'Киви'], ['grape', 'Виноград', 'berry'], ['blueberry', 'Голубика', 'berry'], ['lingon', 'Брусника', 'berry'], ['gooseberry', 'Крыжовник', 'berry'], ['persimmon', 'Хурма'], ['raspberry', 'Малина', 'berry'], ['pomegranate', 'Гранат', 'berry'], ['blackberry', 'Ежевика', 'berry'], ['cranberry', 'Клюква', 'berry'], ['lemon', 'Лимон', 'lemon'], ['mandarin', 'Мандарин'], ['seabuckthorn', 'Облепиха', 'berry'], ['mango', 'Манго']] },
+  { sec: 'veg', lo: 4, lab: '4–6 мес.', g: 'veg', items: [['zucchini', 'Кабачок'], ['cauli', 'Цветная капуста'], ['broc', 'Брокколи']] },
+  { sec: 'veg', lo: 7, lab: '7–8 мес.', g: 'veg', items: [['pumpkin', 'Тыква'], ['carrot', 'Морковь'], ['potato', 'Картофель']] },
+  { sec: 'veg', lo: 9, lab: '9–11 мес.', g: 'veg', items: [['cabbage', 'Капуста белокочанная'], ['greenbean', 'Стручковая фасоль'], ['eggplant', 'Баклажан'], ['peas', 'Зелёный горошек'], ['parsley', 'Петрушка', 'greens'], ['spinach', 'Шпинат'], ['tomato', 'Помидор'], ['pepper', 'Перец сладкий'], ['dill', 'Укроп', 'greens'], ['beet', 'Свёкла'], ['rhubarb', 'Ревень', 'rhubarb']] },
+  { sec: 'veg', lo: 12, lab: 'с 12 мес.', g: 'veg', items: [['cornveg', 'Кукуруза'], ['cucumber', 'Огурец', 'fresh'], ['radish', 'Редис', 'fresh'], ['onion', 'Лук', 'onion'], ['garlic', 'Чеснок', 'onion'], ['cilantro', 'Кинза', 'greens']] },
+  { sec: 'prot', lo: 6, lab: '6–7 мес.', g: 'meat', items: [['rabbit', 'Кролик'], ['turkey', 'Индейка'], ['veal', 'Телятина'], ['beef', 'Говядина'], ['chicken', 'Цыплёнок']] },
+  { sec: 'prot', lo: 8, lab: '8–11 мес.', g: 'sour', items: [['kefir', 'Кефир', 'sour', 'milk'], ['biolakt', 'Биолакт', 'sour', 'milk'], ['yogurt', 'Йогурт без добавок', 'sour', 'milk'], ['cottage', 'Творог', 'cottage', 'milk'], ['liverbeef', 'Печень говяжья', 'liver'], ['liverchicken', 'Печень куриная', 'liver'], ['hake', 'Хек', 'fish', 'fish'], ['pollock', 'Минтай', 'fish', 'fish'], ['zander', 'Судак', 'fish', 'fish'], ['cod', 'Треска', 'fish', 'fish'], ['cheese', 'Сыр', 'cheese', 'milk'], ['eggwhite', 'Яйцо (белок)', 'eggw', 'egg']] },
+  { sec: 'prot', lo: 12, lab: 'с 12 мес.', g: 'meat', items: [['lamb', 'Баранина'], ['offal', 'Субпродукты (сердце, язык)', 'liver'], ['pork', 'Свинина'], ['seafish', 'Рыба морская', 'fish', 'fish'], ['milkcow', 'Молоко', 'milkcow', 'milk'], ['nutsmix', 'Орехи (молотые)', 'nuts', 'nuts']] },
+  { sec: 'prot', lo: 36, lab: 'с 3 лет', g: 'seafood', items: [['shrimp', 'Креветки', 'seafood', 'seafood'], ['squid', 'Кальмар', 'seafood', 'seafood'], ['mussels', 'Мидии', 'seafood', 'seafood'], ['mushrooms', 'Грибы (белые)', 'mush'], ['soy', 'Соя', 'legume', 'soy']] },
+  { sec: 'carb', lo: 4, lab: '4–6 мес.', g: 'cereal', items: [['rice', 'Рисовая каша'], ['buckwheat', 'Гречневая каша'], ['corn', 'Кукурузная каша']], note: 'сначала безглютеновые: рисовая, гречневая, кукурузная' },
+  { sec: 'carb', lo: 7, lab: '7–10 мес.', g: 'cereal', items: [['multi', 'Мультизлаковая каша', 0, 'wheat'], ['oat', 'Овсяная каша'], ['wheat', 'Пшеничная каша', 0, 'wheat'], ['barleygrits', 'Ячневая каша'], ['bread', 'Хлеб', 'bread', 'wheat'], ['cookie', 'Детское печенье', 'bread', 'wheat']] },
+  { sec: 'carb', lo: 12, lab: 'с 12 мес.', g: 'grain', items: [['bulgur', 'Булгур', 0, 'wheat'], ['quinoa', 'Киноа'], ['pearl', 'Перловка'], ['pasta', 'Макароны', 'pasta', 'wheat'], ['beans', 'Фасоль', 'legume'], ['peasdry', 'Горох', 'legume'], ['lentil', 'Чечевица', 'legume']] },
+  { sec: 'fat', lo: 7, lab: 'с 7 мес.', g: 'oil', items: [['oilv', 'Растительное масло'], ['butter', 'Сливочное масло', 0, 'milk'], ['yolk', 'Яйцо (желток)', 'yolk', 'egg'], ['avocado', 'Авокадо', 'avocado']] },
+  { sec: 'fat', lo: 8, lab: '8–10 мес. · орехи — в виде пасты', g: 'nutpaste', items: [['peanut', 'Арахис', 0, 'peanut'], ['walnut', 'Грецкий орех', 0, 'nuts'], ['hazelnut', 'Фундук', 0, 'nuts']], note: 'если у малыша атопический дерматит или была аллергия — ввод орехов обсудите с аллергологом' },
+  { sec: 'fat', lo: 8, lab: '8–10 мес. · семена', g: 'seeds', items: [['chia', 'Чиа'], ['flax', 'Лён'], ['pumpkinseed', 'Тыквенные семечки'], ['sunflower', 'Семечки подсолнечника']] },
 ];
+// частые аллергены — вводят по одному, с утра, и наблюдают 2–3 дня
+const ALG = [['egg', 'Яйцо', '🥚'], ['milk', 'Молоко', '🥛'], ['seafood', 'Морепродукты', '🦐'], ['fish', 'Рыба', '🐟'], ['soy', 'Соя', '🫘'], ['wheat', 'Пшеница', '🌾'], ['nuts', 'Орехи', '🌰'], ['peanut', 'Арахис', '🥜']];
+const NOT_YET = ['Мёд — риск ботулизма', 'Цельное коровье молоко как питьё (в кашу — можно)', 'Лесные грибы', 'Плохо проваренные мясо, рыба и яйца — в том числе икра и яйца всмятку', 'Соль, сахар, сладости и соки из пакетов', 'Целые орехи, виноград и другие твёрдые круглые кусочки — можно подавиться'];
+const FOOD_RULES = ['Новый продукт — один в день, в первой половине дня: так легче заметить реакцию.', 'Начинать с ½–1 чайной ложки и за 5–7 дней доводить до возрастной порции.', 'Заболел, прививка, жара или переезд — новые продукты лучше отложить.', 'Приготовленное хранить в холодильнике не дольше 1–2 дней.', 'Отказ — не страшно: предложите тот же продукт снова через несколько дней, иногда нужно 8–10 попыток.'];
 const FOOD_DAYS = 5;
 const REACT = { none: 'Всё хорошо', rash: 'Сыпь, покраснение', tummy: 'Животик, газики', stool: 'Изменился стул', other: 'Другое' };
-const foodOf = fid => { for (const g of FOODS) { const it = g.items.find(x => x[0] === fid); if (it) return { g, id: it[0], name: it[1] }; } return null; };
+// g.g — как предлагать (WAYS), g.lo — с какого возраста, g.ic — значок раздела; al — аллерген
+const foodOf = fid => { for (const g of FOODS) { const it = g.items.find(x => x[0] === fid); if (it) return { g: Object.assign({}, g, { g: it[2] || g.g, ic: FSEC[g.sec][0] }), id: it[0], name: it[1], al: it[3] || '' }; } return null; };
 const foodName = (fid, name) => { const f = foodOf(fid); return f ? f.name : name || String(fid || '').replace(/^c:/, ''); };
 const foodIc = fid => { const f = foodOf(fid); return f ? f.g.ic : '🥄'; };
 const foodRecs = () => evs().filter(e => e.t === 'food').sort((a, b) => a.s - b.s);
@@ -1513,7 +1552,8 @@ function viewFood() {
       <p class="hint">Новый продукт лучше не раньше <b>${dayShort(free)}</b> — так понятно, на что реакция, если она будет.</p>
       <div class="btns" style="margin-top:10px"><button class="b main" onclick="editFood(null,'${esc(x.fid)}')">Дали ещё</button></div></div>`;
   } else if (am == null || am >= 4) {
-    const nxt = FOODS.filter(g => am == null || am >= g.lo).flatMap(g => g.items.map(it => it[0])).find(id => !st[id]);
+    const RANK = { veg: 0, carb: 1, fruit: 2, fat: 3, prot: 4 };
+    const nxt = FOODS.filter(g => am == null || am >= g.lo).sort((a, b) => a.lo - b.lo || RANK[a.sec] - RANK[b.sec]).flatMap(g => g.items.map(it => it[0])).find(id => !st[id]);
     h += `<div class="card food"><h3><span class="dot"></span>${Object.keys(st).length ? 'Можно пробовать новый продукт' : 'Первый прикорм'}</h3>
       <p class="hint">${Object.keys(st).length ? 'Новый продукт — по одному, начиная с ½–1 чайной ложки, и несколько дней наблюдаем.' : 'Обычно начинают с овощного пюре из одного овоща (кабачок, цветная капуста, брокколи) или безмолочной каши — с ½–1 чайной ложки.'}</p>
       ${nxt ? `<div class="btns" style="margin-top:10px"><button class="b main" onclick="editFood(null,'${nxt}')">Попробовать: ${esc(foodName(nxt))}</button></div>` : ''}</div>`;
@@ -1522,14 +1562,26 @@ function viewFood() {
     <p class="hint">Расскажите педиатру. Отёк лица, губ, затруднённое дыхание — сразу 103 или 112.</p></div>`;
   const tag = id => { const x = st[id]; return x ? x.st : ''; };
   const own = Object.values(st).filter(x => !foodOf(x.fid));
-  h += `<div class="card"><h3>Продукты</h3><p class="hint">Нажмите на продукт, чтобы записать, сколько дали и как малыш его принял. ✓ — уже ввели, точки — вводим сейчас.</p>`;
-  for (const g of FOODS) {
-    const early = am != null && am < g.lo;
-    h += `<div class="fgrp${early ? ' early' : ''}"><div class="vhead"><b>${g.ic} ${g.name}</b><span class="vdate">с ${g.lo} мес.</span></div>${g.note ? `<div class="hint" style="margin:0">${g.note}</div>` : ''}
-      <div class="fchips">${g.items.map(([id, n]) => `<button class="${tag(id)}" onclick="editFood(null,'${id}')">${tag(id) === 'ok' ? '✓ ' : tag(id) === 'react' ? '⚠ ' : ''}${n}</button>`).join('')}</div></div>`;
+  h += `<div class="card"><h3>Продукты</h3><p class="hint">Нажмите на продукт, чтобы записать, сколько дали и как малыш его принял, и посмотреть, как его предложить. Три кружка — сколько раз уже давали, рамка из точек — вводим сейчас.</p>`;
+  const tries = id => { const x = st[id], n = x ? Math.min(3, x.n) : 0; return `<i class="tr${x && x.react ? ' bad' : ''}">${[0, 1, 2].map(i => `<b class="${i < n ? 'on' : ''}"></b>`).join('')}</i>`; };
+  for (const [sk, [ic, title]] of Object.entries(FSEC)) {
+    const gs = FOODS.filter(g => g.sec === sk), all = gs.flatMap(g => g.items), done = all.filter(it => st[it[0]]).length;
+    const open = am == null || gs.some(g => g.lo <= am + 1 && g.items.some(it => !st[it[0]]));
+    h += `<details class="fsec"${open ? ' open' : ''}><summary><b>${ic} ${title}</b><span class="vdate">${done} из ${all.length}</span></summary>`;
+    for (const g of gs) {
+      const early = am != null && am < g.lo;
+      h += `<div class="fgrp${early ? ' early' : ''}"><div class="vhead"><b>${g.lab}</b></div>${g.note ? `<div class="hint" style="margin:0">${g.note}</div>` : ''}
+        <div class="fchips">${g.items.map(([id, n, , al]) => `<button class="${tag(id)}" onclick="editFood(null,'${id}')">${foodPic(id, picForm(id), 'xs')}<span>${n}${al ? ' <sup title="частый аллерген">!</sup>' : ''}</span>${tries(id)}</button>`).join('')}</div></div>`;
+    }
+    h += `</details>`;
   }
   if (own.length) h += `<div class="fgrp"><div class="vhead"><b>🥄 Свои продукты</b></div><div class="fchips">${own.map(x => `<button class="${x.st}" onclick="editFood(null,'${esc(x.fid)}')">${x.st === 'ok' ? '✓ ' : x.st === 'react' ? '⚠ ' : ''}${esc(foodName(x.fid, x.name))}</button>`).join('')}</div></div>`;
   h += `<div class="btns" style="margin-top:12px"><button class="b ghost" onclick="editFood(null,'')">+ Другой продукт</button></div></div>`;
+  const alSt = k => { const xs = FOODS.flatMap(g => g.items).filter(it => it[3] === k).map(it => st[it[0]]).filter(Boolean); return xs.some(x => x.react) ? 'react' : xs.length ? 'ok' : ''; };
+  h += `<div class="card"><h3>⚠️ Частые аллергены</h3><p class="hint">Вводят по одному, с утра, и наблюдают 2–3 дня. Отметка ставится сама, когда вы записываете продукт (в списке они с «!»).</p>
+    <div class="algs">${ALG.map(([k, n, ic]) => { const v = alSt(k); return `<span class="${v}">${ic} ${n}${v === 'ok' ? ' ✓' : v === 'react' ? ' ⚠' : ''}</span>`; }).join('')}</div></div>`;
+  h += `<div class="card"><h3>🚫 До года нельзя</h3><ul class="nolist">${NOT_YET.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
+  h += `<div class="card"><h3>📋 Как вводить</h3><ul class="rules">${FOOD_RULES.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
   h += `<div class="card"><h3>🍲 Рецепты</h3><p class="hint">До года — без соли и сахара. Всё мягкое, без комочков в начале, потом — мельче вилкой и кусочками.</p>${RECIPES.map(r => `<details class="ckp rcpd${am != null && am < r.from ? ' early' : ''}"><summary>${foodPic(r.pic[0], r.pic[1], 'sm')}<b>${r.name}</b><span class="vdate">с ${r.from} мес.</span></summary>
     <div class="rpic">${foodPic(r.pic[0], r.pic[1], 'lg')}</div><p class="hint" style="color:var(--text-2)"><b>Нужно:</b> ${r.need}</p><ol class="rcp">${r.steps.map(x => `<li>${x}</li>`).join('')}</ol></details>`).join('')}</div>`;
   h += `<p class="hint" style="margin:0 0 12px">Сроки — ориентиры «Программы оптимизации вскармливания детей первого года жизни в РФ» (Союз педиатров России, 2019) и рекомендаций ВОЗ. Когда и с чего начинать — решайте с педиатром, особенно если есть аллергия.</p>`;
@@ -1555,7 +1607,7 @@ function editFood(id, fid) {
   const v = e || { s: now(), amt: '', react: 'none' };
   const title = fid ? esc(foodName(fid, e ? e.name : recs[0] && recs[0].name)) : 'Новый продукт';
   openSheet(`<h2>${foodIc(fid)} ${title}</h2>
-    ${known && monthsAt(now()) != null && monthsAt(now()) < known.g.lo ? `<p class="hint" style="margin:0 0 10px;color:var(--warn)">Обычно — с ${known.g.lo} мес. Обсудите с педиатром.</p>` : ''}
+    ${known && monthsAt(now()) != null && monthsAt(now()) < known.g.lo ? `<p class="hint" style="margin:0 0 10px;color:var(--warn)">Обычно — ${known.g.lo >= 24 ? 'с ' + known.g.lo / 12 + ' лет' : 'с ' + known.g.lo + ' мес.'} Обсудите с педиатром.</p>${known.al ? `<p class="hint" style="margin:0 0 10px">⚠️ Частый аллерген (${esc(ALG.find(a => a[0] === known.al)[1].toLowerCase())}) — давайте с утра и понаблюдайте 2–3 дня.</p>` : ''}` : ''}
     ${id ? '' : foodWays(fid)}
     ${recs.length && !id ? `<div class="sec-t" style="margin-top:0">Уже давали</div><ul class="list" style="margin-bottom:10px">${recs.slice().reverse().map(r => `<li onclick="editFood('${r.id}')"><span class="tm">${dayShort(r.s)}</span><span class="tx"><div>${esc(r.amt || 'попробовал')}</div><small>${esc([REACT[r.react] || '', r.note].filter(Boolean).join(' · '))}</small></span></li>`).join('')}</ul><div class="sec-t">Записать ещё</div>` : ''}
     ${fid ? '' : `<label class="f"><span>Что дали</span><input id="fd_name" placeholder="Например, морковь с яблоком" autocomplete="off"></label>`}
@@ -2408,8 +2460,20 @@ const FCOL = { zucchini: ['#dcefae', '#7fb34a'], cauli: ['#f6efd8', '#d4c08a'], 
   apple: ['#f7efa2', '#8cc63f'], pear: ['#eef0a6', '#b4c548'], banana: ['#fff0a6', '#efcd36'], plum: ['#d29ac3', '#7d3f78'], peach: ['#ffcaa4', '#ff9466'], apricot: ['#ffc47c', '#f2953a'],
   oilv: ['#ffe58a', '#dcb73e'], butter: ['#fff1a8', '#e8cf70'], turkey: ['#f2d4c2', '#cf9c80'], rabbit: ['#f4ded2', '#d4ab96'], beef: ['#cf917a', '#97553f'], chicken: ['#f3d8ba', '#d3a676'], pork: ['#f6cbc3', '#d2948a'],
   cottage: ['#fdfbf3', '#ddd2b8'], yolk: ['#ffd34a', '#eea31a'], cookie: ['#ebc183', '#c08443'], bread: ['#f3d59e', '#c58744'], cod: ['#f8f5ef', '#d6cebf'], hake: ['#f8f5ef', '#d6cebf'], pollock: ['#f8f5ef', '#d6cebf'],
-  kefir: ['#ffffff', '#dfe3ee'], yogurt: ['#fffaf0', '#e8dcc2'] };
-const FCOL_G = { veg: 'zucchini', cereal: 'oat', fruit: 'apple', oil: 'oilv', meat: 'turkey', milk: 'cottage', bread: 'cookie', fish: 'cod', sour: 'kefir' };
+  kefir: ['#ffffff', '#dfe3ee'], yogurt: ['#fffaf0', '#e8dcc2'],
+  prune: ['#8a5a6e', '#4f2b3e'], currant: ['#6b5a9a', '#2f2350'], rosehip: ['#ef7b5a', '#a8331c'], cherry: ['#d8485e', '#7d1428'], strawberry: ['#ff7685', '#d0303f'], nectarine: ['#ffb27a', '#e8703a'], sweetcherry: ['#e04a62', '#8e1530'],
+  pineapple: ['#ffe27a', '#d9a92a'], orange: ['#ffb347', '#f08a1c'], melon: ['#f6e39a', '#d2b84f'], watermelon: ['#ff8f8f', '#3f9a4f'], grapefruit: ['#ffa48f', '#e86a50'], kiwi: ['#b5d86a', '#6e8f2a'], grape: ['#bcd67e', '#6f8f30'],
+  blueberry: ['#8a94d0', '#3d4687'], lingon: ['#e55a62', '#9a1f2a'], gooseberry: ['#cfe39a', '#8aa548'], persimmon: ['#ffa24d', '#d9701c'], raspberry: ['#ff7a9a', '#c9305a'], pomegranate: ['#e65068', '#9c1c33'], blackberry: ['#6e5288', '#2c1a3a'],
+  cranberry: ['#dc4458', '#8a1528'], lemon: ['#fff07a', '#e3c52c'], mandarin: ['#ffad55', '#ec7f16'], seabuckthorn: ['#ffb84a', '#e88a10'], mango: ['#ffcc55', '#f09a1c'], avocado: ['#cde38f', '#5e7f2a'],
+  cabbage: ['#e2f2c6', '#9bc46a'], greenbean: ['#a5d482', '#4f8f2f'], eggplant: ['#a78acb', '#5a3a7e'], peas: ['#addb72', '#5f9a2a'], parsley: ['#95d372', '#3f8a2a'], spinach: ['#85c665', '#367a24'], tomato: ['#ff7565', '#d0382a'],
+  pepper: ['#ff9066', '#e04a2a'], dill: ['#a9da86', '#4f8a34'], beet: ['#bb5a80', '#6e1f42'], rhubarb: ['#ec94a8', '#a8405a'], cornveg: ['#ffe27a', '#e9b62c'], cucumber: ['#c9e8a6', '#4f8f3a'], radish: ['#ff96ad', '#d84a6a'],
+  onion: ['#f5e9ce', '#c9a86a'], garlic: ['#f7f2e6', '#d6c8a6'], cilantro: ['#9dd680', '#3f8a2a'], veal: ['#ecc0b0', '#b47460'], biolakt: ['#fffaf2', '#e8dcc6'], liverbeef: ['#a8584c', '#5e2420'], liverchicken: ['#b66456', '#6a2a22'],
+  zander: ['#f8f5ef', '#d6cebf'], cheese: ['#ffe38a', '#e8bf4a'], eggwhite: ['#ffffff', '#e6e2d6'], lamb: ['#d9a28c', '#9a5a44'], offal: ['#c27468', '#7a3a30'], seafish: ['#f4ede2', '#cdbfa8'], milkcow: ['#ffffff', '#e3e6ef'],
+  nutsmix: ['#dcb582', '#9b6b34'], shrimp: ['#ffb293', '#e8704a'], squid: ['#f6efe6', '#d6c6b0'], mussels: ['#f4c98f', '#3b3550'], mushrooms: ['#dcb98f', '#8a5a34'], soy: ['#f2e5ae', '#c9b060'],
+  wheat: ['#f6e6b8', '#d6b86a'], barleygrits: ['#eedcb4', '#c2a26a'], bulgur: ['#e8cb8f', '#b8924a'], quinoa: ['#f3e8ca', '#c9b48a'], pearl: ['#eee3c6', '#bfa77a'], pasta: ['#ffe3a6', '#e0b050'], beans: ['#cc7a64', '#8a3a2a'],
+  peasdry: ['#f4d865', '#c9a42a'], lentil: ['#eb9a66', '#b85a2a'], peanut: ['#dcab72', '#9a6430'], walnut: ['#cca784', '#7a5634'], hazelnut: ['#cc9a68', '#86562a'], chia: ['#dedad2', '#4a4640'], flax: ['#c9a272', '#7a5434'],
+  pumpkinseed: ['#afc982', '#5a7a34'], sunflower: ['#dbd5c6', '#4a4a44'] };
+const FCOL_G = { veg: 'zucchini', cereal: 'oat', fruit: 'apple', oil: 'oilv', meat: 'turkey', cottage: 'cottage', bread: 'cookie', fish: 'cod', sour: 'kefir', berry: 'raspberry', greens: 'parsley', grain: 'bulgur', legume: 'lentil', nutpaste: 'peanut', seeds: 'flax', seafood: 'shrimp' };
 function foodPic(fid, form, cls) {
   const f = foodOf(fid), c = FCOL[fid] || FCOL[FCOL_G[f ? f.g.g : 'veg']] || ['#f3e3c3', '#c9a46b'], [lt, dk] = c, O = '#6b4f3a', sw = 'stroke="' + O + '" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"';
   const face = (x, y, s = 1) => `<circle cx="${x - 7 * s}" cy="${y}" r="${1.9 * s}" fill="${O}"/><circle cx="${x + 7 * s}" cy="${y}" r="${1.9 * s}" fill="${O}"/><path d="M${x - 3.5 * s} ${y + 4 * s}q${3.5 * s} ${3 * s} ${7 * s} 0" fill="none" ${sw}/><circle cx="${x - 12 * s}" cy="${y + 4 * s}" r="${2.6 * s}" fill="#f6a5b5" opacity=".7"/><circle cx="${x + 12 * s}" cy="${y + 4 * s}" r="${2.6 * s}" fill="#f6a5b5" opacity=".7"/>`;
@@ -2424,11 +2488,16 @@ function foodPic(fid, form, cls) {
     case 'sticks': g = plate(`<rect x="22" y="55" width="40" height="11" rx="5.5" transform="rotate(-14 42 60)" fill="${lt}" ${sw}/><rect x="56" y="56" width="42" height="11" rx="5.5" transform="rotate(10 77 61)" fill="${lt}" ${sw}/><rect x="36" y="62" width="44" height="13" rx="6.5" fill="${lt}" ${sw}/><path d="M38 64h40" stroke="${dk}" stroke-width="3" stroke-linecap="round"/>${face(58, 70, .7)}`); break;
     case 'cubes': g = plate(`${[[30, 58], [48, 54], [66, 57], [84, 60], [40, 68], [74, 69]].map(([x, y], i) => `<rect x="${x - 7}" y="${y - 7}" width="14" height="14" rx="3.5" fill="${lt}" ${sw}/>${i === 5 ? '' : `<path d="M${x - 4} ${y - 4}h5" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>`}`).join('')}<rect x="50" y="57" width="20" height="20" rx="5" fill="${lt}" ${sw}/>${face(60, 66, .55)}`); break;
     case 'balls': g = plate(`<circle cx="38" cy="62" r="11" fill="${dk}" ${sw}/><circle cx="82" cy="62" r="11" fill="${dk}" ${sw}/><circle cx="60" cy="63" r="14" fill="${dk}" ${sw}/><path d="M33 57a6 6 0 0 1 6-3M77 57a6 6 0 0 1 6-3" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/>${face(60, 62, .7).replace(/fill="#6b4f3a"/g, 'fill="#fff"')}`); break;
-    case 'patty': { const [pl1, pd] = f && f.g.g === 'milk' ? ['#f6d28e', '#d9984c'] : [lt, dk]; g = plate(`<ellipse cx="42" cy="63" rx="17" ry="9" fill="${pd}" ${sw}/><ellipse cx="74" cy="64" rx="19" ry="10" fill="${pl1}" ${sw}/><circle cx="68" cy="61" r="1.6" fill="${pd}"/><circle cx="82" cy="65" r="1.6" fill="${pd}"/>${face(74, 63, .6)}`); } break;
+    case 'patty': { const [pl1, pd] = f && f.g.g === 'cottage' ? ['#f6d28e', '#d9984c'] : [lt, dk]; g = plate(`<ellipse cx="42" cy="63" rx="17" ry="9" fill="${pd}" ${sw}/><ellipse cx="74" cy="64" rx="19" ry="10" fill="${pl1}" ${sw}/><circle cx="68" cy="61" r="1.6" fill="${pd}"/><circle cx="82" cy="65" r="1.6" fill="${pd}"/>${face(74, 63, .6)}`); } break;
     case 'omelet': g = plate(`<path d="M28 64q4-14 18-12q6-8 16-2q12-6 18 4q12 2 10 12q-2 10-30 10t-32-12z" fill="#ffe27a" ${sw}/><path d="M44 66q8 4 16 0" fill="none" stroke="#f2c235" stroke-width="2.5" stroke-linecap="round"/>${face(60, 62, .65)}`); break;
     case 'cup': g = `<path d="M34 34h44l-4 46q-1 6-7 6H45q-6 0-7-6z" fill="#fff" ${sw}/><path d="M78 44q14 0 13 12t-15 12" fill="none" ${sw}/><path d="M37 41h38l-3 38q-1 5-6 5H46q-5 0-6-5z" fill="${lt === '#ffffff' ? '#e8eefa' : lt}"/><path d="M35 36h42" fill="none" ${sw}/>${face(56, 62)}`; break;
     case 'cookie': g = plate(`<circle cx="44" cy="62" r="15" fill="${lt}" ${sw}/><circle cx="76" cy="64" r="13" fill="${lt}" ${sw}/><circle cx="38" cy="58" r="1.8" fill="${dk}"/><circle cx="48" cy="66" r="1.8" fill="${dk}"/><circle cx="72" cy="60" r="1.6" fill="${dk}"/><circle cx="82" cy="67" r="1.6" fill="${dk}"/>${face(44, 61, .55)}`); break;
     case 'bread': g = plate(`<path d="M38 72V54q-8-2-8-9q0-10 30-10t30 10q0 7-8 9v18z" fill="${dk}" ${sw}/><path d="M43 69V52q-6-2-6-7q0-6 23-6t23 6q0 5-6 7v17z" fill="${lt}"/>${face(60, 56, .7)}`); break;
+    case 'berries': g = plate(`${[[34, 62], [48, 56], [62, 60], [76, 56], [88, 63], [42, 70], [72, 70]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7.5" fill="${lt}" ${sw}/><circle cx="${x - 2.5}" cy="${y - 2.5}" r="1.8" fill="#fff" opacity=".75"/>`).join('')}<circle cx="58" cy="66" r="10" fill="${lt}" ${sw}/>${face(58, 65, .55)}<path d="M84 44q8-6 14 0q-8 5-14 0z" fill="#8cc63f" ${sw}/>`); break;
+    case 'herb': g = bowl(`<path d="M40 50l6-3M52 46l5 3M64 50l6-4M76 47l5 3M58 53l5-2" stroke="${dk}" stroke-width="3.4" stroke-linecap="round"/><path d="M88 36q-6-14 4-22M92 14q9 2 8 11q-8 0-8-11zM90 24q-10-2-11 7q9 1 11-7z" fill="${lt}" ${sw}/>`).replace(`fill="${lt}" ${sw}/>${face(60, 68)}`, `fill="${lt}" ${sw}/>${face(60, 68)}`); break;
+    case 'pasta': g = plate(`${[[30, 62, -20], [46, 56, 15], [64, 60, -10], [82, 57, 25], [40, 70, 30], [74, 70, -25]].map(([x, y, r]) => `<g transform="rotate(${r} ${x} ${y})"><path d="M${x - 7} ${y + 3}q7-12 14 0" fill="none" stroke="${O}" stroke-width="10" stroke-linecap="round"/><path d="M${x - 7} ${y + 3}q7-12 14 0" fill="none" stroke="${lt}" stroke-width="5.4" stroke-linecap="round"/></g>`).join('')}<circle cx="58" cy="67" r="9" fill="${lt}" ${sw}/>${face(58, 66, .5)}`); break;
+    case 'beans': g = plate(`${[[32, 62, 20], [46, 56, -15], [62, 59, 10], [80, 57, -20], [88, 66, 15], [40, 70, -10], [74, 70, 25]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="8" ry="5.5" transform="rotate(${r} ${x} ${y})" fill="${lt}" ${sw}/>`).join('')}<ellipse cx="58" cy="67" rx="12" ry="8.5" fill="${lt}" ${sw}/>${face(58, 66, .5)}`); break;
+    case 'jar': g = `<rect x="34" y="34" width="52" height="52" rx="12" fill="#fff" ${sw}/><path d="M37 52h46v22q0 9-9 9H46q-9 0-9-9z" fill="${lt}"/><rect x="30" y="24" width="60" height="14" rx="5" fill="${dk}" ${sw}/><rect x="34" y="34" width="52" height="52" rx="12" fill="none" ${sw}/>${face(60, 64)}`; break;
     default: g = bowl(`<path d="M38 49q10-5 22 0t22 0" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>${spoon}`);
   }
   return `<svg class="fpic ${cls || ''}" viewBox="0 0 120 100" aria-hidden="true"><circle cx="60" cy="54" r="46" fill="${lt}" opacity=".55"/>${g}</svg>`;
@@ -2489,17 +2558,50 @@ const WAYS = {
   fruit: [[4, 'Однородное пюре — сырое тёртое или печёное (яблоко, груша)'], [7, 'Размятое вилкой с комочками; банан — просто размять'], [8, 'Мягкие спелые кусочки: банан, груша, персик без кожицы'], [12, 'Мелкие кусочки фруктов, кроме твёрдых и круглых целиком']],
   oil: [[4, 'Несколько капель в овощное пюре или кашу — растительное к овощам, сливочное к каше'], [8, 'До 1 ч. ложки растительного и 1 ч. ложки сливочного в день']],
   meat: [[6, 'Однородное пюре из отварного мяса, смешать со знакомым овощным пюре'], [8, 'Фарш, суфле, паровые фрикадельки'], [10, 'Паровые котлеты и тефтели, мелко нарезанное мягкое мясо']],
-  milk: [[6, 'Творог — пару ложек отдельно или с фруктовым пюре; желток — крутое яйцо, начиная с крошки размятого желтка'], [9, 'Творожная запеканка, сырнички на пару'], [12, 'Омлет на пару — после того как желток и белок переносятся (белок — по решению педиатра)']],
+  cottage: [[8, 'Детский творог — пару ложек отдельно или с фруктовым пюре'], [9, 'Творожная запеканка, сырнички на пару']],
+  yolk: [[7, 'Крутое яйцо: начать с крошки размятого желтка в пюре или каше'], [9, 'До ½ желтка, 2–3 раза в неделю'], [12, 'Омлет на пару — когда переносятся и желток, и белок']],
+  eggw: [[8, 'Крутое яйцо — крошечный кусочек белка, отдельно от других новых продуктов: частый аллерген'], [12, 'Омлет на пару, целое яйцо']],
+  cheese: [[8, 'Мягкий несолёный сыр — тёртый, в пюре или кашу'], [12, 'Тонкие ломтики и мягкие кубики']],
+  milkcow: [[12, 'Как питьё — после года, из чашки. До года — только в кашу']],
+  liver: [[8, 'Отварная — пюре вместе с овощами, раз в неделю'], [10, 'Паштет, суфле на пару']],
+  berry: [[9, 'Протёртое пюре без косточек и кожицы — понемногу в кашу или творог'], [12, 'Мягкие ягоды целиком; крупные (вишня, виноград) — без косточек и на 4 части']],
+  greens: [[9, 'Мелко порубить, щепотку — в суп или овощное пюре'], [12, 'Мелко рубленая — в любые блюда']],
+  fresh: [[12, 'Свежий, без кожицы — тёртый или тонкие брусочки']],
+  onion: [[12, 'Отварной или тушёный — немного в суп и пюре; свежий — позже']],
+  rhubarb: [[9, 'Отварной — немного в компот, кисель или пюре с яблоком']],
+  rosehip: [[9, 'Отвар из сушёных ягод — несколько ложек, без сахара']],
+  lemon: [[12, 'Несколько капель сока в блюдо или воду — не как отдельная еда']],
+  avocado: [[7, 'Спелый — размять вилкой, можно в овощное пюре'], [9, 'Мягкие брусочки']],
+  grain: [[12, 'Хорошо разваренные — как гарнир или в суп, размять вилкой']],
+  pasta: [[12, 'Мелкие макароны, хорошо разваренные, с овощами или сыром']],
+  legume: [[12, 'Разваренные и протёртые — в суп-пюре, с 1–2 ложек (могут быть газики)']],
+  nuts: [[12, 'Только молотые — в кашу, творог, выпечку. Целые орехи — не раньше 4–5 лет: можно подавиться']],
+  nutpaste: [[8, 'Паста без соли и сахара: тонкий слой на кусочке хлеба или ½ ч. ложки в кашу. Целые орехи — не раньше 4–5 лет']],
+  seeds: [[8, 'Молотые — щепотку в кашу или пюре; чиа — размоченные в воде']],
+  seafood: [[36, 'Отварные, мелко нарезанные; частый аллерген — с маленького кусочка']],
+  mush: [[36, 'Только выращенные (шампиньоны, вешенки) и хорошо протушенные; лесные — ещё позже']],
   bread: [[6, 'Детское печенье размочить в смеси или молоке'], [8, 'Сухарик или кусочек хлеба — держит сам, под присмотром']],
   fish: [[8, 'Однородное пюре из отварной рыбы без косточек с овощами, 1–2 раза в неделю вместо мяса'], [10, 'Рыбное суфле, паровые фрикадельки'], [12, 'Мелкие кусочки отварной рыбы']],
   sour: [[8, 'Детский кефир или йогурт без сахара из чашки или ложкой, вечером'], [12, 'Можно с фруктовым пюре']],
 };
 // вид картинки для каждой ступени
-const WAYF = { veg: ['puree', 'mash', 'sticks', 'cubes'], cereal: ['porridge', 'porridge', 'porridge', 'porridge'], fruit: ['puree', 'mash', 'sticks', 'cubes'], oil: ['drops', 'drops'], meat: ['puree', 'balls', 'patty'], milk: ['mash', 'patty', 'omelet'], bread: ['cookie', 'bread'], fish: ['puree', 'balls', 'cubes'], sour: ['cup', 'cup'] };
+const WAYF = { veg: ['puree', 'mash', 'sticks', 'cubes'], cereal: ['porridge', 'porridge', 'porridge', 'porridge'], fruit: ['puree', 'mash', 'sticks', 'cubes'], oil: ['drops', 'drops'], meat: ['puree', 'balls', 'patty'],
+  cottage: ['mash', 'patty'], yolk: ['mash', 'mash', 'omelet'], eggw: ['omelet', 'omelet'], cheese: ['mash', 'cubes'], milkcow: ['cup'], liver: ['puree', 'patty'], berry: ['mash', 'berries'], greens: ['herb', 'herb'],
+  fresh: ['sticks'], onion: ['cubes'], rhubarb: ['cup'], rosehip: ['cup'], lemon: ['drops'], avocado: ['mash', 'sticks'], grain: ['porridge'], pasta: ['pasta'], legume: ['beans'], nuts: ['mash'], nutpaste: ['jar'], seeds: ['porridge'],
+  seafood: ['cubes'], mush: ['cubes'], bread: ['cookie', 'bread'], fish: ['puree', 'balls', 'cubes'], sour: ['cup', 'cup'] };
+// ступени для продукта: те, что не раньше его возраста (первая — с возраста продукта)
+function foodSteps(fid) {
+  const f = foodOf(fid); if (!f || !WAYS[f.g.g]) return [];
+  const lo = f.g.lo, w = WAYS[f.g.g], fm = WAYF[f.g.g] || [], out = [];
+  w.forEach((x, i) => { const nx = w[i + 1]; if (nx && nx[0] <= lo) return; out.push([Math.max(x[0], lo), x[1], fm[i]]); });
+  return out;
+}
+// картинка продукта — вид ступени для нынешнего возраста
+function picForm(fid) { const st = foodSteps(fid), am = monthsAt(now()); const k = am == null ? 0 : st.reduce((k, x, i) => am >= x[0] ? i : k, 0); return (st[k] || [])[2]; }
 function foodWays(fid) {
-  const f = foodOf(fid); if (!f || !WAYS[f.g.g]) return '';
-  const am = monthsAt(now()), w = WAYS[f.g.g], cur = am == null ? -1 : w.reduce((k, x, i) => am >= x[0] ? i : k, -1);
-  return `<div class="sec-t" style="margin-top:0">Как предложить</div><ul class="ways">${w.map((x, i) => `<li class="${i === cur ? 'now' : am != null && am < x[0] ? 'later' : ''}">${foodPic(fid, (WAYF[f.g.g] || [])[i], 'sm')}<div><b>с ${x[0]} мес.</b><span>${esc(x[1])}</span></div></li>`).join('')}</ul>
+  const w = foodSteps(fid); if (!w.length) return '';
+  const am = monthsAt(now()), cur = am == null ? -1 : w.reduce((k, x, i) => am >= x[0] ? i : k, -1), ag = m => m >= 24 ? 'с ' + m / 12 + ' лет' : 'с ' + m + ' мес.';
+  return `<div class="sec-t" style="margin-top:0">Как предложить</div><ul class="ways">${w.map((x, i) => `<li class="${i === cur ? 'now' : am != null && am < x[0] ? 'later' : ''}">${foodPic(fid, x[2], 'sm')}<div><b>${ag(x[0])}</b><span>${esc(x[1])}</span></div></li>`).join('')}</ul>
     <p class="hint" style="margin:-4px 0 12px">Кусочки — только мягкие, малыш сидит, взрослый рядом. Без соли и сахара до года. Источник: ВОЗ; Программа вскармливания (Союз педиатров России).</p>`;
 }
 
@@ -2916,7 +3018,7 @@ function boot() {
     checkApk();
   });
   window.addEventListener('storage', e => { if (e.key === KEY && $('#sheetWrap').hidden) { S = load(); render(); } });
-  if (!NATIVE && 'serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if (!NATIVE && 'serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => r.update()).catch(() => {});
 }
 boot();
 </script>
