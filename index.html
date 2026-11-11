@@ -383,25 +383,27 @@ body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
 /* сон: сегодня и прогноз */
 .srow.today .sd{color:var(--c-sleep);font-weight:700;font-size:11.5px}
 .strip i.sleep.live{opacity:.5}
+.strip i.sleep.dy,.lleg i.dyk{background:color-mix(in srgb,var(--c-sleep) 40%,#ffc861)}
+.sgrp{font-size:13px;color:var(--text-2);margin:8px 0 4px;padding:5px 10px;border-radius:10px;background:color-mix(in srgb,#ffc861 18%,transparent)}
+.sgrp.nt{background:color-mix(in srgb,var(--c-sleep) 14%,transparent)}
 .fcast .slist li b{color:var(--c-sleep);font-variant-numeric:tabular-nums}
 .fcast .slist li.over{opacity:.6} .fcast .slist li.nt{background:color-mix(in srgb,var(--c-sleep) 14%,transparent)}
-/* скачки по дням */
+/* скачки по неделям */
 .lleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--text-2);margin:8px 0}
 .lleg span{display:flex;align-items:center;gap:5px}
 .lleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
-.lleg u,.ld u{width:6px;height:6px;border-radius:50%;background:var(--c-feed);display:inline-block}
-.ltl{display:flex;align-items:flex-end;gap:2px;height:96px;overflow-x:auto;overflow-y:hidden;padding:4px 2px 18px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.ld{position:relative;flex:0 0 12px;height:100%;border:0;background:transparent;padding:0;display:flex;align-items:flex-end;cursor:pointer}
-.ld i{display:block;width:100%;border-radius:4px 4px 2px 2px}
-.ld.p0 i,.lleg .p0{height:18%;background:#ffd66b} .ld.p1 i,.lleg .p1{height:42%;background:#9fc7ef}
-.ld.p2 i,.lleg .p2{height:68%;background:#8b8fd8} .ld.p3 i,.lleg .p3{height:100%;background:#6c5ba8}
-.lleg i{height:10px!important}
-.ld.past i{opacity:.45}
-.ld.td i{outline:2px solid var(--accent);outline-offset:1px}
-.ld.sel i{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text)}
-.ld u{position:absolute;left:3px;top:-2px}
-.ld em{position:absolute;bottom:-17px;left:0;font-style:normal;font-size:10px;color:var(--muted)}
-.lax{font-size:10.5px;color:var(--muted);text-align:right;margin-top:-2px}
+.lleg u,.lw u{width:6px;height:6px;border-radius:50%;background:var(--c-feed);display:inline-block}
+.lgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:12px 0 10px}
+.lw{position:relative;aspect-ratio:1;border:1px solid #c9c2bd;border-radius:7px;background:var(--surface);color:var(--text-2);font-family:inherit;font-weight:600;font-size:14px;line-height:1;font-variant-numeric:tabular-nums;padding:0;cursor:pointer}
+.lw.leap,.lw.peak,.lleg .leap{background:#8b4a4c;border-color:#8b4a4c;color:#fff}
+.lw.good,.lleg .good{background:#dca86a;border-color:#dca86a;color:#fff}
+.lw.anx,.lleg .anx{background:#b07c7c;border-color:#b07c7c;color:#fff}
+.lleg .calm{background:var(--surface);border:1px solid #c9c2bd}
+.lw s{position:absolute;top:-8px;right:-5px;font-size:15px;text-decoration:none;line-height:1}
+.lw u{position:absolute;left:4px;top:4px}
+.lw.past{opacity:.5}
+.lw.td{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent);opacity:1;z-index:1}
+.lw.sel{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text);opacity:1;z-index:2}
 .lnav{display:flex;gap:6px;margin:8px 0}
 .lnav .b{flex:1;padding:8px 4px;font-size:13px}
 .lmemo{background:var(--surface-2);border-radius:14px;padding:12px}
@@ -479,7 +481,7 @@ ul.nolist li::marker{content:'✕  ';color:var(--warn);font-weight:700}
 </header>
 <main id="view"></main>
 <div class="sndbar" id="sndbar" hidden></div>
-<div class="chatbar" id="chatbar" hidden><button class="icon-btn" onclick="$('#c_file').click()" aria-label="Фото">📷</button><textarea id="c_in" rows="1" placeholder="Сообщение" oninput="chatGrow(this)" onkeydown="chatKey(event)"></textarea><button class="b main csend" onclick="sendMsg()" aria-label="Отправить">➤</button><input type="file" id="c_file" accept="image/*" hidden onchange="sendPhoto(this.files[0])"></div>
+<div class="chatbar" id="chatbar" hidden><button class="icon-btn" onclick="$('#c_file').click()" aria-label="Фото">📷</button><textarea id="c_in" rows="1" placeholder="Сообщение" oninput="chatGrow(this)" onkeydown="chatKey(event)"></textarea><button class="b main csend" onclick="sendMsg()" aria-label="Отправить">➤</button><input type="file" id="c_file" accept="image/*,image/heic,image/heif,.heic,.heif,application/octet-stream" hidden onchange="sendPhoto(this.files[0])"></div>
 <nav class="tabs" id="tabs"></nav>
 <div class="sheet-wrap" id="sheetWrap" hidden><div class="sheet-bg" onclick="closeSheet()"></div><div class="sheet" id="sheet" role="dialog"></div></div>
 <div class="toast" id="toast" hidden></div>
@@ -680,7 +682,12 @@ function render() {
   syncShow();
   renderTabs();
   const v = $('#view');
+  // раскрытые блоки (сказка, рецепт, раздел прикорма) остаются как были, пока это тот же экран
+  const scr = [UI.tab, UI.more, UI.dev, UI.health, UI.alb].join('|'), dk = d => { const s = d.querySelector('summary'); return s ? (s.querySelector('b') || s).textContent.trim() : ''; };
+  const was = v.dataset.scr === scr ? new Map([...v.querySelectorAll('details')].map(d => [dk(d), d.open])) : null;
+  v.dataset.scr = scr;
   v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : UI.tab === 'sleep' ? viewSleep() : viewNow();
+  if (was) for (const d of v.querySelectorAll('details')) { const o = was.get(dk(d)); if (o != null) d.open = o; }
   tick(); hydratePhotos(); chatShow(); sndBar(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
 }
 
@@ -1888,8 +1895,26 @@ function hydratePhotos() {
     phUrl(id, sz).then(u => u || phFetch(id)).then(u => { if (u) img.src = u; else { const b = img.closest('.ph,.bph'); if (b) b.classList.add('miss'); } });
   }
 }
-function loadImage(file) {
-  return new Promise((res, rej) => { const u = URL.createObjectURL(file), i = new Image(); i.onload = () => res(i); i.onerror = () => { URL.revokeObjectURL(u); rej(new Error('не получилось открыть фото')); }; i.src = u; });
+function imgOf(blob) {
+  return new Promise((res, rej) => { const u = URL.createObjectURL(blob), i = new Image(); i.onload = () => res(i); i.onerror = () => { URL.revokeObjectURL(u); rej(new Error('не получилось открыть фото')); }; i.src = u; });
+}
+/* HEIC/HEIF (iPhone, новые Android): Chrome и приложение Android такие фото не показывают. В приложении — переводит в JPEG
+   телефон (NATIVE.jpeg, Android 9+), на сайте — heic2any (подгружается только в этот момент, нужен интернет). Safari открывает сам. */
+const isHeic = f => /\.(heic|heif)$/i.test(f.name || '') || /hei[cf]/i.test(f.type || '');
+function fileB64(f) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(f); }); }
+let HEIC_LIB = null;
+function heicLib() {
+  return HEIC_LIB || (HEIC_LIB = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js'; s.onload = () => res(window.heic2any); s.onerror = () => { HEIC_LIB = null; rej(new Error('нет интернета, чтобы открыть фото HEIC')); }; document.head.appendChild(s); }));
+}
+async function loadImage(file) {
+  try { return await imgOf(file); } catch (e) { if (!isHeic(file)) throw e; }
+  if (NATIVE && typeof NATIVE.jpeg === 'function') {
+    const j = NATIVE.jpeg(await fileB64(file));
+    if (j) return imgOf(new Blob([Uint8Array.from(atob(j), c => c.charCodeAt(0))], { type: 'image/jpeg' }));
+  }
+  toast('Открываю фото HEIC…');
+  const h = await heicLib(), out = await h({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+  return imgOf(Array.isArray(out) ? out[0] : out);
 }
 function shrink(img, max, q) {
   const k = Math.min(1, max / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height)), c = document.createElement('canvas');
@@ -1956,7 +1981,7 @@ function editFirst(id, fk) {
     ${AEDIT.mile ? `<p class="st" style="margin-top:0"><b>${esc(firstTitle(e))}</b> — веха развития</p>` : `<label class="f"><span>Что случилось впервые</span><input id="a_title" value="${esc(e ? e.title : f ? f[1] : '')}" placeholder="Например, первая улыбка" autocomplete="off"></label>
     ${id ? '' : `<div class="fchips" style="margin:-4px 0 12px">${FIRSTS.filter(x => !used.has(x[0])).slice(0, 8).map(x => `<button type="button" onclick="$('#a_title').value='${x[1]}';AEDIT.fk='${x[0]}'">${x[2]} ${x[1]}</button>`).join('')}</div>`}`}
     <label class="f"><span>Когда</span><input id="a_d" type="date" value="${toInput(e ? e.s : now()).slice(0, 10)}"></label>
-    <div class="f"><span>Фото</span><div id="a_ph">${aPhHtml()}</div><input type="file" id="a_file" accept="image/*" hidden onchange="addAPhoto(this.files[0])"></div>
+    <div class="f"><span>Фото</span><div id="a_ph">${aPhHtml()}</div><input type="file" id="a_file" accept="image/*,image/heic,image/heif,.heic,.heif,application/octet-stream" hidden onchange="addAPhoto(this.files[0])"></div>
     <label class="f"><span>Пара слов на память</span><textarea id="a_note" placeholder="Где, как это было…">${esc(e ? e.note || '' : '')}</textarea></label>
     <div class="err" id="a_err"></div>
     <div class="acts">${id && !AEDIT.mile ? '<button class="b del" onclick="delFirst()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" id="a_save" onclick="saveFirst()">Сохранить</button></div>`);
@@ -2306,9 +2331,9 @@ function viewSleep() {
   const rowsV = [{ d: T0, list: tl, tot: tl.reduce((x, e) => x + Math.min(now(), e.e ?? now()) - Math.max(T0, e.s), 0), has: tl.length > 0, today: true }, ...st.rows.slice().reverse()];
   h += `<div class="card"><h3>График</h3><div class="sgrid">${rowsV.map(r => {
     const p = x => ((Math.max(r.d, Math.min(addDays(r.d, 1), x)) - r.d) / 864e5 * 100).toFixed(2) + '%';
-    return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WD[new Date(r.d).getDay()].slice(0, 2) + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
-  }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div></div>`;
-  h += `<div class="card"><h3>Все сны</h3>${rowsV.filter(r => r.has).map(r => `<div class="sec-t">${esc(dayTitle(r.d))} · ${fmtMin(r.tot)}</div><ul class="list">${r.list.filter(e => e.s >= r.d).map(rowHtml).join('')}</ul>`).join('')}</div>`;
+    return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WD[new Date(r.d).getDay()].slice(0, 2) + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep ${isNightNap(e) ? 'nt' : 'dy'}${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
+  }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div><div class="lleg" style="margin:6px 0 0"><span><i style="background:var(--c-sleep)"></i>ночной сон</span><span><i class="dyk"></i>дневной сон</span></div></div>`;
+  h += allSleeps();
   return h;
 }
 
@@ -2318,6 +2343,23 @@ function viewSleep() {
    Мало записей (меньше 6 снов) — нет прогноза, тогда ориентир по возрасту (nextSleepHint). */
 const minOfDay = ts => { const d = new Date(ts); return d.getHours() * 60 + d.getMinutes(); };
 const median = a => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y), k = s.length >> 1; return s.length % 2 ? s[k] : (s[k - 1] + s[k]) / 2; };
+// ночной или дневной сон — по времени, когда уснул: с 19:00 до 6:00 — ночной (и короткие ночные пробуждения тоже)
+const isNightNap = e => { const m = minOfDay(e.s); return m >= 19 * 60 || m < 6 * 60; };
+// «Все сны»: сутки с 6:00 до 6:00 (ночь — вместе с вечером, когда уснул), сверху — самые свежие; в сутках — ночь и день отдельно
+function allSleeps() {
+  const SH = 6 * 3600e3, all = evs().filter(e => e.t === 'sleep' && e.s < now()).sort((a, b) => b.s - a.s), by = new Map();
+  for (const e of all) { const k = sod(e.s - SH); if (!by.has(k)) by.set(k, []); by.get(k).push(e); }
+  const dur = l => l.reduce((x, e) => x + (e.e ?? now()) - e.s, 0);
+  let h = '', n = 0;
+  for (const [d, l] of by) {
+    if (++n > 14) break;
+    const nt = l.filter(isNightNap), dy = l.filter(e => !isNightNap(e));
+    h += `<div class="sec-t">${esc(dayTitle(d))}</div>`;
+    if (nt.length) h += `<div class="sgrp nt">🌙 Ночной сон · <b>${fmtMin(dur(nt))}</b>${nt.length > 1 ? ` · ${nt.length} ${pl(nt.length, 'отрезок', 'отрезка', 'отрезков')}` : ''}</div><ul class="list">${nt.map(rowHtml).join('')}</ul>`;
+    if (dy.length) h += `<div class="sgrp">☀️ Дневной сон · <b>${fmtMin(dur(dy))}</b> · ${dy.length} ${pl(dy.length, 'сон', 'сна', 'снов')}</div><ul class="list">${dy.map(rowHtml).join('')}</ul>`;
+  }
+  return `<div class="card"><h3>Все сны</h3><p class="hint">Сверху — самые свежие. Ночной — если уснул с 19:00 до 6:00; ночь записана к дню, когда уложили.</p>${h || '<div class="empty">Снов пока нет</div>'}</div>`;
+}
 const isNightSleep = e => (e.e - e.s) >= 4 * 3600e3 && (minOfDay(e.s) >= 18 * 60 || minOfDay(e.s) < 3 * 60);
 const nightStartish = ts => minOfDay(ts) >= 19 * 60 || minOfDay(ts) < 4 * 60;
 function sleepModel() {
@@ -2376,81 +2418,81 @@ function forecastCard() {
     <p class="hint">По записям за 2 недели (${f.n} ${pl(f.n, 'сон', 'сна', 'снов')}): сколько малыш обычно бодрствует и спит в это время дня. Это примерно, ±30 минут — смотрите на признаки усталости.</p></div>`;
 }
 
-/* ───────── скачки развития по дням (таймлайн) ─────────
-   По книге «Чудесные недели» (ван де Рейт, Плоой): 8 скачков за первый год+, недели — от рождения (у недоношенных — от ПДР).
-   Внутри скачка: первая треть — самое беспокойное время, середина — легче, конец — отступает; потом спокойный период
-   до следующего. Научных подтверждений такому точному расписанию мало — это подсказка, а не правило. */
+/* ───────── скачки развития по неделям ─────────
+   По книге «Чудесные недели» (ван де Рейт, Плоой), новое издание — 10 скачков за 78 недель. Неделя N — N-я неделя жизни
+   (дни 7(N−1)…7N−1 от рождения; у недоношенных книга считает от ПДР). Раскладка недель — по таблице «Скачки развития
+   по неделям» (sonrebenka.com): скачок, пик скачка, хорошее настроение после, «возможна тревожность» (29–30 нед.), спокойно.
+   Научных подтверждений такому точному расписанию мало — это подсказка, а не правило. */
 const LEAP = [
-  { w: [4.5, 5.5], name: 'Мир ощущений', learn: 'Органы чувств работают по-новому: малыш дольше смотрит, иначе реагирует на звуки и запахи, может впервые осознанно улыбнуться.', help: 'Больше контакта «кожа к коже», тишина, приглушённый свет, кормление по требованию.' },
-  { w: [7.5, 9.5], name: 'Мир узоров', learn: 'Замечает узоры и формы: разглядывает свои ладошки, лампы, полоски; пробует новые звуки.', help: 'Контрастные картинки, разговоры лицом к лицу, рассматривать ладошки вместе.' },
-  { w: [11.5, 12.5], name: 'Плавные переходы', learn: 'Движения и голос становятся плавнее: следит за предметом, поворачивает голову, «поёт».', help: 'Медленные игры с погремушкой, укачивание, песенки и потешки.' },
-  { w: [14.5, 19.5], name: 'Мир событий', learn: 'Понимает короткие «события»: мяч катится, ложка падает. Хватает, тянет в рот, переворачивается. Самый долгий скачок — часто хуже спит (тот самый «регресс сна в 4 месяца»).', help: 'Одинаковые ритуалы перед сном, игрушки, которые можно схватить и потрясти. Терпение: это пройдёт.' },
-  { w: [22.5, 26.5], name: 'Взаимосвязи', learn: 'Понимает расстояние: мама ушла — значит, далеко. Отсюда тревога разлуки и плач, когда вы выходите из комнаты.', help: 'Игра «Ку-ку», говорите, куда уходите, и возвращайтесь — малыш учится, что вы всегда вернётесь.' },
-  { w: [33.5, 37.5], name: 'Категории', learn: 'Делит мир на группы: животные, игрушки, еда. Внимательно рассматривает и сравнивает.', help: 'Называйте предметы, книжки с картинками, игра «Где собачка?».' },
-  { w: [41.5, 46.5], name: 'Последовательности', learn: 'Понимает порядок действий: сначала взять, потом положить. Складывает, собирает, вставляет одно в другое.', help: 'Пирамидки, кубики, «положи в коробку». Давайте пробовать и ошибаться.' },
-  { w: [50.5, 54.5], name: 'Программы', learn: 'Понимает целые «программы»: одеваемся — значит, гулять; ужин — ванна — сон. Хочет участвовать сам.', help: 'Предсказуемый день, маленькие поручения: подать носок, «помочь» вытереть стол.' },
+  { w: [5, 5], pk: 5, name: 'Мир ощущений', learn: 'Органы чувств работают по-новому: малыш дольше смотрит, иначе реагирует на звуки и запахи, может впервые осознанно улыбнуться.', help: 'Больше контакта «кожа к коже», тишина, приглушённый свет, кормление по требованию.' },
+  { w: [8, 9], pk: 8, name: 'Мир узоров', learn: 'Замечает узоры и формы: разглядывает свои ладошки, лампы, полоски; пробует новые звуки.', help: 'Контрастные картинки, разговоры лицом к лицу, рассматривать ладошки вместе.' },
+  { w: [12, 12], pk: 12, name: 'Плавные переходы', learn: 'Движения и голос становятся плавнее: следит за предметом, поворачивает голову, «поёт».', help: 'Медленные игры с погремушкой, укачивание, песенки и потешки.' },
+  { w: [15, 19], pk: 17, name: 'Мир событий', learn: 'Понимает короткие «события»: мяч катится, ложка падает. Хватает, тянет в рот, переворачивается. Самый долгий скачок — часто хуже спит (тот самый «регресс сна в 4 месяца»).', help: 'Одинаковые ритуалы перед сном, игрушки, которые можно схватить и потрясти. Терпение: это пройдёт.' },
+  { w: [23, 26], pk: 26, name: 'Взаимосвязи', learn: 'Понимает расстояние: мама ушла — значит, далеко. Отсюда тревога разлуки и плач, когда вы выходите из комнаты.', help: 'Игра «Ку-ку», говорите, куда уходите, и возвращайтесь — малыш учится, что вы всегда вернётесь.' },
+  { w: [34, 37], pk: 36, name: 'Категории', learn: 'Делит мир на группы: животные, игрушки, еда. Внимательно рассматривает и сравнивает.', help: 'Называйте предметы, книжки с картинками, игра «Где собачка?».' },
+  { w: [42, 46], pk: 44, name: 'Последовательности', learn: 'Понимает порядок действий: сначала взять, потом положить. Складывает, собирает, вставляет одно в другое.', help: 'Пирамидки, кубики, «положи в коробку». Давайте пробовать и ошибаться.' },
+  { w: [51, 55], pk: 54, name: 'Программы', learn: 'Понимает целые «программы»: одеваемся — значит, гулять; ужин — ванна — сон. Хочет участвовать сам.', help: 'Предсказуемый день, маленькие поручения: подать носок, «помочь» вытереть стол.' },
+  { w: [60, 64], pk: 62, name: 'Принципы', learn: 'Начинает думать наперёд и выбирать сам: пробует разные способы добиться своего, хитрит, подражает взрослым. Чаще звучит «нет».', help: 'Давайте выбор из двух вариантов, спокойные понятные границы, хвалите за попытки.' },
+  { w: [72, 75], pk: 73, name: 'Системы', learn: 'Понимает, что он — отдельный человек со своими желаниями: «моё», «я сам», правила семьи. Может упрямиться и проверять границы.', help: 'Одни правила у всех взрослых, объясняйте простыми словами, зовите помогать по дому.' },
 ];
-const LEAP_DAYS = 56 * 7;
-const PHASE = [
-  ['☀️', 'Спокойный период', 'Обычно хорошее настроение: малыш с удовольствием играет, пробует новые умения, лучше спит.'],
-  ['🌤', 'Скачок отступает', 'Становится спокойнее, малыш показывает новое умение. Капризы ещё бывают, но реже.'],
-  ['🌦', 'Середина скачка', 'Капризов обычно меньше, чем в начале, но настроение переменчивое. Уже видно первые новые умения.'],
-  ['⛈', 'Самое беспокойное время', 'Может чаще плакать, «висеть» на груди, хуже спать и проситься на руки. Это временно — мозг осваивает новое.'],
-];
-// день от рождения → { p: 0–3, i: номер скачка (или следующего), left: дней до конца/до следующего }
-function leapAt(d) {
-  for (let i = 0; i < LEAP.length; i++) {
-    const a = Math.round(LEAP[i].w[0] * 7), b = Math.round(LEAP[i].w[1] * 7);
-    if (d < a) return { p: 0, i, next: a - d };
-    if (d < b) { const x = (d - a) / (b - a); return { p: x < 1 / 3 ? 3 : x < 2 / 3 ? 2 : 1, i, left: b - d, a, b }; }
-  }
-  return { p: 0, i: -1 };
+const LEAP_GOOD = [6, 10, 13, 21, 31, 39, 49, 58, 66, 76], LEAP_ANX = [29, 30], LEAP_WEEKS = 78;
+const PHASE = {
+  calm: ['☀️', 'Спокойное время', 'Обычно ровное настроение: малыш с удовольствием играет, пробует новые умения, лучше спит.'],
+  good: ['😊', 'Хорошее настроение', 'Скачок позади: малыш спокойнее, веселее и показывает, чему научился. Хорошее время для новых игр и прогулок.'],
+  leap: ['⛈', 'Скачок развития', 'Может чаще плакать, «висеть» на груди, хуже спать и проситься на руки. Это временно — мозг осваивает новое.'],
+  peak: ['😣', 'Пик скачка', 'Самые беспокойные дни скачка: больше капризов, просится на руки, сон может сбиться. Скоро станет легче.'],
+  anx: ['🫧', 'Возможна тревожность', 'Малыш уже понимает, что вы можете уйти, — может пугаться чужих и плакать, когда вы выходите из комнаты. Это нормальный этап.'],
+};
+// неделя жизни (1…) → { k: calm|good|leap|peak|anx, i: номер скачка (текущего; для calm/good/anx — следующего, −1 — все позади) }
+function leapWeek(w) {
+  for (let i = 0; i < LEAP.length; i++) { const x = LEAP[i]; if (w >= x.w[0] && w <= x.w[1]) return { k: w === x.pk ? 'peak' : 'leap', i }; }
+  return { k: LEAP_GOOD.includes(w) ? 'good' : LEAP_ANX.includes(w) ? 'anx' : 'calm', i: LEAP.findIndex(x => x.w[0] > w) };
 }
-function leapMemo(d) {
-  const b = birthTs(), L = leapAt(d), ph = PHASE[L.p], ts = addDays(sod(b), d), w = Math.floor(d / 7), dd = d % 7;
-  const today = sod(now()) === ts;
-  let h = `<div class="lm-h"><span class="lm-ic">${ph[0]}</span><div><b>${today ? 'Сегодня' : esc(dayTitle(ts))}</b> · ${w} нед.${dd ? ' ' + dd + ' дн.' : ''}<div class="lm-p">${ph[1]}</div></div></div><p class="st" style="margin:8px 0 0">${ph[2]}</p>`;
-  if (L.p) {
-    const x = LEAP[L.i];
-    h += `<p class="st" style="margin:8px 0 0"><b>Скачок ${L.i + 1} — «${esc(x.name)}»</b> (≈ ${String(x.w[0]).replace('.', ',')}–${String(x.w[1]).replace('.', ',')} нед.), до конца — ${L.left} ${pl(L.left, 'день', 'дня', 'дней')}.</p>
+const leapAt = d => leapWeek(Math.floor(d / 7) + 1);
+const nedTxt = (a, b) => a === b ? a + '-я нед.' : a + '–' + b + '-я нед.';
+function leapMemo(w) {
+  const b = sod(birthTs()), L = leapWeek(w), ph = PHASE[L.k], from = addDays(b, (w - 1) * 7), to = addDays(from, 6), t = sod(now());
+  const cur = t >= from && t <= to, d0 = (w - 1) * 7;
+  let h = `<div class="lm-h"><span class="lm-ic">${ph[0]}</span><div><b>${w}-я неделя${cur ? ' — сейчас' : ''}</b> · ${dayShort(from)} – ${dayShort(to)}<div class="lm-p">${ph[1]}</div></div></div><p class="st" style="margin:8px 0 0">${ph[2]}</p>`;
+  if (L.k === 'leap' || L.k === 'peak') {
+    const x = LEAP[L.i], st = addDays(b, (x.w[0] - 1) * 7), end = addDays(b, x.w[1] * 7), left = Math.round((end - t) / 864e5);
+    h += `<p class="st" style="margin:8px 0 0"><b>Скачок ${L.i + 1} — «${esc(x.name)}»</b> (${nedTxt(x.w[0], x.w[1])}${x.w[1] > x.w[0] ? `, пик — ${x.pk}-я` : ''})${t >= st && t < end ? `, до конца — ${left} ${pl(left, 'день', 'дня', 'дней')}` : ''}.</p>
       <p class="hint" style="margin:6px 0 0"><b>Чему учится:</b> ${esc(x.learn)}</p><p class="hint" style="margin:4px 0 0"><b>Что помогает:</b> ${esc(x.help)}</p>`;
-  } else if (L.i >= 0) {
-    const x = LEAP[L.i];
-    h += `<p class="hint" style="margin:8px 0 0">Следующий скачок — «${esc(x.name)}», примерно через ${L.next} ${pl(L.next, 'день', 'дня', 'дней')} (${dayShort(addDays(sod(b), d + L.next))}).</p>`;
-  } else h += `<p class="hint" style="margin:8px 0 0">Главные скачки первого года позади.</p>`;
-  const sp = SPURTS.find(s => d >= s[0] && d <= s[1]);
+  } else {
+    const pv = LEAP.filter(x => x.w[1] < w).pop();
+    if (L.k === 'good' && pv) h += `<p class="hint" style="margin:8px 0 0">Позади скачок «${esc(pv.name)}» — посмотрите, что малыш теперь умеет.</p>`;
+    if (L.i >= 0) {
+      const x = LEAP[L.i], st = addDays(b, (x.w[0] - 1) * 7), n = Math.round((st - Math.max(t, from)) / 864e5);
+      h += `<p class="hint" style="margin:8px 0 0">Следующий скачок — «${esc(x.name)}», ${nedTxt(x.w[0], x.w[1])} (с ${dayShort(st)}${n > 0 ? `, через ${n} ${pl(n, 'день', 'дня', 'дней')}` : ''}).</p>`;
+    } else h += `<p class="hint" style="margin:8px 0 0">Все скачки из книги позади.</p>`;
+  }
+  const sp = SPURTS.find(s => s[1] >= d0 && s[0] <= d0 + 6);
   if (sp) h += `<p class="hint" style="margin:6px 0 0">🍼 И скачок роста (${sp[2]}): может чаще просить есть.</p>`;
   return h;
 }
 function leapTimeline() {
-  const b = birthTs(), td = Math.round((sod(now()) - sod(b)) / 864e5);
-  if (UI.lday == null) UI.lday = Math.max(0, Math.min(LEAP_DAYS - 1, td));
-  let bars = '';
-  for (let d = 0; d < LEAP_DAYS; d++) {
-    const L = leapAt(d), sp = SPURTS.some(s => d >= s[0] && d <= s[1]);
-    bars += `<button class="ld p${L.p}${d === td ? ' td' : ''}${d === UI.lday ? ' sel' : ''}${d < td ? ' past' : ''}" data-d="${d}" onclick="leapPick(${d})" aria-label="день ${d}"><i></i>${sp ? '<u></u>' : ''}${d % 7 === 0 ? `<em>${d / 7}</em>` : ''}</button>`;
+  const td = Math.round((sod(now()) - sod(birthTs())) / 864e5), tw = Math.floor(td / 7) + 1;
+  if (UI.lweek == null) UI.lweek = Math.max(1, Math.min(LEAP_WEEKS, tw));
+  let cells = '';
+  for (let w = 1; w <= LEAP_WEEKS; w++) {
+    const L = leapWeek(w), sp = SPURTS.some(s => s[1] >= (w - 1) * 7 && s[0] <= w * 7 - 1);
+    cells += `<button class="lw ${L.k}${w === tw ? ' td' : ''}${w === UI.lweek ? ' sel' : ''}${w < tw ? ' past' : ''}" data-w="${w}" onclick="leapPick(${w})" aria-label="${w}-я неделя">${w}${L.k === 'peak' ? '<s>😣</s>' : ''}${sp ? '<u></u>' : ''}</button>`;
   }
-  setTimeout(() => leapScroll(true), 0);
-  return `<div class="card leapc"><h3>🧩 Скачки развития по дням</h3>
-    <p class="hint">По книге «Чудесные недели» (Х. ван де Рейт, Ф. Плоой). Выше столбик — беспокойнее. Листайте и нажимайте на день — внизу подскажем, что примерно происходит.</p>
-    <div class="lleg"><span><i class="p3"></i>беспокойно</span><span><i class="p2"></i>легче</span><span><i class="p1"></i>отступает</span><span><i class="p0"></i>спокойно</span><span><u></u>скачок роста</span></div>
-    <div class="ltl" id="ltl">${bars}</div><div class="lax">недели жизни</div>
-    <div class="lnav"><button class="b ghost" onclick="leapStep(-7)">‹ неделя</button><button class="b ghost" onclick="leapPick(${Math.max(0, Math.min(LEAP_DAYS - 1, td))},1)">Сегодня</button><button class="b ghost" onclick="leapStep(7)">неделя ›</button></div>
-    <div class="lmemo" id="lmemo">${leapMemo(UI.lday)}</div>
+  return `<div class="card leapc"><h3>🧩 Скачки развития по неделям</h3>
+    <p class="hint">По книге «Чудесные недели» (Х. ван де Рейт, Ф. Плоой). Числа — недели жизни, рамкой — нынешняя. Нажмите на неделю — внизу подскажем, что примерно происходит.</p>
+    <div class="lleg"><span><i class="calm"></i>спокойное время</span><span><i class="good"></i>хорошее настроение</span><span><i class="leap"></i>скачок развития</span><span><i class="anx"></i>возможна тревожность</span><span>😣 пик скачка</span><span><u></u>скачок роста</span></div>
+    <div class="lgrid" id="lgrid">${cells}</div>
+    <div class="lmemo" id="lmemo">${leapMemo(UI.lweek)}</div>
+    ${tw >= 1 && tw <= LEAP_WEEKS ? `<div class="lnav"><button class="b ghost" onclick="leapPick(${tw})">К нынешней неделе</button></div>` : ''}
     <p class="hint" style="margin:10px 0 0">Научных подтверждений у такого точного расписания мало, у каждого малыша свой ритм. Если малыш капризничает и по календарику «сходится» — скорее всего, это временно. Но температура, отказ от еды, вялость — повод позвонить педиатру.</p></div>`;
 }
-function leapScroll(center) {
-  const el = $('#ltl'), s = el && el.querySelector('.ld.sel'); if (!s) return;
-  const x = s.offsetLeft - el.offsetLeft, w = el.clientWidth;
-  if (center || x < el.scrollLeft + 20 || x > el.scrollLeft + w - 40) el.scrollLeft = Math.max(0, x - w / 2);
+// меняем только памятку и выделение — без render, чтобы не сбивать прокрутку
+function leapPick(w) {
+  UI.lweek = w; const el = $('#lgrid'); if (!el) return;
+  for (const b of el.querySelectorAll('.lw.sel')) b.classList.remove('sel');
+  const s = el.querySelector(`.lw[data-w="${w}"]`); if (s) s.classList.add('sel');
+  $('#lmemo').innerHTML = leapMemo(w);
 }
-function leapPick(d, center) {
-  UI.lday = d; const el = $('#ltl'); if (!el) return;
-  for (const b of el.querySelectorAll('.ld.sel')) b.classList.remove('sel');
-  const s = el.querySelector(`.ld[data-d="${d}"]`); if (s) s.classList.add('sel');
-  $('#lmemo').innerHTML = leapMemo(d); leapScroll(!!center);
-}
-function leapStep(n) { leapPick(Math.max(0, Math.min(LEAP_DAYS - 1, (UI.lday || 0) + n))); }
 
 /* ───────── картинки к прикорму ─────────
    Одна мультяшная манера на всё: обводка, пастельный круг, у миски и главного кусочка — рожица.
@@ -2624,7 +2666,7 @@ let MPEDIT = null;
 function editMonth(m) {
   const e = mphotos()[m]; MPEDIT = m; AEDIT = { id: e ? e.id : null, ph: e ? (e.ph || []).slice() : [], mile: false };
   openSheet(`<h2>📅 ${m} ${pl(m, 'месяц', 'месяца', 'месяцев')}</h2><p class="hint" style="margin:0 0 10px">Месячный день рождения — ${dayShort(monthDay(m))}.</p>
-    <div class="f"><span>Фото</span><div id="a_ph">${aPhHtml()}</div><input type="file" id="a_file" accept="image/*" hidden onchange="addAPhoto(this.files[0])"></div>
+    <div class="f"><span>Фото</span><div id="a_ph">${aPhHtml()}</div><input type="file" id="a_file" accept="image/*,image/heic,image/heif,.heic,.heif,application/octet-stream" hidden onchange="addAPhoto(this.files[0])"></div>
     <label class="f"><span>Вес, рост, что умеет — пара слов</span><textarea id="a_note" placeholder="Например: 6,2 кг, улыбается всем">${esc(e ? e.note || '' : '')}</textarea></label>
     <div class="err" id="a_err"></div>
     <div class="acts">${e ? '<button class="b del" onclick="delMonth()">Удалить</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" id="a_save" onclick="saveMonth()">Сохранить</button></div>`);
