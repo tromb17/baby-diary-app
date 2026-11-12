@@ -3018,7 +3018,7 @@ function shareLink() {
    Общий дневник двух родителей через Яндекс не сделать (папка приложения — личная), он — через Google; через Яндекс
    дневник синхронизируется между устройствами одного аккаунта. В браузере вход — переход на oauth.yandex.ru и обратно;
    в Android — так же внутри приложения (server.allowNavigation), возврат на https://localhost/. */
-const Y_CLIENT = '';   // ClientID приложения с oauth.yandex.ru (не секрет); пусто — кнопок «Войти через Яндекс» нет
+const Y_CLIENT = 'f92a681cf93e474e95fb5ae0fbc87464';   // ClientID приложения с oauth.yandex.ru (не секрет); пусто — кнопок «Войти через Яндекс» нет
 const Y_FILE = 'app:/babydiary.json', Y_PH = 'app:/photos', DISK_API = 'https://cloud-api.yandex.net/v1/disk';
 const yOK = () => !!window.__ytest || (!!Y_CLIENT && (!!NATIVE || location.protocol === 'https:'));
 const isY = () => !!(REMOTE && REMOTE.y);
