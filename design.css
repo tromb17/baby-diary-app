@@ -142,7 +142,9 @@ main{padding:var(--ds-1) var(--ds-2) var(--ds-3)}
 .sheet{background:var(--solid);border-radius:24px 24px 0 0;padding:var(--ds-3) var(--ds-2) calc(var(--ds-3) + env(safe-area-inset-bottom))}
 .sheet h2{font-size:var(--ds-fs-title);font-weight:800}
 .sheet-bg{background:rgba(20,16,10,.45)}
-.toast{border-radius:var(--ds-r-ctl);padding:12px var(--ds-2);font-size:15px}
+.toast{background:var(--solid);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:10px 8px 10px 14px;gap:10px;font-size:15px;line-height:1.35;
+  width:min(440px,calc(100vw - 24px));max-width:none;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+:root[data-night] .toast{background:var(--surface-2);box-shadow:none}
 .mbar i{background:var(--accent)}                  /* без радужного градиента */
 .ph,.ph.none{background:var(--surface-2)}
 .atile,.mtile{border-radius:var(--ds-r-card);box-shadow:var(--shadow)}
