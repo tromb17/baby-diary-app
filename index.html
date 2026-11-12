@@ -791,8 +791,8 @@ function welcomeCard() {
     <div class="f"><span>Кто вы малышу</span>${roleChips('wrole', me)}</div>
     <div class="err" id="wErr"></div>
     <div class="btns"><button class="b main" onclick="saveWelcome()">Начать дневник</button></div></div>
-    ${gOK() && !REMOTE ? `<p class="hint" style="margin-top:14px">Уже ведёте дневник на другом телефоне или вас пригласили?</p>
-      <div class="btns" style="margin-top:8px"><button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button></div>` : ''}</div>`;
+    ${(gOK() || yOK()) && !REMOTE ? `<p class="hint" style="margin-top:14px">Уже ведёте дневник на другом телефоне или вас пригласили?</p>
+      <div class="btns" style="margin-top:8px">${gOK() ? `<button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button>` : ''}${yOK() ? `<button class="b" onclick="ysLogin()">${Y_ICON} Войти через Яндекс</button>` : ''}</div>` : ''}</div>`;
 }
 function saveWelcome() {
   const b = $('#wBirth').value, name = $('#wName').value.trim(), sex = $('#f_wsex').value, err = m => { $('#wErr').textContent = m; };
@@ -2196,6 +2196,9 @@ function phFetch(id) {
   if (!REMOTE) return Promise.resolve(null);
   if (PHX.wait.has(id)) return PHX.wait.get(id);
   const p = (async () => {
+    if (isY()) { const full = await yPhoto(id); if (!full) return null;
+      (async () => { try { const thumb = await shrink(await loadImage(full), 480, 0.78); await phPut(id, { full, thumb, at: Date.now(), remote: 1 }); } catch (e) {} })();
+      const u = URL.createObjectURL(full); PH.url.set(id + ':full', u); PH.url.set(id + ':thumb', u); return u; }
     if (!PHX.idx || (!PHX.idx.has(id) && Date.now() - PHX.idxAt > 60000)) {
       const r = await gsApi('/values/' + encodeURIComponent(GS_PH + '!A:A')).catch(() => ({}));
       PHX.idx = new Map((r.values || []).map((v, i) => [v[0], i + 1])); PHX.idxAt = Date.now();
@@ -2732,6 +2735,7 @@ const SHEETS_API = 'https://sheets.googleapis.com/v4/spreadsheets', DRIVE_API = 
 const RKEY = 'babydiary.remote.v1', GTOK_KEY = 'babydiary.gtok.v1', GAUTH_KEY = 'babydiary.gauth.v1', GAUTO_KEY = 'babydiary.gauto.v1', JOINKEY = 'babydiary.join.v1';
 const G_ICON = '<svg viewBox="0 0 48 48" width="18" height="18" style="vertical-align:-3px;margin-right:4px"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>';
 let REMOTE = lsJson(RKEY, null), GTOK = lsJson(GTOK_KEY, null), GAUTH_RET = null, gsAutoUntil = 0;
+const YTOK_KEY = 'babydiary.ytok.v1'; let YTOK = lsJson(YTOK_KEY, null);   // пропуск Яндекса (вход через Яндекс — ниже)
 const gOK = () => !!window.__gtest || (!!G_CLIENT && (NATIVE ? typeof NATIVE.googleAuth === 'function' : location.protocol === 'https:'));
 const gRedirectUri = () => location.origin + location.pathname.replace(/index\.html$/, '');
 const tokOk = () => !!(GTOK && GTOK.exp > Date.now() + 60000);
@@ -2744,6 +2748,8 @@ function gsDropTok() { GTOK = null; try { localStorage.removeItem(GTOK_KEY); } c
   try { localStorage.removeItem(GAUTH_KEY); } catch (e) {}
   history.replaceState(null, '', location.pathname + location.search);
   if (!st || p.get('state') !== st.n) return;
+  if (st.p === 'y') { if (p.get('access_token')) { YTOK = { t: p.get('access_token'), exp: Date.now() + (+p.get('expires_in') || 31536000) * 1000 }; lsSet(YTOK_KEY, JSON.stringify(YTOK)); GAUTH_RET = { ok: true, first: st.first, p: 'y' }; }
+    else GAUTH_RET = { err: p.get('error') || 'ошибка', first: st.first, p: 'y' }; return; }
   if (p.get('access_token')) { gsSetTok(p.get('access_token'), +p.get('expires_in') || 3600); GAUTH_RET = { ok: true, first: st.first, join: st.join }; }
   else GAUTH_RET = { err: p.get('error') || 'ошибка', first: st.first, join: st.join };
 })();
@@ -2842,9 +2848,10 @@ const SYNC = { st: 'off', msg: '', busy: null, again: false, timer: null };
 function setSync(st, msg) { SYNC.st = st; SYNC.msg = msg || ''; syncShow(); }
 function syncShow() { const b = $('#syncBtn'); if (!b) return; b.hidden = !REMOTE; $('#syncDot').className = 'syncdot ' + SYNC.st; }
 function syncInfo() {
-  const t = { ok: 'Дневник сохранён в Google', busy: 'Сохраняю в Google…', pending: 'Нет связи — записи на телефоне, отправлю позже',
-    err: SYNC.msg || 'Ошибка связи с Google', need: 'Нужно снова войти в Google — записи сохранены на телефоне' }[SYNC.st] || 'Подключаюсь к Google…';
-  toast(t, SYNC.st === 'need' ? { label: 'Войти', fn: () => gsAuth(true).then(() => sync(), e => toast('Не удалось войти: ' + e.message)) } : null);
+  const y = isY(), w = y ? 'Яндекс' : 'Google', d = y ? 'на Яндекс Диск' : 'в Google';
+  const t = { ok: 'Дневник сохранён ' + (y ? 'на Яндекс Диске' : 'в Google'), busy: 'Сохраняю ' + d + '…', pending: 'Нет связи — записи на телефоне, отправлю позже',
+    err: SYNC.msg || 'Ошибка связи с ' + w, need: 'Нужно снова войти в ' + w + ' — записи сохранены на телефоне' }[SYNC.st] || 'Подключаюсь к ' + w + '…';
+  toast(t, SYNC.st === 'need' ? { label: 'Войти', fn: () => y ? ysRedirect({}) : gsAuth(true).then(() => sync(), e => toast('Не удалось войти: ' + e.message)) } : null);
 }
 function schedulePush() { if (!REMOTE) return; clearTimeout(SYNC.timer); SYNC.timer = setTimeout(sync, 1500); }
 async function sync() {
@@ -2854,12 +2861,12 @@ async function sync() {
   SYNC.busy = (async () => {
     setSync('busy');
     try {
-      await push();
-      await pushPhotos().catch(() => {});
-      const ch = await pull();
+      let ch;
+      if (isY()) ch = await ySync();
+      else { await push(); await pushPhotos().catch(() => {}); ch = await pull(); }
       setSync('ok');
       if (ch && $('#sheetWrap').hidden) render();
-    } catch (e) { setSync(e.need ? 'need' : e.net ? 'pending' : 'err', e.need || e.net ? '' : 'Google: ' + e.message); }
+    } catch (e) { setSync(e.need ? 'need' : e.net ? 'pending' : 'err', e.need || e.net ? '' : (isY() ? 'Яндекс Диск: ' : 'Google: ') + e.message); }
   })();
   await SYNC.busy; SYNC.busy = null;
   if (SYNC.again) { SYNC.again = false; return sync(); }
@@ -3003,16 +3010,119 @@ function shareLink() {
   if (navigator.share) navigator.share({ title: 'Дневник малыша', text: inviteText() }).catch(() => {});
   else { try { navigator.clipboard.writeText(l); } catch (e) {} toast('Ссылка скопирована'); }
 }
+/* ───────── Яндекс: вход и дневник на Яндекс Диске ─────────
+   Без Google: дневник одним файлом app:/babydiary.json в папке приложения на Яндекс Диске (права cloud_api:disk.app_folder —
+   приложение видит только свою папку). Файл = { v, recs: { id: запись } } — те же записи, что строки листа «Журнал»
+   (события, 'baby', 'dev:<устройство>'). sync: скачать → applyRemote (свежее u побеждает) → своё новее — в файл → загрузить.
+   Фото — файлы app:/photos/<id>.jpg (1024 px). Пропуск Яндекса живёт около года (babydiary.ytok.v1).
+   Общий дневник двух родителей через Яндекс не сделать (папка приложения — личная), он — через Google; через Яндекс
+   дневник синхронизируется между устройствами одного аккаунта. В браузере вход — переход на oauth.yandex.ru и обратно;
+   в Android — так же внутри приложения (server.allowNavigation), возврат на https://localhost/. */
+const Y_CLIENT = '';   // ClientID приложения с oauth.yandex.ru (не секрет); пусто — кнопок «Войти через Яндекс» нет
+const Y_FILE = 'app:/babydiary.json', Y_PH = 'app:/photos', DISK_API = 'https://cloud-api.yandex.net/v1/disk';
+const yOK = () => !!window.__ytest || (!!Y_CLIENT && (!!NATIVE || location.protocol === 'https:'));
+const isY = () => !!(REMOTE && REMOTE.y);
+const yRedirectUri = () => NATIVE ? 'https://localhost/' : gRedirectUri();
+function ysSetTok(t, sec) { YTOK = { t, exp: Date.now() + sec * 1000 }; lsSet(YTOK_KEY, JSON.stringify(YTOK)); }
+function ysDropTok() { YTOK = null; try { localStorage.removeItem(YTOK_KEY); } catch (e) {} }
+function ysNeed() { const e = new Error('нужно снова войти в Яндекс'); e.need = true; return e; }
+function ysRedirect(o) {
+  const n = uid() + uid();
+  lsSet(GAUTH_KEY, JSON.stringify({ n, first: !!o.first, p: 'y' }));
+  const q = new URLSearchParams({ response_type: 'token', client_id: Y_CLIENT, redirect_uri: yRedirectUri(), state: n });
+  if (o.first) q.set('force_confirm', 'yes');
+  location.assign('https://oauth.yandex.ru/authorize?' + q);
+  return new Promise(() => {});
+}
+async function ysApi(path, o = {}) {
+  if (!YTOK || YTOK.exp < Date.now() + 60000) throw ysNeed();
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 45000);
+  let r;
+  try { r = await fetch(DISK_API + path, { method: o.method || 'GET', signal: ctl.signal, cache: 'no-store', headers: { Authorization: 'OAuth ' + YTOK.t, Accept: 'application/json' } }); }
+  catch (e) { const x = new Error(e && e.name === 'AbortError' ? 'Яндекс Диск не ответил' : 'нет связи'); x.net = true; throw x; }
+  finally { clearTimeout(tm); }
+  if (r.status === 401) { ysDropTok(); throw ysNeed(); }
+  let j = {}; try { const t = await r.text(); j = t ? JSON.parse(t) : {}; } catch (e) {}
+  if (!r.ok && !(o.ok || []).includes(r.status)) { const e = new Error(j.message || j.description || 'Яндекс Диск ответил ошибкой ' + r.status); e.status = r.status; throw e; }
+  return j;
+}
+const ysNet = e => { const x = new Error('нет связи'); x.net = true; return x; };
+// скачать файл с Диска (null — файла нет)
+async function ysGet(path) {
+  let l; try { l = await ysApi('/resources/download?path=' + encodeURIComponent(path)); } catch (e) { if (e.status === 404) return null; throw e; }
+  let r; try { r = await fetch(l.href, { cache: 'no-store' }); } catch (e) { throw ysNet(e); }
+  if (!r.ok) throw new Error('Яндекс Диск: файл не скачался (' + r.status + ')');
+  return r.blob();
+}
+async function ysPut(path, body) {
+  const l = await ysApi('/resources/upload?path=' + encodeURIComponent(path) + '&overwrite=true');
+  let r; try { r = await fetch(l.href, { method: 'PUT', body }); } catch (e) { throw ysNet(e); }
+  if (!r.ok) throw new Error('Яндекс Диск: файл не записался (' + r.status + ')');
+}
+// один проход: файл с Диска → в дневник; своё новее → в файл
+async function ySync() {
+  const out = lsJson(OUTKEY, {}), b = await ysGet(Y_FILE);
+  let file = null; if (b) try { file = JSON.parse(await b.text()); } catch (e) {}
+  const recs = (file && file.recs) || {};
+  const ch = applyRemote(Object.entries(recs).map(([id, r]) => Object.assign({}, r, { id })));
+  let up = !b; const old = now() - DEL_DAYS * 864e5;
+  for (const id of allIds()) { const r = recOf(id); if (!r || (r.t === 'baby' && !r.u)) continue; const f = recs[id]; if (!f || (r.u || 0) > (f.u || 0)) { recs[id] = r; up = true; } }
+  for (const id in recs) if (recs[id].del && (recs[id].u || 0) < old) { delete recs[id]; up = true; }
+  if (up) await ysPut(Y_FILE, JSON.stringify({ v: 1, recs }));
+  const cur = lsJson(OUTKEY, {}); for (const id of Object.keys(out)) if (cur[id] === out[id]) delete cur[id]; lsSet(OUTKEY, JSON.stringify(cur));
+  await yPushPhotos().catch(() => {});
+  return ch;
+}
+async function yPushPhotos() {
+  let q = lsJson(PHOUT, []); if (!q.length) return;
+  for (const it of q.slice(0, 3)) {
+    let drop = false;
+    if (phUsed(it.id)) {
+      const rec = await phGet(it.id).catch(() => null);
+      if (rec) {
+        await ysApi('/resources?path=' + encodeURIComponent(Y_PH), { method: 'PUT', ok: [409] });
+        const src = rec.full, img = await loadImage(src), mid = (img.naturalWidth > 1024 || img.naturalHeight > 1024) ? await shrink(img, 1024, 0.74) : src;
+        await ysPut(Y_PH + '/' + it.id + '.jpg', mid);
+      }
+      drop = true;
+    } else if (Date.now() - it.at > 3600e3) drop = true;
+    if (drop) { q = lsJson(PHOUT, []).filter(x => x.id !== it.id); lsSet(PHOUT, JSON.stringify(q)); }
+  }
+}
+const yPhoto = id => ysGet(Y_PH + '/' + id + '.jpg');
+// первый вход: что есть на Диске — в дневник, что есть на устройстве — на Диск
+async function ysSetup() {
+  setSync('busy');
+  const u = await ysApi('/');
+  REMOTE = { y: 1, login: (u.user && (u.user.login || u.user.display_name)) || '' }; lsSet(RKEY, JSON.stringify(REMOTE));
+  const o = lsJson(OUTKEY, {}); for (const k of allIds()) { const r = recOf(k); if (r) o[k] = r.u; } lsSet(OUTKEY, JSON.stringify(o));
+  for (const e of S.events) for (const ph of e.del ? [] : e.ph || []) phQueue(ph);
+  closeSheet(); await sync(); render();
+  if (SYNC.st === 'ok') toast('Готово: дневник сохраняется на вашем Яндекс Диске');
+  if (!devName(DEV)) askRole();
+}
+function ysLogin() { if (window.__ytest) return ysSetup(); return ysRedirect({ first: true }); }
+function ysLogout() {
+  if (!confirm('Выйти из Яндекса? Записи останутся на этом телефоне, но перестанут сохраняться на Яндекс Диск.')) return;
+  REMOTE = null; try { localStorage.removeItem(RKEY); } catch (e) {} ysDropTok(); setSync('off'); closeSheet(); render();
+}
+const Y_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px;margin-right:4px" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#FC3F1D"/><path d="M13.3 6.2h-1.1c-2 0-3.1 1-3.1 2.6 0 1.8.8 2.6 2.4 3.7l1.3.9-3.7 5.4H6.6l3.3-4.9C8 12.6 7 11.3 7 9c0-2.8 2-4.7 5.2-4.7h3.1v13.6h-2V6.2z" fill="#fff"/></svg>';
 function gsLogout() {
   if (!confirm('Выйти из Google? Записи останутся на этом телефоне, но перестанут сохраняться в общий дневник.')) return;
   REMOTE = null; try { localStorage.removeItem(RKEY); } catch (e) {} gsDropTok(); setSync('off'); closeSheet(); render();
 }
 function settingsShare(me) {
   const h = `<div class="sec-t">Общий дневник</div>`;
+  if (isY()) return h + `<p class="hint" style="margin:0 0 10px">Вы вошли через Яндекс${REMOTE.login ? ' как <b>' + esc(REMOTE.login) + '</b>' : ''}. Дневник хранится на вашем Яндекс Диске, в папке «Приложения», и появляется на всех устройствах, где вы вошли этим аккаунтом.</p>
+    <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
+    <p class="hint" style="margin:0 0 10px">Общий дневник со вторым родителем (приглашение, семейный чат) работает через Google: папка приложения на Яндекс Диске — личная.</p>
+    <div class="btns"><button class="b ghost" onclick="ysLogout()">Выйти из Яндекса</button></div>`;
+  const yb = yOK() && !REMOTE ? `<p class="hint" style="margin:12px 0 6px">Или храните дневник на Яндекс Диске — работает без VPN (без общего дневника со вторым родителем):</p><div class="btns"><button class="b" onclick="ysLogin()">${Y_ICON} Войти через Яндекс</button></div>` : '';
+  if (!gOK() && yb) return h + yb.replace('Или храните', 'Храните');
   if (!gOK()) return h + `<p class="hint" style="margin:0">Вход через Google и общий дневник для двух родителей заработают в версии на сайте.</p>`;
   if (!REMOTE) return h + `<p class="hint" style="margin:0 0 10px">Войдите через Google — дневник будет храниться в таблице на вашем Google Диске, появится на всех ваших устройствах, и можно будет пригласить второго родителя.</p>
     <div class="btns"><button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button></div>
-    <p class="hint" style="margin:12px 0 6px">Вас пригласили в общий дневник?</p><div class="btns"><button class="b ghost" onclick="gsJoin('')">Открыть общий дневник</button></div>`;
+    <p class="hint" style="margin:12px 0 6px">Вас пригласили в общий дневник?</p><div class="btns"><button class="b ghost" onclick="gsJoin('')">Открыть общий дневник</button></div>` + yb;
   const others = Object.entries(S.devs).filter(([k, d]) => k !== DEV && (d.name || d.email));
   return h + `<p class="hint" style="margin:0 0 10px">Вы вошли как <b>${esc(REMOTE.email)}</b>. Дневник хранится в таблице <a href="https://docs.google.com/spreadsheets/d/${encodeURIComponent(REMOTE.sheet)}" target="_blank" rel="noopener">«${GS_TITLE}»</a>.</p>
     <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
@@ -3058,7 +3168,9 @@ function boot() {
   if (NATIVE) { let a = null; try { a = NATIVE.takeAction(); } catch (e) {} if (a) launch(a); setTimeout(checkApk, 3000); }
   if (GAUTH_RET) {
     const g = GAUTH_RET; GAUTH_RET = null;
-    if (g.ok && g.join) gsJoin(g.join);
+    if (g.p === 'y') { if (g.ok && g.first) ysSetup().catch(e => { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось войти через Яндекс: ' + e.message); });
+      else if (g.ok) sync(); else if (g.first) toast(g.err === 'access_denied' ? 'Вход отменён' : 'Не удалось войти через Яндекс'); else setSync('need'); }
+    else if (g.ok && g.join) gsJoin(g.join);
     else if (g.ok && g.first) gsSetup().catch(e => { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось войти: ' + e.message); });
     else if (g.ok) sync();
     else if (g.first || g.join) toast(g.err === 'access_denied' ? 'Вход отменён' : 'Не удалось войти в Google');
