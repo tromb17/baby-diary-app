@@ -55,7 +55,7 @@ body{background:var(--bg);background-attachment:fixed;min-height:100vh;color:var
 .card.feed,.card.sleep,.card.diaper{background:color-mix(in srgb,var(--c) 9%,var(--surface))}
 :root[data-night] .card.feed,:root[data-night] .card.sleep,:root[data-night] .card.diaper{background:var(--surface)}
 .top,main{position:relative;z-index:1}
-.ava{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#ffd9a8,#ffb3cf 50%,#b9c8ff);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ava{width:44px;height:44px;border-radius:50%;flex:none;border:0;padding:0;cursor:pointer;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#ffd9a8,#ffb3cf 50%,#b9c8ff);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 :root[data-night] .ava{background:#2a211b;box-shadow:none;filter:grayscale(.6) brightness(.7)}
 .syncdot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none;margin:0 6px}
 .syncdot.ok{background:var(--good)} .syncdot.busy{background:var(--warn)} .syncdot.err,.syncdot.need{background:var(--bad)}
@@ -68,8 +68,8 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--page) 55%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
 :root[data-night] .top{background:var(--page)}
 .who{flex:1;min-width:0}
-.who h1{font-size:20px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.age{font-size:13px;color:var(--muted)}
+.who h1{font-size:20px;margin:0;letter-spacing:-.01em;line-height:1.2;overflow-wrap:anywhere}
+.age{font-size:13px;color:var(--muted);white-space:nowrap}
 .icon-btn{border:0;background:transparent;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--text-2);flex:none}
 .icon-btn:hover{background:var(--surface-2)}
 .icon-btn svg{width:22px;height:22px}
@@ -166,6 +166,27 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .acts .b{flex:1}
 .b.del{--c:var(--bad);background:transparent}
 .err{color:var(--bad);font-size:13.5px;min-height:1px;margin:0 0 8px}
+.shead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}.shead h2{margin:0}
+.sgroup{background:var(--surface-2);border-radius:16px;padding:14px;margin:0 0 12px}
+.sgroup h4{margin:0 0 10px;font-size:15px}
+.sgroup .f input,.sgroup .f select,.sgroup input.own,.sgroup .chips button{background:var(--solid)}
+.sgroup .chips button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.sgroup>:last-child{margin-bottom:0}
+.setrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:var(--surface-2);border-radius:16px;padding:12px 14px;margin:0 0 12px;min-height:64px}
+.setrow>span:nth-child(2){flex:1;min-width:0}.setrow b{display:block;font-size:16px}.setrow small{display:block;color:var(--muted);font-size:13px}.setrow .chev{font-size:22px;color:var(--muted)}
+.acts.stick{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));background:var(--solid);margin:8px -16px 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);z-index:2}
+.prof{display:flex;align-items:center;gap:14px;margin:0 0 14px}.ava.big{width:72px;height:72px;font-size:40px;cursor:default}
+.pname{font-size:22px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:12px 8px}
+.medal{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding-top:10px}
+.medal i{position:relative;z-index:1;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-style:normal;
+  background:radial-gradient(circle at 35% 30%,#fff7da,#f3c95a 58%,#c99328);box-shadow:inset 0 0 0 3px #f8e09a,0 3px 8px rgba(120,80,10,.25)}
+.medal.got::before,.medal.got::after{content:'';position:absolute;top:0;width:13px;height:22px;z-index:0;border-radius:2px}
+.medal.got::before{left:calc(50% - 16px);background:#5b8fd8;transform:skewX(14deg)}.medal.got::after{left:calc(50% + 3px);background:#d85b7a;transform:skewX(-14deg)}
+.medal b{font-size:12.5px;line-height:1.25;font-weight:700}.medal small{font-size:11.5px;color:var(--muted)}
+.medal:not(.got) i{background:var(--surface);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted);font-size:22px}
+.medal:not(.got) b{color:var(--muted);font-weight:600}
+:root[data-night] .medal.got i{filter:brightness(.6) sepia(.4)}
 .sec-t{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px}
 
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:var(--text);color:var(--page);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);box-shadow:0 4px 18px rgba(0,0,0,.2)}
@@ -330,11 +351,12 @@ input.own{width:100%;margin-top:8px;border:1px solid var(--line);background:var(
 .snorm .pct{margin-top:0}
 .nbar{position:relative;height:12px;border-radius:99px;background:var(--surface-2);margin:12px 0 4px}
 .nbar .rng{position:absolute;top:0;bottom:0;border-radius:99px;background:color-mix(in srgb,var(--good) 35%,transparent)}
+.lleg i.nrm{background:color-mix(in srgb,var(--good) 35%,transparent);width:18px;border-radius:99px}.lleg i.nme{background:var(--c-sleep);width:4px;height:14px;border-radius:2px}
 .nbar .me{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--c-sleep);transform:translateX(-50%)}
 .sgrid{margin-top:8px}
 .srow{display:flex;align-items:center;gap:8px;margin:5px 0}
-.srow .sd{width:44px;flex:none;font-size:12.5px;color:var(--text-2)}
-.srow .st2{width:56px;flex:none;text-align:right;font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.srow .sd{width:58px;flex:none;font-size:12.5px;color:var(--text-2);white-space:nowrap}
+.srow .st2{width:72px;flex:none;text-align:right;font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .strip.sm{flex:1;height:18px;margin:0;border-radius:6px}
 .srow.ax .strip-ax{font-size:10.5px}
 /* развитие */
@@ -385,6 +407,9 @@ body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
 .strip i.sleep.live{opacity:.5}
 .strip i.sleep.dy,.lleg i.dyk{background:color-mix(in srgb,var(--c-sleep) 40%,#ffc861)}
 .sgrp{font-size:13px;color:var(--text-2);margin:8px 0 4px;padding:5px 10px;border-radius:10px;background:color-mix(in srgb,#ffc861 18%,transparent)}
+.sday{border:1px solid var(--line);border-radius:16px;padding:10px 12px 4px;margin-top:12px;background:var(--surface)}
+.sday-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:2px 2px 8px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.sday-h b{font-size:16px}.sday-h span{font-size:13px;color:var(--text-2);font-weight:600;white-space:nowrap}
 .sgrp.nt{background:color-mix(in srgb,var(--c-sleep) 14%,transparent)}
 .fcast .slist li b{color:var(--c-sleep);font-variant-numeric:tabular-nums}
 .fcast .slist li.over{opacity:.6} .fcast .slist li.nt{background:color-mix(in srgb,var(--c-sleep) 14%,transparent)}
@@ -479,7 +504,7 @@ ul.nolist li::marker{content:'✕  ';color:var(--warn);font-weight:700}
   <svg viewBox="0 0 64 40" style="width:130px;top:24px;left:22%"><path d="M16 36a12 12 0 0 1-1-24A16 16 0 0 1 45 10a12 12 0 0 1 3 26z" fill="#ffffff" opacity=".9"/></svg>
 </div>
 <header class="top">
-  <div class="ava" id="ava">👶</div>
+  <button class="ava" id="ava" onclick="openProfile()" aria-label="Профиль малыша" title="Профиль малыша">👶</button>
   <div class="who"><h1 id="bName">Дневник малыша</h1><div class="age" id="bAge"></div></div>
   <button class="syncbtn" id="syncBtn" onclick="syncInfo()" aria-label="Связь с Google" hidden><i class="syncdot" id="syncDot"></i></button>
   <button class="icon-btn chatb" id="chatBtn" onclick="go('chat')" aria-label="Семейный чат" title="Семейный чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><i class="badge" id="chatN" hidden></i></button>
@@ -538,7 +563,23 @@ function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, o); 
 function upd(e, p) { e = evById(e.id) || e; Object.assign(e, p, { u: now() }); save(); mark(e.id, e.u); return e; }
 function setBaby(p) { Object.assign(S.baby, p, { u: now() }); save(); mark('baby', S.baby.u); }
 function setMe(p) { S.devs[DEV] = Object.assign({ name: '', email: '' }, S.devs[DEV], p, { u: now() }); save(); mark('dev:' + DEV, S.devs[DEV].u); }
-const devName = id => (S.devs[id] || {}).name || '';
+const devName = id => {
+  const d = S.devs[id]; if (!d) return '';
+  if (!d.email) return d.name || '';
+  let best = d.name ? d : null;
+  for (const k in S.devs) { const o = S.devs[k]; if (o.email === d.email && o.name && (!best || (o.u || 0) > (best.u || 0))) best = o; }
+  return best ? best.name : '';
+};
+// другие люди, которые ведут дневник: по одному на аккаунт (не устройство), без своего
+function otherPeople() {
+  const mine = (S.devs[DEV] || {}).email || (REMOTE && REMOTE.email) || '', seen = new Map();
+  for (const [k, d] of Object.entries(S.devs)) {
+    if (k === DEV || (mine && d.email === mine)) continue;
+    const key = d.email || k, nm = devName(k) || d.email; if (!nm) continue;
+    const o = seen.get(key); if (!o || (d.u || 0) > o.u) seen.set(key, { name: nm, u: d.u || 0 });
+  }
+  return [...seen.values()].map(x => x.name);
+}
 function mergeEvents(a, b) {
   const m = new Map();
   for (const e of [...a, ...b]) { const o = m.get(e.id); if (!o || (e.u || 0) > (o.u || 0)) m.set(e.id, e); }
@@ -558,6 +599,7 @@ function toInput(ts) { const d = new Date(ts); return d.getFullYear() + '-' + pa
 function fromInput(v) { if (!v) return null; const t = +new Date(v); return isFinite(t) ? t : null; }
 function parseDay(v) { const m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(v || ''); return m ? new Date(+m[1], m[2] - 1, +m[3]) : null; }
 const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+const WDS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
 const WD = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 function dayTitle(ts) {
   const t = sod(now()), d = new Date(ts);
@@ -688,7 +730,7 @@ function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); if (tab
   const v = $('#view'); v.classList.remove('ds-in'); void v.offsetWidth; v.classList.add('ds-in'); } // мягкое появление вкладки (design.css)
 
 function render() {
-  applyNight();
+  applyNight(); medalCheck();
   $('#bName').textContent = S.baby.name ? S.baby.name : 'Дневник малыша';
   $('#bAge').textContent = ageText();
   syncShow();
@@ -982,46 +1024,94 @@ function delEvent() {
   render();
 }
 
+/* ───────── профиль малыша: имя, дата рождения, пол и медали за достижения ─────────
+   Медали считаются из записей: вехи (каждая — своя), прикорм (1, 5, 10, 20, 40 продуктов), первая прививка, первый замер,
+   сон 6 часов подряд, 100 кормлений, дни с записями (7, 30, 100). Новая медаль — короткое поздравление (babydiary.medals.v1). */
+function medals() {
+  const E = evs().slice().sort((a, b) => a.s - b.s), done = milesDone(), out = [];
+  for (const x of MILES) out.push({ id: 'm:' + x.id, ic: x.ic, name: x.name, at: done[x.id] && done[x.id].s });
+  const foods = new Map(); for (const e of E) if (e.t === 'food') { const k = e.fid || e.name; if (k && !foods.has(k)) foods.set(k, e.s); }
+  const fl = [...foods.values()];
+  for (const n of [1, 5, 10, 20, 40]) out.push({ id: 'f' + n, ic: n === 1 ? '🥄' : '🍽️', name: n === 1 ? 'Первый прикорм' : n + ' продуктов в прикорме', at: fl[n - 1] });
+  const first = f => { const e = E.find(f); return e && e.s; };
+  out.push({ id: 'vax1', ic: '💉', name: 'Первая прививка', at: first(e => e.t === 'vax') });
+  out.push({ id: 'gr1', ic: '📏', name: 'Первый замер роста и веса', at: first(e => e.t === 'growth') });
+  out.push({ id: 'sl6', ic: '🌙', name: 'Спал 6 часов подряд', at: first(e => e.t === 'sleep' && e.e != null && e.e - e.s >= 6 * 3600e3) });
+  const feeds = E.filter(e => e.t === 'feed'); out.push({ id: 'fd100', ic: '🍼', name: '100 кормлений', at: feeds[99] && feeds[99].s });
+  const days = []; for (const e of E) { const k = sod(e.s); if (days[days.length - 1] !== k) days.push(k); }
+  for (const [n, ic, nm] of [[7, '📔', 'Неделя дневника'], [30, '📚', 'Месяц дневника'], [100, '🏆', '100 дней дневника']]) out.push({ id: 'd' + n, ic, name: nm, at: days[n - 1] });
+  return out;
+}
+function medalHtml(m) { return `<div class="medal ${m.at ? 'got' : ''}" title="${esc(m.name)}"><i aria-hidden="true">${m.at ? m.ic : '?'}</i><b>${esc(m.name)}</b>${m.at ? `<small>${dayShort(m.at)}</small>` : ''}</div>`; }
+function medalsBlock() {
+  const all = medals(), got = all.filter(m => m.at).sort((a, b) => b.at - a.at), left = all.filter(m => !m.at);
+  return `<section class="sgroup"><h4>🏅 Медали · ${got.length} из ${all.length}</h4>
+    ${got.length ? `<div class="medals">${got.map(medalHtml).join('')}</div>` : '<p class="hint" style="margin:0">Медали появятся сами: за вехи развития, новые продукты в прикорме, первую прививку, долгий сон и дни дневника.</p>'}
+    ${left.length ? `<details class="ckp" style="margin-top:10px"><summary><b>Ещё впереди</b><span class="vdate">${left.length}</span></summary><div class="medals" style="margin-top:8px">${left.map(medalHtml).join('')}</div></details>` : ''}</section>`;
+}
+// новая медаль — поздравление (первый раз — просто запоминаем, что уже есть)
+function medalCheck() {
+  const got = medals().filter(m => m.at).map(m => m.id), was = lsJson('babydiary.medals.v1', null);
+  lsSet('babydiary.medals.v1', JSON.stringify(got));
+  if (!was) return;
+  const n = got.filter(id => !was.includes(id)); if (!n.length) return;
+  const m = medals().find(x => x.id === n[n.length - 1]);
+  if (m) toast('🏅 Новая медаль: ' + m.name, { label: 'Посмотреть', fn: openProfile });
+}
+function openProfile() {
+  const b = S.baby, born = b.birth ? parseDay(b.birth) : null;
+  openSheet(`<div class="shead"><h2>Профиль малыша</h2><button class="icon-btn" onclick="closeSheet()" aria-label="Закрыть">✕</button></div>
+    <div class="prof"><span class="ava big" aria-hidden="true">${b.sex === 'f' ? '👧' : b.sex === 'm' ? '👦' : '👶'}</span><div><div class="pname">${esc(b.name || 'Малыш')}</div>
+      <div class="hint" style="margin:2px 0 0">${born ? esc(ageText()) + ' · родил' + (b.sex === 'f' ? 'ась' : 'ся') + ' ' + dayShort(+born) : 'Укажите дату рождения'}</div></div></div>
+    ${medalsBlock()}
+    <section class="sgroup"><h4>Данные</h4>
+      <label class="f"><span>Имя</span><input id="p_name" value="${esc(b.name)}" autocomplete="off"></label>
+      <label class="f"><span>Дата рождения</span><input id="p_birth" type="date" value="${esc(b.birth)}"></label>
+      <div class="f" style="margin-bottom:0"><span>Пол — для норм роста и веса ВОЗ</span><input type="hidden" id="f_psex" value="${esc(b.sex || '')}">${chipsHtml('psex', [['f', 'Девочка'], ['m', 'Мальчик']], b.sex)}</div></section>
+    <div class="err" id="p_err"></div>
+    <div class="acts stick"><button class="b ghost" onclick="closeSheet()">Закрыть</button><button class="b main" onclick="saveProfile()">Сохранить</button></div>`);
+}
+function saveProfile() {
+  const bd = $('#p_birth').value, err = m => { $('#p_err').textContent = m; };
+  if (bd && !parseDay(bd)) return err('Неверная дата рождения');
+  if (bd && parseDay(bd) > new Date(now() + 864e5 * 280)) return err('Проверьте дату рождения');
+  const name = $('#p_name').value.trim(), sex = $('#f_psex').value;
+  if (name !== S.baby.name || bd !== S.baby.birth || sex !== (S.baby.sex || '')) setBaby({ name, birth: bd, sex });
+  closeSheet(); render(); toast('Профиль сохранён');
+}
+
 /* ───────── настройки ───────── */
 function openSettings() {
   const p = nightPref(), me = S.devs[DEV] || {};
-  openSheet(`<h2>Настройки</h2>
-    <div class="sec-t" style="margin-top:0">Малыш</div>
-    <label class="f"><span>Имя</span><input id="s_name" value="${esc(S.baby.name)}" autocomplete="off"></label>
-    <label class="f"><span>Дата рождения</span><input id="s_birth" type="date" value="${esc(S.baby.birth)}"></label>
-    <div class="f"><span>Пол — для норм роста и веса ВОЗ</span><input type="hidden" id="s_sex" value="${esc(S.baby.sex || '')}">${chipsHtml('sex', [['f', 'Девочка'], ['m', 'Мальчик']], S.baby.sex)}</div>
-    <div class="sec-t">Оформление</div>
-    <div class="chips" role="group" aria-label="Оформление"><button class="${designOn() ? 'on' : ''}" onclick="designSet('new')">Новое</button><button class="${designOn() ? '' : 'on'}" onclick="designSet('old')">Прежнее</button></div>
-    <p class="hint" style="margin:6px 0 0">Меняется сразу и только на этом устройстве.</p>
-    <div class="sec-t">Ночной режим</div>
-    <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
-    <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать автоматически по расписанию</label>
-    <div class="two" id="s_ntimes"><label class="f"><span>Включать в</span><input id="s_nfrom" type="time" value="${esc(p.from)}"></label><label class="f"><span>Выключать в</span><input id="s_nto" type="time" value="${esc(p.to)}"></label></div>
-    ${NATIVE && typeof NATIVE.schedule === 'function' ? `<div class="sec-t">Напоминания о приёме врача</div>
+  openSheet(`<div class="shead"><h2>Настройки</h2><button class="icon-btn" onclick="closeSheet()" aria-label="Закрыть">✕</button></div>
+    <button class="setrow" onclick="closeSheet();openProfile()"><span class="ava" aria-hidden="true">👶</span><span><b>${esc(S.baby.name || 'Профиль малыша')}</b><small>имя, дата рождения, пол, медали</small></span><span class="chev">›</span></button>
+    <section class="sgroup">${settingsShare(me)}</section>
+    <section class="sgroup"><h4>🌙 Ночной режим</h4>
+      <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
+      <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать по расписанию</label>
+      <div class="two" id="s_ntimes"><label class="f"><span>Включать в</span><input id="s_nfrom" type="time" value="${esc(p.from)}"></label><label class="f"><span>Выключать в</span><input id="s_nto" type="time" value="${esc(p.to)}"></label></div></section>
+    ${NATIVE && typeof NATIVE.schedule === 'function' ? `<section class="sgroup"><h4>🔔 Напоминания о приёме врача</h4>
       <label class="chk"><input type="checkbox" id="s_neve" ${notifPref().eve ? 'checked' : ''}> Накануне в 20:00</label>
-      <label class="chk"><input type="checkbox" id="s_nbef" ${notifPref().before ? 'checked' : ''}> За 2 часа до приёма</label>` : ''}
-    ${settingsShare(me)}
-    <div class="sec-t">Копия дневника</div>
-    <p class="hint" style="margin:0 0 10px">Файл со всеми записями. Загруженная копия не затирает дневник, а добавляется к нему.</p>
-    <div class="btns"><button class="b" onclick="exportData()">Сохранить копию</button><button class="b" onclick="$('#s_file').click()">Загрузить копию</button></div>
-    <input type="file" id="s_file" accept="application/json,.json" hidden onchange="importData(this.files[0])">
-    <div class="err" id="s_err" style="margin-top:8px"></div>
-    <div class="acts" style="margin-top:14px"><button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveSettings()">Сохранить</button></div>
-    ${NATIVE ? `<div class="sec-t">Приложение</div><p class="hint" style="margin:0 0 10px">Версия 1.${+NATIVE.build() || 0}</p><div class="btns"><button class="b ghost" onclick="checkApk(true)">Проверить обновления</button></div>` : ''}
-    <div class="btns" style="margin-top:22px"><button class="b del ghost" onclick="wipeData()">Удалить все записи</button></div>`);
+      <label class="chk"><input type="checkbox" id="s_nbef" ${notifPref().before ? 'checked' : ''}> За 2 часа до приёма</label></section>` : ''}
+    <section class="sgroup"><h4>🎨 Оформление</h4>
+      <div class="chips" role="group" aria-label="Оформление" style="margin-top:0"><button class="${designOn() ? 'on' : ''}" onclick="designSet('new')">Новое</button><button class="${designOn() ? '' : 'on'}" onclick="designSet('old')">Прежнее</button></div>
+      <p class="hint" style="margin:6px 0 0">Меняется сразу и только на этом устройстве.</p></section>
+    <section class="sgroup"><h4>💾 Копия дневника</h4>
+      <p class="hint" style="margin:0 0 10px">Файл со всеми записями. Загруженная копия не затирает дневник, а добавляется к нему.</p>
+      <div class="btns"><button class="b" onclick="exportData()">Сохранить копию</button><button class="b" onclick="$('#s_file').click()">Загрузить копию</button></div>
+      <input type="file" id="s_file" accept="application/json,.json" hidden onchange="importData(this.files[0])"></section>
+    ${NATIVE ? `<section class="sgroup"><h4>📱 Приложение</h4><p class="hint" style="margin:0 0 10px">Версия 1.${+NATIVE.build() || 0}</p><div class="btns"><button class="b ghost" onclick="checkApk(true)">Проверить обновления</button></div></section>` : ''}
+    <div class="btns" style="margin:4px 0 12px"><button class="b del ghost" onclick="wipeData()">Удалить все записи</button></div>
+    <div class="err" id="s_err"></div>
+    <div class="acts stick"><button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveSettings()">Сохранить</button></div>`);
   nightInputs();
 }
 function nightInputs() { const on = $('#s_auto').checked; for (const i of document.querySelectorAll('#s_ntimes input')) i.disabled = !on; $('#s_ntimes').style.opacity = on ? 1 : .5; }
 function saveSettings() {
-  const b = $('#s_birth').value, err = m => { $('#s_err').textContent = m; };
-  if (b && !parseDay(b)) return err('Неверная дата рождения');
-  if (b && parseDay(b) > new Date(now() + 864e5 * 280)) return err('Проверьте дату рождения');
+  const err = m => { $('#s_err').textContent = m; };
   const auto = $('#s_auto').checked, from = $('#s_nfrom').value, to = $('#s_nto').value;
   if (auto && (hhmm(from) == null || hhmm(to) == null)) return err('Укажите, во сколько включать и выключать ночной режим');
   if (auto && from === to) return err('Время включения и выключения совпадает');
-  const name = $('#s_name').value.trim();
-  const sex = $('#s_sex').value;
-  if (name !== S.baby.name || b !== S.baby.birth || sex !== (S.baby.sex || '')) setBaby({ name, birth: b, sex });
   const meName = $('#s_me') ? $('#s_me').value.trim() : null;
   if (meName != null && meName !== devName(DEV)) setMe({ name: meName });
   const p = nightPref(); Object.assign(p, { auto, from: from || p.from, to: to || p.to }); delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
@@ -1827,9 +1917,19 @@ function sndPause() {
   else { SND.paused = Date.now(); ctx.suspend(); }
   render();
 }
+// «Сейчас»: скачок развития по календарю недель (скачок, пик, тревожность) и/или скачок роста — нажатие открывает эту неделю
 function spurtCard() {
-  const s = spurtNow(); if (!s) return '';
-  return `<div class="card spurt" onclick="UI.tab='dev';UI.dev='spurts';render()" style="cursor:pointer"><h3>🌱 Возможен скачок роста (${s[2]})</h3><p class="hint">Пару дней малыш может чаще просить есть и капризничать — это нормально. Подробнее — нажмите.</p></div>`;
+  const b = birthTs(); if (b == null) return '';
+  const d = Math.floor((sod(now()) - sod(b)) / 864e5); if (d < 0) return '';
+  const w = Math.floor(d / 7) + 1, L = w <= LEAP_WEEKS ? leapWeek(w) : null, sp = spurtNow();
+  const leap = L && ['leap', 'peak', 'anx'].includes(L.k);
+  if (!leap && !sp) return '';
+  const open = `UI.dev='spurts';UI.lweek=${Math.min(w, LEAP_WEEKS)};go('dev')`;
+  if (leap) {
+    const ph = PHASE[L.k], x = L.k === 'anx' ? null : LEAP[L.i];
+    return `<div class="card spurt" onclick="${open}" style="cursor:pointer"><h3>${ph[0]} ${ph[1]}${x ? ' — «' + esc(x.name) + '»' : ''}</h3><p class="hint">${w}-я неделя. ${esc(ph[2])}${sp ? ' И возможен скачок роста (' + sp[2] + '): может чаще просить есть.' : ''} Подробнее — нажмите.</p></div>`;
+  }
+  return `<div class="card spurt" onclick="${open}" style="cursor:pointer"><h3>🍼 Возможен скачок роста (${sp[2]})</h3><p class="hint">Пару дней малыш может чаще просить есть и капризничать — это нормально. Подробнее — нажмите.</p></div>`;
 }
 function sndMini() {
   if (!SND.id) return '';
@@ -2340,7 +2440,7 @@ function viewSleep() {
   const inNorm = norm ? (st.tot / H < norm[2] ? 'low' : st.tot / H > norm[3] ? 'high' : 'ok') : '';
   h += `<div class="card"><h3>В среднем за сутки</h3>
     <div class="snorm"><div class="v num">${fmtMin(st.tot)}</div>${norm ? `<div class="pct ${inNorm}">${inNorm === 'ok' ? 'в пределах ориентира' : inNorm === 'low' ? 'меньше ориентира' : 'больше ориентира'} ${norm[1]}</div>` : ''}</div>
-    ${norm ? `<div class="nbar"><i class="rng" style="left:${norm[2] / 20 * 100}%;width:${(norm[3] - norm[2]) / 20 * 100}%"></i><i class="me" style="left:${Math.min(100, st.tot / H / 20 * 100)}%"></i></div><div class="strip-ax"><span>0</span><span>5</span><span>10</span><span>15</span><span>20 ч</span></div>` : ''}
+    ${norm ? `<div class="nbar"><i class="rng" style="left:${norm[2] / 20 * 100}%;width:${(norm[3] - norm[2]) / 20 * 100}%"></i><i class="me" style="left:${Math.min(100, st.tot / H / 20 * 100)}%"></i></div><div class="strip-ax"><span>0</span><span>5</span><span>10</span><span>15</span><span>20 ч</span></div><div class="lleg" style="margin:8px 0 0"><span><i class="nrm"></i>ориентир для возраста (${norm[1]})</span><span><i class="nme"></i>сон малыша в среднем</span></div>` : ''}
     <table class="norm" style="margin-top:10px"><tr><td>Ночью (21–7)</td><td><b>${fmtMin(st.night)}</b></td></tr><tr><td>Днём</td><td><b>${fmtMin(st.day)}</b>, ${r1(st.naps)} ${pl(Math.round(st.naps), 'раз', 'раза', 'раз')}</td></tr>
     ${st.wake ? `<tr><td>Бодрствование днём</td><td><b>${fmtMin(st.wake)}</b>${wk ? ` <span class="hint">(ориентир ${wk[1]})</span>` : ''}</td></tr>` : ''}<tr><td>Самый долгий сон</td><td><b>${fmtMin(st.longest)}</b></td></tr></table>
     <p class="hint">Считаются дни с записями (${st.k} из ${st.rows.length}). Ориентиры — National Sleep Foundation, AASM/AAP; у каждого малыша свой ритм.</p></div>`;
@@ -2349,7 +2449,7 @@ function viewSleep() {
   const rowsV = [{ d: T0, list: tl, tot: tl.reduce((x, e) => x + Math.min(now(), e.e ?? now()) - Math.max(T0, e.s), 0), has: tl.length > 0, today: true }, ...st.rows.slice().reverse()];
   h += `<div class="card"><h3>График</h3><div class="sgrid">${rowsV.map(r => {
     const p = x => ((Math.max(r.d, Math.min(addDays(r.d, 1), x)) - r.d) / 864e5 * 100).toFixed(2) + '%';
-    return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WD[new Date(r.d).getDay()].slice(0, 2) + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep ${isNightNap(e) ? 'nt' : 'dy'}${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
+    return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WDS[new Date(r.d).getDay()] + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep ${isNightNap(e) ? 'nt' : 'dy'}${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
   }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div><div class="lleg" style="margin:6px 0 0"><span><i style="background:var(--c-sleep)"></i>ночной сон</span><span><i class="dyk"></i>дневной сон</span></div></div>`;
   h += allSleeps();
   return h;
@@ -2372,9 +2472,10 @@ function allSleeps() {
   for (const [d, l] of by) {
     if (++n > 14) break;
     const nt = l.filter(isNightNap), dy = l.filter(e => !isNightNap(e));
-    h += `<div class="sec-t">${esc(dayTitle(d))}</div>`;
+    h += `<div class="sday"><div class="sday-h"><b>${esc(dayTitle(d))}</b><span>всего ${fmtMin(dur(l))}</span></div>`;
     if (nt.length) h += `<div class="sgrp nt">🌙 Ночной сон · <b>${fmtMin(dur(nt))}</b>${nt.length > 1 ? ` · ${nt.length} ${pl(nt.length, 'отрезок', 'отрезка', 'отрезков')}` : ''}</div><ul class="list">${nt.map(rowHtml).join('')}</ul>`;
     if (dy.length) h += `<div class="sgrp">☀️ Дневной сон · <b>${fmtMin(dur(dy))}</b> · ${dy.length} ${pl(dy.length, 'сон', 'сна', 'снов')}</div><ul class="list">${dy.map(rowHtml).join('')}</ul>`;
+    h += '</div>';
   }
   return `<div class="card"><h3>Все сны</h3><p class="hint">Сверху — самые свежие. Ночной — если уснул с 19:00 до 6:00; ночь записана к дню, когда уложили.</p>${h || '<div class="empty">Снов пока нет</div>'}</div>`;
 }
@@ -3094,7 +3195,9 @@ const yPhoto = id => ysGet(Y_PH + '/' + id + '.jpg');
 async function ysSetup() {
   setSync('busy');
   const u = await ysApi('/');
-  REMOTE = { y: 1, login: (u.user && (u.user.login || u.user.display_name)) || '' }; lsSet(RKEY, JSON.stringify(REMOTE));
+  const login = (u.user && (u.user.login || u.user.display_name)) || '';
+  REMOTE = { y: 1, login, email: login ? 'yandex:' + login : '' }; lsSet(RKEY, JSON.stringify(REMOTE));
+  if (REMOTE.email && (S.devs[DEV] || {}).email !== REMOTE.email) setMe({ email: REMOTE.email });
   const o = lsJson(OUTKEY, {}); for (const k of allIds()) { const r = recOf(k); if (r) o[k] = r.u; } lsSet(OUTKEY, JSON.stringify(o));
   for (const e of S.events) for (const ph of e.del ? [] : e.ph || []) phQueue(ph);
   closeSheet(); await sync(); render();
@@ -3112,7 +3215,7 @@ function gsLogout() {
   REMOTE = null; try { localStorage.removeItem(RKEY); } catch (e) {} gsDropTok(); setSync('off'); closeSheet(); render();
 }
 function settingsShare(me) {
-  const h = `<div class="sec-t">Общий дневник</div>`;
+  const h = `<h4>👪 Общий дневник</h4>`;
   if (isY()) return h + `<p class="hint" style="margin:0 0 10px">Вы вошли через Яндекс${REMOTE.login ? ' как <b>' + esc(REMOTE.login) + '</b>' : ''}. Дневник хранится на вашем Яндекс Диске, в папке «Приложения», и появляется на всех устройствах, где вы вошли этим аккаунтом.</p>
     <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
     <p class="hint" style="margin:0 0 10px">Общий дневник со вторым родителем (приглашение, семейный чат) работает через Google: папка приложения на Яндекс Диске — личная.</p>
@@ -3123,10 +3226,10 @@ function settingsShare(me) {
   if (!REMOTE) return h + `<p class="hint" style="margin:0 0 10px">Войдите через Google — дневник будет храниться в таблице на вашем Google Диске, появится на всех ваших устройствах, и можно будет пригласить второго родителя.</p>
     <div class="btns"><button class="b" onclick="gsLogin()">${G_ICON} Войти через Google</button></div>
     <p class="hint" style="margin:12px 0 6px">Вас пригласили в общий дневник?</p><div class="btns"><button class="b ghost" onclick="gsJoin('')">Открыть общий дневник</button></div>` + yb;
-  const others = Object.entries(S.devs).filter(([k, d]) => k !== DEV && (d.name || d.email));
+  const others = otherPeople();
   return h + `<p class="hint" style="margin:0 0 10px">Вы вошли как <b>${esc(REMOTE.email)}</b>. Дневник хранится в таблице <a href="https://docs.google.com/spreadsheets/d/${encodeURIComponent(REMOTE.sheet)}" target="_blank" rel="noopener">«${GS_TITLE}»</a>.</p>
     <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
-    ${others.length ? `<p class="hint" style="margin:0 0 10px">Ещё ведут дневник: <b>${others.map(([k, d]) => esc(d.name || d.email)).join(', ')}</b></p>` : ''}
+    ${others.length ? `<p class="hint" style="margin:0 0 10px">Ещё ведут дневник: <b>${others.map(esc).join(', ')}</b></p>` : ''}
     <label class="f"><span>Пригласить второго родителя — его почта Google</span><input id="s_inv" type="email" inputmode="email" placeholder="name@gmail.com" autocomplete="off"></label>
     <div class="err" id="s_ierr"></div>
     <div class="btns"><button class="b" id="s_invb" onclick="invite()">Пригласить</button><button class="b ghost" onclick="shareLink()">Отправить ссылку</button></div>

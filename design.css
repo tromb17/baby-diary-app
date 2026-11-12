@@ -67,7 +67,7 @@ svg[stroke="currentColor"]{stroke-width:var(--ds-icon-stroke)}  /* одна то
 /* ─── 3. компоненты ─── */
 /* шапка */
 .top{background:color-mix(in srgb,var(--page) 88%,transparent);padding:calc(var(--ds-1) + env(safe-area-inset-top)) var(--ds-2) var(--ds-1)}
-.who h1{font-size:var(--ds-fs-title);font-weight:800;line-height:var(--ds-lh-tight);letter-spacing:-.01em}
+.who h1{font-size:21px;font-weight:800;line-height:1.2;letter-spacing:-.01em}
 .age{font-size:var(--ds-fs-small);color:var(--muted)}
 .ava{background:color-mix(in srgb,var(--accent) 14%,var(--surface));box-shadow:none}
 .icon-btn{width:var(--ds-tap);height:var(--ds-tap);border-radius:var(--ds-r-ctl)}
@@ -85,7 +85,7 @@ main{padding:var(--ds-1) var(--ds-2) var(--ds-3)}
 .st{font-size:15px;line-height:var(--ds-lh)}
 .sec-t{font-size:var(--ds-fs-cap);font-weight:700;letter-spacing:.06em;margin:var(--ds-3) 0 var(--ds-1)}
 .sum>div{border-radius:var(--ds-r-ctl);padding:12px}
-.sum .v{font-size:20px;font-weight:800}
+.sum .v{font-size:18px;font-weight:800;white-space:normal;overflow:visible;line-height:1.25}
 .timer{font-weight:800}
 
 /* кнопки: от 48px; главное действие — заливка, второстепенное — контур */
