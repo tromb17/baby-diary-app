@@ -452,6 +452,9 @@ ul.nolist li::marker{content:'✕  ';color:var(--warn);font-weight:700}
 :root[data-night] .timer{font-size:56px}
 :root[data-night] .card h3{font-size:18px}
 </style>
+<!-- новое оформление — отдельным слоем; «Прежнее» в настройках выключает его (babydiary.design.v1 = old) -->
+<link rel="stylesheet" id="designCss" href="design.css">
+<script>try{if(localStorage.getItem('babydiary.design.v1')==='old')document.getElementById('designCss').disabled=true}catch(e){}</script>
 </head>
 <body>
 <div class="zoo" aria-hidden="true">
@@ -657,12 +660,16 @@ function isNight() {
   return bySchedule(p, t);
 }
 function toggleNight() { const p = nightPref(); p.force = isNight() ? 'off' : 'on'; p.at = now(); lsSet(NIGHTKEY, JSON.stringify(p)); applyNight(); }
+// оформление: новое (design.css) или прежнее — на этом устройстве
+const DESIGNKEY = 'babydiary.design.v1';
+const designOn = () => { const l = document.getElementById('designCss'); return !!l && !l.disabled; };
+function designSet(v) { lsSet(DESIGNKEY, v); const l = document.getElementById('designCss'); if (l) l.disabled = v === 'old'; applyNight(); openSettings(); }
 const darkOS = () => window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
 function applyNight() {
   const on = isNight();
   if (on) document.documentElement.setAttribute('data-night', ''); else document.documentElement.removeAttribute('data-night');
   $('#nightBtn').classList.toggle('on', on);
-  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : darkOS() ? '#0e2a25' : '#d9f3e3';
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : designOn() ? (darkOS() ? '#141414' : '#FAF8F5') : darkOS() ? '#0e2a25' : '#d9f3e3';
 }
 
 /* ───────── экраны ───────── */
@@ -677,7 +684,8 @@ const TABS = [
 function renderTabs() {
   $('#tabs').innerHTML = TABS.map(([id, t, p]) => `<button class="${UI.tab === id ? 'on' : ''}" onclick="go('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`).join('');
 }
-function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); if (tab === 'chat') { CHAT.stick = true; if (REMOTE) sync(); } render(); if (tab !== 'chat') window.scrollTo(0, 0); }
+function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); if (tab === 'chat') { CHAT.stick = true; if (REMOTE) sync(); } render(); if (tab !== 'chat') window.scrollTo(0, 0);
+  const v = $('#view'); v.classList.remove('ds-in'); void v.offsetWidth; v.classList.add('ds-in'); } // мягкое появление вкладки (design.css)
 
 function render() {
   applyNight();
@@ -982,6 +990,9 @@ function openSettings() {
     <label class="f"><span>Имя</span><input id="s_name" value="${esc(S.baby.name)}" autocomplete="off"></label>
     <label class="f"><span>Дата рождения</span><input id="s_birth" type="date" value="${esc(S.baby.birth)}"></label>
     <div class="f"><span>Пол — для норм роста и веса ВОЗ</span><input type="hidden" id="s_sex" value="${esc(S.baby.sex || '')}">${chipsHtml('sex', [['f', 'Девочка'], ['m', 'Мальчик']], S.baby.sex)}</div>
+    <div class="sec-t">Оформление</div>
+    <div class="chips" role="group" aria-label="Оформление"><button class="${designOn() ? 'on' : ''}" onclick="designSet('new')">Новое</button><button class="${designOn() ? '' : 'on'}" onclick="designSet('old')">Прежнее</button></div>
+    <p class="hint" style="margin:6px 0 0">Меняется сразу и только на этом устройстве.</p>
     <div class="sec-t">Ночной режим</div>
     <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
     <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать автоматически по расписанию</label>
