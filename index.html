@@ -407,6 +407,10 @@ body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
 .lnav{display:flex;gap:6px;margin:8px 0}
 .lnav .b{flex:1;padding:8px 4px;font-size:13px}
 .lmemo{background:var(--surface-2);border-radius:14px;padding:12px}
+.lgrid.one{margin:6px 0 4px}
+.lrow{display:flex;align-items:center;gap:8px;margin:10px 0 0;font-size:13px;color:var(--text-2);font-weight:600}.lrow span{flex:1;text-align:center}
+.lrb{width:44px;height:44px;border:1px solid var(--line);background:var(--surface);border-radius:12px;font-size:20px;color:var(--text-2)}.lrb:disabled{opacity:.35}
+.lmore{display:block;width:100%;min-height:44px;border:0;background:transparent;color:var(--accent);font-weight:600;font-size:14px;margin:0 0 6px}
 .lm-h{display:flex;gap:10px;align-items:center}
 .lm-ic{font-size:30px;line-height:1}
 .lm-p{font-weight:700;color:var(--c-sleep)}
@@ -2467,28 +2471,35 @@ function leapMemo(w) {
     } else h += `<p class="hint" style="margin:8px 0 0">Все скачки из книги позади.</p>`;
   }
   const sp = SPURTS.find(s => s[1] >= d0 && s[0] <= d0 + 6);
-  if (sp) h += `<p class="hint" style="margin:6px 0 0">🍼 И скачок роста (${sp[2]}): может чаще просить есть.</p>`;
+  if (sp) h += `<p class="hint" style="margin:6px 0 0">🍼 <b>И скачок роста (${sp[2]})</b>: несколько дней малыш может просить есть чаще (бывает каждые 30–60 минут, особенно вечером). Это не значит, что не хватает молока, — кормите по требованию. Источник: WIC (USDA).</p>`;
   return h;
 }
 function leapTimeline() {
   const td = Math.round((sod(now()) - sod(birthTs())) / 864e5), tw = Math.floor(td / 7) + 1;
   if (UI.lweek == null) UI.lweek = Math.max(1, Math.min(LEAP_WEEKS, tw));
+  // свёрнуто — только строка (7 недель) с выбранной неделей; развернуть — все 78
+  const full = !!UI.lfull, row = Math.floor((UI.lweek - 1) / 7), rows = Math.ceil(LEAP_WEEKS / 7);
   let cells = '';
   for (let w = 1; w <= LEAP_WEEKS; w++) {
+    if (!full && Math.floor((w - 1) / 7) !== row) continue;
     const L = leapWeek(w), sp = SPURTS.some(s => s[1] >= (w - 1) * 7 && s[0] <= w * 7 - 1);
     cells += `<button class="lw ${L.k}${w === tw ? ' td' : ''}${w === UI.lweek ? ' sel' : ''}${w < tw ? ' past' : ''}" data-w="${w}" onclick="leapPick(${w})" aria-label="${w}-я неделя">${w}${L.k === 'peak' ? '<s>😣</s>' : ''}${sp ? '<u></u>' : ''}</button>`;
   }
   return `<div class="card leapc"><h3>🧩 Скачки развития по неделям</h3>
     <p class="hint">По книге «Чудесные недели» (Х. ван де Рейт, Ф. Плоой). Числа — недели жизни, рамкой — нынешняя. Нажмите на неделю — внизу подскажем, что примерно происходит.</p>
     <div class="lleg"><span><i class="calm"></i>спокойное время</span><span><i class="good"></i>хорошее настроение</span><span><i class="leap"></i>скачок развития</span><span><i class="anx"></i>возможна тревожность</span><span>😣 пик скачка</span><span><u></u>скачок роста</span></div>
-    <div class="lgrid" id="lgrid">${cells}</div>
+    ${full ? '' : `<div class="lrow"><button class="lrb" onclick="leapRow(-1)" ${row ? '' : 'disabled'} aria-label="Предыдущие недели">‹</button><span>Недели ${row * 7 + 1}–${Math.min(LEAP_WEEKS, row * 7 + 7)}</span><button class="lrb" onclick="leapRow(1)" ${row < rows - 1 ? '' : 'disabled'} aria-label="Следующие недели">›</button></div>`}
+    <div class="lgrid${full ? '' : ' one'}" id="lgrid">${cells}</div>
+    <button class="lmore" onclick="UI.lfull=!UI.lfull;render()" aria-expanded="${full}">${full ? 'Свернуть до одной недели ▴' : 'Показать все ' + LEAP_WEEKS + ' недель ▾'}</button>
     <div class="lmemo" id="lmemo">${leapMemo(UI.lweek)}</div>
-    ${tw >= 1 && tw <= LEAP_WEEKS ? `<div class="lnav"><button class="b ghost" onclick="leapPick(${tw})">К нынешней неделе</button></div>` : ''}
+    ${tw >= 1 && tw <= LEAP_WEEKS && UI.lweek !== tw ? `<div class="lnav"><button class="b ghost" onclick="leapPick(${tw})">К нынешней неделе</button></div>` : ''}
     <p class="hint" style="margin:10px 0 0">Научных подтверждений у такого точного расписания мало, у каждого малыша свой ритм. Если малыш капризничает и по календарику «сходится» — скорее всего, это временно. Но температура, отказ от еды, вялость — повод позвонить педиатру.</p></div>`;
 }
+function leapRow(d) { const r = Math.floor((UI.lweek - 1) / 7) + d; UI.lweek = Math.max(1, Math.min(LEAP_WEEKS, r * 7 + 1)); render(); }
 // меняем только памятку и выделение — без render, чтобы не сбивать прокрутку
 function leapPick(w) {
   UI.lweek = w; const el = $('#lgrid'); if (!el) return;
+  if (!el.querySelector(`.lw[data-w="${w}"]`)) { render(); return; } // неделя в другой строке свёрнутого календаря
   for (const b of el.querySelectorAll('.lw.sel')) b.classList.remove('sel');
   const s = el.querySelector(`.lw[data-w="${w}"]`); if (s) s.classList.add('sel');
   $('#lmemo').innerHTML = leapMemo(w);
@@ -2553,14 +2564,7 @@ const SPURTS = [[7, 10, '7–10 дней'], [14, 21, '2–3 недели'], [39,
 function spurtNow() { const b = birthTs(); if (b == null) return null; const d = Math.round((sod(now()) - b) / 864e5); return SPURTS.find(s => d >= s[0] - 1 && d <= s[1] + 1) || null; }
 function viewSpurts() {
   const b = birthTs(); if (b == null) return needBirth('подсказывать про скачки роста');
-  const d = Math.round((sod(now()) - b) / 864e5), cur = spurtNow();
-  let h = `<div class="card ${cur ? 'feed live' : ''}"><h3>${cur ? '🌱 Сейчас возможен скачок роста' : '🌱 Скачки роста'}</h3>
-    <p class="hint">Несколько дней малыш просит грудь или бутылочку чаще (бывает каждые 30–60 минут, особенно вечером), беспокоится, может спать больше или хуже. Это нормально и не значит, что не хватает молока — если хорошо писает (от 6 мокрых подгузников) и прибавляет в весе.</p>
-    <ul class="slist">${SPURTS.map(s => { const st = d > s[1] + 1 ? 'past' : d >= s[0] - 1 ? 'now' : ''; return `<li class="${st}"><b>${s[2]}</b><span>${st === 'past' ? 'прошёл' : st === 'now' ? 'сейчас' : 'с ' + dayShort(b + s[0] * 864e5)}</span></li>`; }).join('')}</ul>
-    <p class="hint">Что помогает: кормить по требованию, больше контакта «кожа к коже», отдыхать, когда спит малыш. Сроки у всех разные — это ориентир.</p>
-    <div class="src">Источник: WIC Breastfeeding Support (USDA), консультанты по грудному вскармливанию</div></div>`;
-  h += leapTimeline();
-  return h;
+  return leapTimeline();
 }
 
 /* ───────── игры по возрасту ─────────
