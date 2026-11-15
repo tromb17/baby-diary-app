@@ -427,6 +427,7 @@ body.inchat.withsnd{padding-bottom:calc(180px + env(safe-area-inset-bottom))}
 /* сон: сегодня и прогноз */
 .srow.today .sd{color:var(--c-sleep);font-weight:700;font-size:11.5px}
 .strip i.sleep.live{opacity:.5}
+.tsl{margin-top:8px;padding:6px 10px;border-radius:10px;font-size:13px;color:var(--text-2);background:color-mix(in srgb,var(--c-sleep) 10%,transparent)}
 .strip i.sleep.dy,.lleg i.dyk{background:color-mix(in srgb,var(--c-sleep) 40%,#ffc861)}
 .sgrp{font-size:13px;color:var(--text-2);margin:8px 0 4px;padding:5px 10px;border-radius:10px;background:color-mix(in srgb,#ffc861 18%,transparent)}
 .sday{border:1px solid var(--line);border-radius:16px;padding:10px 12px 4px;margin-top:12px;background:var(--surface)}
@@ -685,8 +686,24 @@ function stopFeed() {
 }
 
 /* ───────── сон и подгузник ───────── */
+// общий дневник с другими людьми: перед отметкой забрать свежие записи (не дольше 4 с; нет связи — отмечаем как есть)
+const needFresh = () => !!REMOTE && !isY() && otherPeople().length > 0 && navigator.onLine !== false;
+async function freshCheck() {
+  toast('⏳ Проверяю общий дневник…');
+  await Promise.race([sync().catch(() => {}), new Promise(r => setTimeout(r, 4000))]);
+  $('#toast').hidden = true;
+}
+const byWho = e => e && e.by && e.by !== DEV && devName(e.by) ? ' (' + devName(e.by) + ')' : '';
 function toggleSleep() {
+  if (toggleSleep.busy) return;
+  if (!needFresh()) return sleepTap(activeOf('sleep'));
+  const was = activeOf('sleep'); toggleSleep.busy = true;
+  return freshCheck().finally(() => { toggleSleep.busy = false; }).then(() => sleepTap(was));
+}
+function sleepTap(was) {
   const a = activeOf('sleep'), t = now();
+  if (was && !a) { const x = evById(was.id); buzz(); render(); toast(x && !x.del && x.e != null ? '😴 Сон уже записан' + byWho(x) + ': проснулся в ' + hm(x.e) : 'Сон уже отметили на другом телефоне'); return; }
+  if (!was && a) { buzz(); render(); toast('😴 Малыш уже спит с ' + hm(a.s) + byWho(a) + ' — отметили на другом телефоне'); return; }
   if (a) { upd(a, { e: t }); toast('Сон записан: ' + fmtMin(t - a.s), { label: 'Изменить', fn: () => editEvent(a.id) }); }
   else add({ t: 'sleep', s: t, e: null });
   buzz(); render();
@@ -787,7 +804,7 @@ function viewNow() {
   const f = activeOf('feed'), sl = activeOf('sleep');
   if (f) h += liveFeed(f);
   if (sl) h += `<div class="card sleep live"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Спит<span class="more">график →</span></h3>
-    <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}${(x => x ? '<br>' + x : '')(forecastLine())}</div>
+    <div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}${(x => x ? '<br>' + x : '')(forecastLine())}</div>${todaySleepLine()}
     <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">☀️</span>Проснулся</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
 
   // кормление
@@ -810,7 +827,7 @@ function viewNow() {
       if (w) st += mins > w[3] ? `<br><span class="warn">Пора укладывать</span> — ориентир для возраста ${w[1]}` : `<br>Ориентир бодрствования: ${w[1]}`;
       const fl = forecastLine(); if (fl) st += '<br>' + fl;
     }
-    h += `<div class="card sleep"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Сон<span class="more">график →</span></h3><div class="st tap" onclick="go('sleep')">${st}</div>
+    h += `<div class="card sleep"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Сон<span class="more">график →</span></h3><div class="st tap" onclick="go('sleep')">${st}</div>${todaySleepLine()}
       <div class="btns"><button class="b main" onclick="toggleSleep()"><span class="e">🌙</span>Уснул</button><button class="b" style="flex:0 0 32%" onclick="UI.more='sounds';go('tips')"><span class="e">🎵</span><small>звуки</small></button></div></div>`;
   }
   // подгузник
@@ -2196,11 +2213,15 @@ function demoAlbum() {
    возвращении забирает их (applyInbox) и подтверждает (ack). Повторная доставка не дублирует: ID уже есть. */
 function widgetState() {
   const f = activeOf('feed'), g = f && openSeg(f), sl = activeOf('sleep'), lf = lastOf('feed', e => e.e != null), ld = lastOf('diaper');
-  return { feed: f && f.kind === 'breast' ? { id: f.id, s: f.s, side: g ? g.side : '' } : null, lastFeed: lf ? lf.s : 0, next: nextSide() || 'L',
-    sleep: sl ? { id: sl.id, s: sl.s } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: S.baby.name || '' };
+  return { feed: f && f.kind === 'breast' ? { id: f.id, s: f.s, side: g ? g.side : '', segs: f.segs, by: f.by || '', note: f.note || '' } : null, lastFeed: lf ? lf.s : 0, next: nextSide() || 'L',
+    sleep: sl ? { id: sl.id, s: sl.s, by: sl.by || '', note: sl.note || '' } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: S.baby.name || '' };
 }
 function pushWidget() {
   if (!NATIVE || typeof NATIVE.setWidget !== 'function') return;
+  if (typeof NATIVE.setRemote === 'function') {
+    const r = REMOTE && !isY() && REMOTE.sheet ? JSON.stringify({ sheet: REMOTE.sheet, tab: GS_TAB, email: REMOTE.email || '', dev: DEV, name: devName(DEV) || '' }) : '';
+    if (r !== pushWidget.rem) try { NATIVE.setRemote(r); pushWidget.rem = r; } catch (e) {}
+  }
   const j = JSON.stringify(widgetState()); if (j === pushWidget.last) return;
   try { if (NATIVE.setWidget(j) !== false) pushWidget.last = j; } catch (e) {}
 }
@@ -2212,9 +2233,10 @@ function applyInbox() {
   for (const o of q) {
     try {
       const ev = o.ev || {};
-      if (o.op === 'feed' && !evById(ev.id) && !activeOf('feed')) add({ id: ev.id, t: 'feed', kind: 'breast', s: ev.s, e: null, segs: [{ side: ev.side === 'R' ? 'R' : 'L', s: ev.s, e: null }] });
+      if (o.skip) { /* виджет уже выяснил: отметил другой родитель */ }
+      else if (o.op === 'feed' && !evById(ev.id) && !activeOf('feed')) add({ id: ev.id, t: 'feed', kind: 'breast', s: ev.s, e: null, segs: [{ side: ev.side === 'R' ? 'R' : 'L', s: ev.s, e: null }] });
       else if (o.op === 'feedStop') { const f = evById(o.ref); if (f && f.e == null) { const sg = openSeg(f); if (sg) sg.e = Math.max(sg.s, o.at); upd(f, { e: Math.max(f.s, o.at), segs: f.segs }); } }
-      else if (o.op === 'sleep' && !evById(ev.id) && !activeOf('sleep')) add({ id: ev.id, t: 'sleep', s: ev.s, e: null });
+      else if (o.op === 'sleep' && !evById(ev.id) && !activeOf('sleep') && !evs().some(e => e.t === 'sleep' && e.s <= ev.s && e.e > ev.s + 60000)) add({ id: ev.id, t: 'sleep', s: ev.s, e: null });
       else if (o.op === 'sleepStop') { const s = evById(o.ref); if (s && s.e == null) upd(s, { e: Math.max(s.s + 60000, o.at) }); }
       else if (o.op === 'diaper' && !evById(ev.id)) add({ id: ev.id, t: 'diaper', s: ev.s, e: ev.s, wet: !!ev.wet, dirty: !!ev.dirty });
     } catch (e) {}
@@ -2224,7 +2246,8 @@ function applyInbox() {
   pushWidget.last = null; // виджету — свежее состояние при следующей отрисовке
   return done.length;
 }
-window.babyInbox = () => { if (applyInbox() && $('#sheetWrap').hidden) render(); };
+window.babyInbox = () => { const go_ = () => { if (applyInbox() && $('#sheetWrap').hidden) render(); }; if (REMOTE && !isY() && inboxN()) sync().catch(() => {}).then(go_); else go_(); };
+function inboxN() { try { return NATIVE && typeof NATIVE.inbox === 'function' ? JSON.parse(NATIVE.inbox() || '[]').length : 0; } catch (e) { return 0; } }
 
 /* ───────── семейный чат ─────────
    Сообщение — событие 'msg' {s, text, ph:[id фото]} того, кто написал (by). Ходит через ту же таблицу, что и дневник:
@@ -2474,9 +2497,9 @@ function viewSleep() {
   const sl = activeOf('sleep');
   h += `<div class="card sleep ${sl ? 'live' : ''}"><h3><span class="dot"></span>${sl ? 'Спит' : 'Сейчас не спит'}</h3>${sl ? `<div class="timer" data-from="${sl.s}"></div><div class="st">уснул в ${hm(sl.s)}</div>` : `<p class="st">${forecastLine() || nextSleepHint() || 'Записей сна пока нет.'}</p>`}
     <div class="btns"><button class="b main" onclick="toggleSleep()">${sl ? '☀️ Проснулся' : '🌙 Уснул'}</button><button class="b" onclick="addKind('sleep',now())">+ Сон задним числом</button></div></div>`;
-  h += forecastCard();
+  h += allSleeps(7) + forecastCard();
   h += `<div class="seg" style="margin-bottom:12px">${[7, 14].map(x => `<button class="${n === x ? 'on' : ''}" onclick="UI.sdays=${x};render()">${x} дней</button>`).join('')}</div>`;
-  if (!st.k) return h + `<div class="card"><div class="empty">За эти дни сна не записано</div></div>`;
+  if (!st.k) return h + `<div class="card"><div class="empty">За эти дни средних и графика ещё нет</div></div>`;
   const inNorm = norm ? (st.tot / H < norm[2] ? 'low' : st.tot / H > norm[3] ? 'high' : 'ok') : '';
   h += `<div class="card"><h3>В среднем за сутки</h3>
     <div class="snorm"><div class="v num">${fmtMin(st.tot)}</div>${norm ? `<div class="pct ${inNorm}">${inNorm === 'ok' ? 'в пределах ориентира' : inNorm === 'low' ? 'меньше ориентира' : 'больше ориентира'} ${norm[1]}</div>` : ''}</div>
@@ -2491,7 +2514,6 @@ function viewSleep() {
     const p = x => ((Math.max(r.d, Math.min(addDays(r.d, 1), x)) - r.d) / 864e5 * 100).toFixed(2) + '%';
     return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WDS[new Date(r.d).getDay()] + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep ${isNightNap(e) ? 'nt' : 'dy'}${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
   }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div><div class="lleg" style="margin:6px 0 0"><span><i style="background:var(--c-sleep)"></i>ночной сон</span><span><i class="dyk"></i>дневной сон</span></div></div>`;
-  h += allSleeps();
   return h;
 }
 
@@ -2501,23 +2523,34 @@ function viewSleep() {
    Мало записей (меньше 6 снов) — нет прогноза, тогда ориентир по возрасту (nextSleepHint). */
 const minOfDay = ts => { const d = new Date(ts); return d.getHours() * 60 + d.getMinutes(); };
 const median = a => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y), k = s.length >> 1; return s.length % 2 ? s[k] : (s[k - 1] + s[k]) / 2; };
+// сколько спал сегодня: ночь — с 19:00 вчера до 6:00 сегодня (по времени, когда уснул), день — с 6:00 до 19:00
+function sleepToday() {
+  const T = sod(now()), t = now(), l = evs().filter(e => e.t === 'sleep' && e.s < t && e.s >= T - 5 * 3600e3);
+  const sum = f => l.filter(f).reduce((x, e) => x + Math.min(t, e.e ?? t) - e.s, 0);
+  return { night: sum(e => e.s < T + 6 * 3600e3 && isNightNap(e)), day: sum(e => e.s >= T + 6 * 3600e3 && !isNightNap(e)), eve: sum(e => e.s >= T + 19 * 3600e3) };
+}
+function todaySleepLine() {
+  const x = sleepToday(); if (!x.night && !x.day && !x.eve) return '';
+  return `<div class="tsl">Сегодня спал: 🌙 ночью <b>${x.night ? fmtMin(x.night) : '—'}</b> · ☀️ днём <b>${x.day ? fmtMin(x.day) : '—'}</b>${x.eve ? ` · 🌙 вечером <b>${fmtMin(x.eve)}</b>` : ''}</div>`;
+}
 // ночной или дневной сон — по времени, когда уснул: с 19:00 до 6:00 — ночной (и короткие ночные пробуждения тоже)
 const isNightNap = e => { const m = minOfDay(e.s); return m >= 19 * 60 || m < 6 * 60; };
 // «Все сны»: сутки с 6:00 до 6:00 (ночь — вместе с вечером, когда уснул), сверху — самые свежие; в сутках — ночь и день отдельно
-function allSleeps() {
+function allSleeps(days) {
   const SH = 6 * 3600e3, all = evs().filter(e => e.t === 'sleep' && e.s < now()).sort((a, b) => b.s - a.s), by = new Map();
   for (const e of all) { const k = sod(e.s - SH); if (!by.has(k)) by.set(k, []); by.get(k).push(e); }
   const dur = l => l.reduce((x, e) => x + (e.e ?? now()) - e.s, 0);
   let h = '', n = 0;
   for (const [d, l] of by) {
-    if (++n > 14) break;
+    if (++n > (UI.sAll ? 60 : days || 14)) break;
     const nt = l.filter(isNightNap), dy = l.filter(e => !isNightNap(e));
     h += `<div class="sday"><div class="sday-h"><b>${esc(dayTitle(d))}</b><span>всего ${fmtMin(dur(l))}</span></div>`;
     if (nt.length) h += `<div class="sgrp nt">🌙 Ночной сон · <b>${fmtMin(dur(nt))}</b>${nt.length > 1 ? ` · ${nt.length} ${pl(nt.length, 'отрезок', 'отрезка', 'отрезков')}` : ''}</div><ul class="list">${nt.map(rowHtml).join('')}</ul>`;
     if (dy.length) h += `<div class="sgrp">☀️ Дневной сон · <b>${fmtMin(dur(dy))}</b> · ${dy.length} ${pl(dy.length, 'сон', 'сна', 'снов')}</div><ul class="list">${dy.map(rowHtml).join('')}</ul>`;
     h += '</div>';
   }
-  return `<div class="card"><h3>Все сны</h3><p class="hint">Сверху — самые свежие. Ночной — если уснул с 19:00 до 6:00; ночь записана к дню, когда уложили.</p>${h || '<div class="empty">Снов пока нет</div>'}</div>`;
+  const more = by.size > (days || 14) && !UI.sAll ? `<button class="b ghost" style="width:100%;margin-top:8px" onclick="UI.sAll=1;render()">Показать раньше</button>` : '';
+  return `<div class="card"><h3>История сна</h3><p class="hint">Сверху — самые свежие. Ночной — если уснул с 19:00 до 6:00; ночь записана к дню, когда уложили.</p>${h || '<div class="empty">Снов пока нет</div>'}${more}</div>`;
 }
 const isNightSleep = e => (e.e - e.s) >= 4 * 3600e3 && (minOfDay(e.s) >= 18 * 60 || minOfDay(e.s) < 3 * 60);
 const nightStartish = ts => minOfDay(ts) >= 19 * 60 || minOfDay(ts) < 4 * 60;
@@ -2978,6 +3011,22 @@ function applyRemote(list) {
   return ch;
 }
 
+// два телефона отметили «Уснул» (или начало кормления) почти одновременно — остаётся одна запись: та, что раньше началась.
+// Идущая запись, которая началась внутри уже законченной (её закончили на другом телефоне), — тоже лишняя.
+function fixDupes() {
+  let msg = '';
+  for (const t of ['sleep', 'feed']) {
+    const all = evs().filter(e => e.t === t), act = all.filter(e => e.e == null).sort((a, b) => a.s - b.s);
+    for (let i = 0; i < act.length; i++) {
+      const y = act[i], x = i ? act[0] : all.find(o => o !== y && o.e != null && o.s <= y.s && o.e > y.s + 60000 && o.by !== y.by);
+      if (!x) continue;
+      upd(y, { del: true });
+      if (y.by === DEV && x.by !== DEV) msg = (t === 'sleep' ? '😴 Сон' : '🍼 Кормление') + ' уже отметили на другом телефоне' + byWho(x) + ' в ' + hm(x.s) + ' — оставили эту запись';
+    }
+  }
+  if (msg) toast(msg);
+  return !!msg;
+}
 const SYNC = { st: 'off', msg: '', busy: null, again: false, timer: null };
 function setSync(st, msg) { SYNC.st = st; SYNC.msg = msg || ''; syncShow(); }
 function syncShow() { const b = $('#syncBtn'); if (!b) return; b.hidden = !REMOTE; $('#syncDot').className = 'syncdot ' + SYNC.st; }
@@ -2999,11 +3048,18 @@ async function sync() {
       if (isY()) ch = await ySync();
       else { await push(); await pushPhotos().catch(() => {}); ch = await pull(); }
       setSync('ok');
+      if (ch) fixDupes();
       if (ch && $('#sheetWrap').hidden) render();
     } catch (e) { setSync(e.need ? 'need' : e.net ? 'pending' : 'err', e.need || e.net ? '' : (isY() ? 'Яндекс Диск: ' : 'Google: ') + e.message); }
   })();
   await SYNC.busy; SYNC.busy = null;
   if (SYNC.again) { SYNC.again = false; return sync(); }
+}
+// таблица менялась после прошлой загрузки? (один короткий запрос к Диску вместо чтения всего журнала)
+async function gsChanged() {
+  const j = await gsApi(DRIVE_API + '/' + REMOTE.sheet + '?fields=modifiedTime'), m = j.modifiedTime || '';
+  if (!m || m === SYNC.mt) return false;
+  SYNC.mt = m; return true;
 }
 async function push() {
   const out = lsJson(OUTKEY, {}), ids = Object.keys(out); if (!ids.length) return;
@@ -3300,7 +3356,8 @@ function checkApk(force) {
   }).catch(() => { if (force) toast('Не удалось проверить — нет связи с GitHub'); });
 }
 function boot() {
-  applyInbox(); render(); launch(); setTimeout(phGc, 5000);
+  if (!(REMOTE && !isY() && inboxN())) applyInbox();
+  render(); launch(); setTimeout(phGc, 5000);
   if (NATIVE) { let a = null; try { a = NATIVE.takeAction(); } catch (e) {} if (a) launch(a); setTimeout(checkApk, 3000); }
   if (GAUTH_RET) {
     const g = GAUTH_RET; GAUTH_RET = null;
@@ -3311,15 +3368,16 @@ function boot() {
     else if (g.ok) sync();
     else if (g.first || g.join) toast(g.err === 'access_denied' ? 'Вход отменён' : 'Не удалось войти в Google');
     else setSync('need');
-  } else if (REMOTE) { gsAutoUntil = Date.now() + 8000; sync(); }
+  } else if (REMOTE) { gsAutoUntil = Date.now() + 8000; if (!isY() && inboxN()) window.babyInbox(); else sync(); }
   setInterval(() => { if (!$('#sheetWrap').hidden) { tick(); return; } const n = isNight(); if (n !== document.documentElement.hasAttribute('data-night')) applyNight(); tick(); }, 1000);
   setInterval(() => { if ($('#sheetWrap').hidden) render(); }, 60000);
-  // общий дневник: пока приложение открыто — забираем записи второго родителя раз в 30 секунд
-  let tk = 0; setInterval(() => { tk++; if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need' && (UI.tab === 'chat' || tk % 3 === 0)) sync(); }, 10000);
+  // общий дневник: пока приложение открыто — каждые 10 с спрашиваем, менялась ли таблица (и забираем, если да), полностью — раз в минуту
+  let tk = 0; setInterval(() => { tk++; if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need' && !SYNC.busy) { if (UI.tab === 'chat' || tk % (isY() ? 3 : 6) === 0) sync(); else if (!isY()) gsChanged().then(c => c && sync(), () => {}); } }, 10000);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || !$('#sheetWrap').hidden) return;
-    S = load(); applyInbox(); render();
-    if (REMOTE) { gsAutoUntil = Date.now() + 8000; sync(); }
+    S = load(); gsAutoUntil = Date.now() + 8000;
+    if (REMOTE && !isY() && inboxN()) window.babyInbox(); else { applyInbox(); if (REMOTE) sync(); }
+    render();
     checkApk();
   });
   window.addEventListener('storage', e => { if (e.key === KEY && $('#sheetWrap').hidden) { S = load(); render(); } });
