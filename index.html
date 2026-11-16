@@ -571,17 +571,20 @@ function normalize(s) {
   return s;
 }
 function load() { return normalize(lsJson(KEY, null)); }
-function save() { lsSet(KEY, JSON.stringify(S)); }
+// VER растёт при каждом сохранении: по нему (и по самому списку) запомненные расчёты понимают, что данные изменились
+let VER = 0;
+function save() { VER++; lsSet(KEY, JSON.stringify(S)); }
+function memo(f) { let k1, k2, k3, v; return () => { if (k1 !== S.events || k2 !== VER || k3 !== S.events.length) { v = f(); k1 = S.events; k2 = VER; k3 = S.events.length; } return v; }; }
 let S = load();
 
 // очередь на отправку в таблицу: {id: u}. Пишем всегда — при входе в Google уйдёт всё, что накопилось.
 const OUTKEY = 'babydiary.out.v1';
 function mark(id, u) { const o = lsJson(OUTKEY, {}); o[id] = u; lsSet(OUTKEY, JSON.stringify(o)); if (typeof schedulePush === 'function') schedulePush(); }
 
-const evs = () => S.events.filter(e => !e.del);
+const evs = memo(() => S.events.filter(e => !e.del)); // общий список: не менять на месте (только filter/slice)
 const byStart = (a, b) => b.s - a.s;
 const activeOf = t => evs().find(e => e.t === t && e.e == null);
-const lastOf = (t, f) => evs().filter(e => e.t === t && (!f || f(e))).sort(byStart)[0];
+const lastOf = (t, f) => { let b; for (const e of evs()) if (e.t === t && (!f || f(e)) && (!b || e.s > b.s)) b = e; return b; };
 const evById = id => S.events.find(e => e.id === id);
 function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, o); S.events.push(e); save(); mark(e.id, e.u); return e; }
 function upd(e, p) { e = evById(e.id) || e; Object.assign(e, p, { u: now() }); save(); mark(e.id, e.u); return e; }
@@ -1072,7 +1075,8 @@ function delEvent() {
 /* ───────── профиль малыша: имя, дата рождения, пол и медали за достижения ─────────
    Медали считаются из записей: вехи (каждая — своя), прикорм (1, 5, 10, 20, 40 продуктов), первая прививка, первый замер,
    сон 6 часов подряд, 100 кормлений, дни с записями (7, 30, 100). Новая медаль — короткое поздравление (babydiary.medals.v1). */
-function medals() {
+const medals = memo(medalsAll);
+function medalsAll() {
   const E = evs().slice().sort((a, b) => a.s - b.s), done = milesDone(), out = [];
   for (const x of MILES) out.push({ id: 'm:' + x.id, ic: x.ic, name: x.name, at: done[x.id] && done[x.id].s });
   const foods = new Map(); for (const e of E) if (e.t === 'food') { const k = e.fid || e.name; if (k && !foods.has(k)) foods.set(k, e.s); }
@@ -2997,14 +3001,14 @@ function parseRows(rows) {
 }
 // применить записи из таблицы: по id побеждает более свежая. true — что-то поменялось
 function applyRemote(list) {
-  let ch = false; const old = now() - DEL_DAYS * 864e5;
+  let ch = false; const old = now() - DEL_DAYS * 864e5, at = new Map(S.events.map((e, i) => [e.id, i]));
   for (const r of list) {
     if (!r || !r.id || !r.t) continue;
     if (r.t === 'baby') { if ((r.u || 0) > (S.baby.u || 0)) { S.baby = { name: r.name || '', birth: r.birth || '', sex: r.sex || '', u: r.u }; ch = true; } continue; }
     if (r.t === 'dev') { const k = r.id.slice(4), o = S.devs[k]; if (!o || (r.u || 0) > (o.u || 0)) { S.devs[k] = { name: r.name || '', email: r.email || '', u: r.u }; ch = true; } continue; }
     if (!isFinite(r.s) || (r.del && r.u < old)) continue;
-    const i = S.events.findIndex(e => e.id === r.id);
-    if (i < 0) { if (!r.del) { S.events.push(r); ch = true; } }
+    const i = at.has(r.id) ? at.get(r.id) : -1;
+    if (i < 0) { if (!r.del) { at.set(r.id, S.events.length); S.events.push(r); ch = true; } }
     else if ((r.u || 0) > (S.events[i].u || 0)) { S.events[i] = r; ch = true; }
   }
   if (ch) save();
@@ -3055,22 +3059,31 @@ async function sync() {
   await SYNC.busy; SYNC.busy = null;
   if (SYNC.again) { SYNC.again = false; return sync(); }
 }
-// таблица менялась после прошлой загрузки? (один короткий запрос к Диску вместо чтения всего журнала)
-async function gsChanged() {
-  const j = await gsApi(DRIVE_API + '/' + REMOTE.sheet + '?fields=modifiedTime'), m = j.modifiedTime || '';
-  if (!m || m === SYNC.mt) return false;
-  SYNC.mt = m; return true;
-}
 async function push() {
   const out = lsJson(OUTKEY, {}), ids = Object.keys(out); if (!ids.length) return;
   const rows = ids.map(recOf).filter(r => r && !(r.t === 'baby' && !r.u)).map(rowOf);
   if (rows.length) await gsApi('/values/' + encodeURIComponent(GS_TAB + '!A1') + ':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS', { method: 'POST', body: { values: rows } });
   const cur = lsJson(OUTKEY, {}); for (const id of ids) if (cur[id] === out[id]) delete cur[id]; lsSet(OUTKEY, JSON.stringify(cur));
 }
+/* Журнал только дописывается в конец, поэтому обычно читаем лишь новые строки — начиная с последней прочитанной
+   (она должна остаться на месте; иначе строки сдвинуло сжатие — читаем всё). Целиком — при запуске, раз в 10 мин
+   и когда повторов стало много (тогда же сжатие). */
+const JR = { sheet: '', n: 0, id: '', u: 0, at: 0 };
+const jrRange = n => '/values/' + encodeURIComponent(GS_TAB + '!A' + n + ':C') + '?valueRenderOption=UNFORMATTED_VALUE';
+function jrSet(n, last) { JR.sheet = REMOTE.sheet; JR.n = n; JR.id = last ? String(last[0] || '') : ''; JR.u = last ? +last[1] || 0 : 0; }
 async function pull() {
-  const r = await gsApi('/values/' + encodeURIComponent(GS_TAB + '!A2:C') + '?valueRenderOption=UNFORMATTED_VALUE');
-  const rows = r.values || [], m = parseRows(rows), ch = applyRemote([...m.values()]);
-  if (rows.length > 2 * m.size + 300) await compact(rows.length, m).catch(() => {});
+  const recs = S.events.length + Object.keys(S.devs).length + 1;
+  if (JR.sheet === REMOTE.sheet && JR.n && Date.now() - JR.at < 10 * 60e3 && JR.n <= 2 * recs + 300) {
+    const rows = (await gsApi(jrRange(JR.n + 1))).values || [], f = rows[0];
+    if (f && String(f[0] || '') === JR.id && (+f[1] || 0) === JR.u) {
+      const add = rows.slice(1); if (!add.length) return false;
+      jrSet(JR.n + add.length, add[add.length - 1]);
+      return applyRemote([...parseRows(add).values()]);
+    }
+  }
+  const rows = (await gsApi(jrRange(2))).values || [], m = parseRows(rows), ch = applyRemote([...m.values()]);
+  jrSet(rows.length, rows[rows.length - 1]); JR.at = Date.now();
+  if (rows.length > 2 * m.size + 300) { await compact(rows.length, m).catch(() => {}); JR.n = 0; }
   return ch;
 }
 // сжатие: вставить последние версии сверху, затем удалить n прочитанных строк (всё одним пакетом)
@@ -3371,8 +3384,9 @@ function boot() {
   } else if (REMOTE) { gsAutoUntil = Date.now() + 8000; if (!isY() && inboxN()) window.babyInbox(); else sync(); }
   setInterval(() => { if (!$('#sheetWrap').hidden) { tick(); return; } const n = isNight(); if (n !== document.documentElement.hasAttribute('data-night')) applyNight(); tick(); }, 1000);
   setInterval(() => { if ($('#sheetWrap').hidden) render(); }, 60000);
-  // общий дневник: пока приложение открыто — каждые 10 с спрашиваем, менялась ли таблица (и забираем, если да), полностью — раз в минуту
-  let tk = 0; setInterval(() => { tk++; if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need' && !SYNC.busy) { if (UI.tab === 'chat' || tk % (isY() ? 3 : 6) === 0) sync(); else if (!isY()) gsChanged().then(c => c && sync(), () => {}); } }, 10000);
+  // общий дневник: пока приложение открыто — каждые 5 с забираем новые строки журнала (короткий запрос, pull);
+  // Яндекс (файл целиком) — раз в 30 с. Дата изменения на Диске не годится: у таблиц она обновляется с опозданием.
+  let tk = 0; setInterval(() => { tk++; if (REMOTE && !document.hidden && $('#sheetWrap').hidden && SYNC.st !== 'need' && !SYNC.busy && (!isY() || tk % 6 === 0)) sync(); }, 5000);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || !$('#sheetWrap').hidden) return;
     S = load(); gsAutoUntil = Date.now() + 8000;
