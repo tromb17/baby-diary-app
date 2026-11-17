@@ -68,6 +68,18 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--page) 55%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
 :root[data-night] .top{background:var(--page)}
 .who{flex:1;min-width:0}
+.kidbar{position:sticky;top:calc(64px + env(safe-area-inset-top));z-index:19;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 16px 8px;background:color-mix(in srgb,var(--page) 55%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.kidbar::-webkit-scrollbar{display:none}
+:root[data-night] .kidbar{background:var(--page)}
+.kidbar button{flex:none;display:flex;align-items:center;gap:6px;min-height:40px;padding:4px 14px 4px 5px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.kidbar button .ke{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:17px;background:var(--surface-2)}
+.kidbar button small{font-weight:600;color:var(--muted);font-size:13px}
+.kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.kidbar button.add{padding:4px 12px;color:var(--muted);font-weight:600}
+.kids-l{display:flex;flex-direction:column;gap:8px}
+.kids-l .krow{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.kids-l .krow.on{border-color:var(--accent)}
+.kids-l .krow b{display:block}.kids-l .krow small{color:var(--muted)}
 .who h1{font-size:20px;margin:0;letter-spacing:-.01em;line-height:1.2;overflow-wrap:anywhere}
 .age{font-size:13px;color:var(--muted);white-space:nowrap}
 .icon-btn{border:0;background:transparent;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--text-2);flex:none}
@@ -176,6 +188,9 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .setrow>span:nth-child(2){flex:1;min-width:0}.setrow b{display:block;font-size:16px}.setrow small{display:block;color:var(--muted);font-size:13px}.setrow .chev{font-size:22px;color:var(--muted)}
 .acts.stick{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));background:var(--solid);margin:8px -16px 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);z-index:2}
 .prof{display:flex;align-items:center;gap:14px;margin:0 0 14px}.ava.big{width:72px;height:72px;font-size:40px;cursor:default}
+.ava,.kidbar .ke{overflow:hidden;position:relative}.ava img.kph,.kidbar .ke img.kph{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+.ava.big.pick{cursor:pointer;overflow:visible}.ava.big.pick img.kph{border-radius:50%}
+.ava .cam{position:absolute;right:-4px;bottom:-4px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-style:normal;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .pname{font-size:22px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
 .medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:12px 8px}
 .medal{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding-top:10px}
@@ -535,6 +550,7 @@ ul.nolist li::marker{content:'✕  ';color:var(--warn);font-weight:700}
   <button class="icon-btn" id="nightBtn" onclick="toggleNight()" aria-label="Ночной режим" title="Ночной режим"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   <button class="icon-btn" onclick="openSettings()" aria-label="Настройки" title="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </header>
+<nav class="kidbar" id="kidbar" hidden aria-label="Дети"></nav>
 <main id="view"></main>
 <div class="sndbar" id="sndbar" hidden></div>
 <div class="chatbar" id="chatbar" hidden><button class="icon-btn" onclick="$('#c_file').click()" aria-label="Фото">📷</button><textarea id="c_in" rows="1" placeholder="Сообщение" oninput="chatGrow(this)" onkeydown="chatKey(event)"></textarea><button class="b main csend" onclick="sendMsg()" aria-label="Отправить">➤</button><input type="file" id="c_file" accept="image/*,image/heic,image/heif,.heic,.heif,application/octet-stream" hidden onchange="sendPhoto(this.files[0])"></div>
@@ -565,8 +581,11 @@ const DEV = lsGet(DEVKEY) || (() => { const d = uid(); lsSet(DEVKEY, d); return 
 function normalize(s) {
   if (!s || typeof s !== 'object') s = {};
   s.v = 1;
-  s.baby = Object.assign({ name: '', birth: '', sex: '', u: 0 }, s.baby || {});
+  s.baby = Object.assign({ name: '', birth: '', sex: '', ph: '', u: 0 }, s.baby || {});
   s.devs = s.devs && typeof s.devs === 'object' ? s.devs : {};
+  // другие дети: {id: {name, birth, sex, u, at (когда добавили — порядок), del}}; первый ребёнок — s.baby (id 'baby')
+  s.kids = s.kids && typeof s.kids === 'object' && !Array.isArray(s.kids) ? s.kids : {};
+  for (const k of Object.keys(s.kids)) { const x = s.kids[k]; if (!x || typeof x !== 'object' || k === 'baby') delete s.kids[k]; else s.kids[k] = Object.assign({ name: '', birth: '', sex: '', ph: '', u: 0, at: 0 }, x); }
   const old = now() - DEL_DAYS * 864e5;
   s.events = (Array.isArray(s.events) ? s.events : []).filter(e => e && e.id && e.t && isFinite(e.s) && !(e.del && e.u < old));
   return s;
@@ -575,21 +594,42 @@ function load() { return normalize(lsJson(KEY, null)); }
 // VER растёт при каждом сохранении: по нему (и по самому списку) запомненные расчёты понимают, что данные изменились
 let VER = 0;
 function save() { VER++; lsSet(KEY, JSON.stringify(S)); }
-function memo(f) { let k1, k2, k3, v; return () => { if (k1 !== S.events || k2 !== VER || k3 !== S.events.length) { v = f(); k1 = S.events; k2 = VER; k3 = S.events.length; } return v; }; }
+// запоминает отдельно для каждого ребёнка (переключение туда-обратно не пересчитывает)
+function memo(f) { const c = new Map(); return () => { let o = c.get(KID); if (!o || o.k1 !== S.events || o.k2 !== VER || o.k3 !== S.events.length) { o = { v: f(), k1: S.events, k2: VER, k3: S.events.length }; c.set(KID, o); } return o.v; }; }
 let S = load();
+
+/* ───────── несколько детей ─────────
+   Первый ребёнок — S.baby (id 'baby', запись 'baby' в таблице), остальные — S.kids[id] (запись 'kid:<id>').
+   У события поле kid; нет поля — первый ребёнок (так все старые записи остаются за ним). Выбранный — KID, на устройстве.
+   Общие на семью (SHARED) — сообщения чата: видны при любом выбранном ребёнке. */
+const KIDKEY = 'babydiary.kid.v1', SHARED = new Set(['msg']);
+let KID = lsGet(KIDKEY) || 'baby';
+const kidOf = e => e.kid || 'baby';
+const kidAlive = id => id === 'baby' || !!(S.kids[id] && !S.kids[id].del);
+if (!kidAlive(KID)) KID = 'baby';
+const baby = () => KID === 'baby' ? S.baby : S.kids[KID];
+// все дети по порядку: первый, потом в порядке добавления
+const kidList = () => [Object.assign({ id: 'baby' }, S.baby), ...Object.entries(S.kids).filter(([, x]) => !x.del).sort((a, b) => (a[1].at || 0) - (b[1].at || 0)).map(([id, x]) => Object.assign({ id }, x))];
+const multiKid = () => Object.values(S.kids).some(x => !x.del);
+const kidEmoji = x => x.sex === 'f' ? '👧' : x.sex === 'm' ? '👦' : '👶';
+// аватар: фото (ph — id фото, как в альбоме) или значок
+const kidAva = x => x.ph ? `<img class="kph" data-ph="${esc(x.ph)}" alt="">` : kidEmoji(x);
+const kidPhs = () => [S.baby.ph, ...Object.values(S.kids).filter(k => !k.del).map(k => k.ph)].filter(Boolean);
+// посчитать что-то для другого ребёнка (напоминания, общий дневник)
+function withKid(id, f) { const k = KID; KID = id; try { return f(); } finally { KID = k; } }
 
 // очередь на отправку в таблицу: {id: u}. Пишем всегда — при входе в Google уйдёт всё, что накопилось.
 const OUTKEY = 'babydiary.out.v1';
 function mark(id, u) { const o = lsJson(OUTKEY, {}); o[id] = u; lsSet(OUTKEY, JSON.stringify(o)); if (typeof schedulePush === 'function') schedulePush(); }
 
-const evs = memo(() => S.events.filter(e => !e.del)); // общий список: не менять на месте (только filter/slice)
+const evs = memo(() => S.events.filter(e => !e.del && (SHARED.has(e.t) || kidOf(e) === KID))); // общий список: не менять на месте (только filter/slice)
 const byStart = (a, b) => b.s - a.s;
 const activeOf = t => evs().find(e => e.t === t && e.e == null);
 const lastOf = (t, f) => { let b; for (const e of evs()) if (e.t === t && (!f || f(e)) && (!b || e.s > b.s)) b = e; return b; };
 const evById = id => S.events.find(e => e.id === id);
-function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, o); S.events.push(e); save(); mark(e.id, e.u); return e; }
+function add(o) { const e = Object.assign({ id: uid(), by: DEV, u: now() }, KID !== 'baby' && !SHARED.has(o.t) ? { kid: KID } : {}, o); S.events.push(e); save(); mark(e.id, e.u); return e; }
 function upd(e, p) { e = evById(e.id) || e; Object.assign(e, p, { u: now() }); save(); mark(e.id, e.u); return e; }
-function setBaby(p) { Object.assign(S.baby, p, { u: now() }); save(); mark('baby', S.baby.u); }
+function setBaby(p) { const b = baby(); Object.assign(b, p, { u: now() }); save(); mark(KID === 'baby' ? 'baby' : 'kid:' + KID, b.u); }
 function setMe(p) { S.devs[DEV] = Object.assign({ name: '', email: '' }, S.devs[DEV], p, { u: now() }); save(); mark('dev:' + DEV, S.devs[DEV].u); }
 const devName = id => {
   const d = S.devs[id]; if (!d) return '';
@@ -638,7 +678,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 
 /* ───────── возраст и ориентиры ───────── */
 function age() {
-  const b = parseDay(S.baby.birth); if (!b) return null;
+  const b = parseDay(baby().birth); if (!b) return null;
   const d = new Date(now()), total = Math.round((sod(+d) - +b) / 864e5);
   if (total < 0) return { total, m: 0, days: 0 };
   let m = (d.getFullYear() - b.getFullYear()) * 12 + d.getMonth() - b.getMonth();
@@ -760,7 +800,7 @@ function applyNight() {
   const on = isNight();
   if (on) document.documentElement.setAttribute('data-night', ''); else document.documentElement.removeAttribute('data-night');
   $('#nightBtn').classList.toggle('on', on);
-  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : designOn() ? (darkOS() ? '#141414' : '#FAF8F5') : darkOS() ? '#0e2a25' : '#d9f3e3';
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#070605' : designOn() ? (darkOS() ? '#1C1814' : '#F5EFE6') : darkOS() ? '#0e2a25' : '#d9f3e3';
 }
 
 /* ───────── экраны ───────── */
@@ -779,9 +819,11 @@ function go(tab) { UI.tab = tab; if (tab === 'day') UI.day = sod(now()); if (tab
   const v = $('#view'); v.classList.remove('ds-in'); void v.offsetWidth; v.classList.add('ds-in'); } // мягкое появление вкладки (design.css)
 
 function render() {
-  applyNight(); medalCheck();
-  $('#bName').textContent = S.baby.name ? S.baby.name : 'Дневник малыша';
+  if (!kidAlive(KID)) { KID = 'baby'; lsSet(KIDKEY, KID); }
+  applyNight(); medalCheck(); kidBar();
+  $('#bName').textContent = baby().name ? baby().name : 'Дневник малыша';
   $('#bAge').textContent = ageText();
+  $('#ava').innerHTML = kidAva(baby());
   syncShow();
   renderTabs();
   const v = $('#view');
@@ -804,7 +846,7 @@ function tick() {
 
 function viewNow() {
   let h = '';
-  if (!S.baby.birth) { h += welcomeCard(); if (!evs().length) return h; }
+  if (!baby().birth) { h += welcomeCard(); if (!evs().some(e => !SHARED.has(e.t))) return h; }
   const f = activeOf('feed'), sl = activeOf('sleep');
   if (f) h += liveFeed(f);
   if (sl) h += `<div class="card sleep live"><h3 class="tap" onclick="go('sleep')"><span class="dot"></span>Спит<span class="more">график →</span></h3>
@@ -872,12 +914,48 @@ function liveFeed(f) {
       <button class="b main wide" onclick="stopFeed()">Закончить кормление</button>
     </div></div>`;
 }
+/* ───────── переключение детей ─────────
+   Полоска под шапкой (только когда детей больше одного): нажатие — сразу этот ребёнок; у каждого видно, спит или ест сейчас. */
+function kidBar() {
+  const el = $('#kidbar'); if (!el) return;
+  const on = multiKid() && UI.tab !== 'chat' && UI.tab !== 'book'; el.hidden = !on; if (!on) { el.innerHTML = ''; return; }
+  el.innerHTML = kidList().map(k => {
+    const st = withKid(k.id, () => activeOf('sleep') ? '😴' : activeOf('feed') ? '🍼' : '');
+    return `<button class="${k.id === KID ? 'on' : ''}" onclick="setKid('${k.id}')" aria-pressed="${k.id === KID}"><span class="ke" aria-hidden="true">${kidAva(k)}</span>${esc(k.name || 'Малыш')}${st ? ` <small>${st}</small>` : ''}</button>`;
+  }).join('') + `<button class="add" onclick="addKid()" aria-label="Добавить ребёнка">＋</button>`;
+}
+function setKid(id, quiet) {
+  if (!kidAlive(id)) return;
+  if (id !== KID) { KID = id; lsSet(KIDKEY, id); pushWidget.last = null; }
+  if (quiet) return;
+  closeSheet(); buzz(); render(); window.scrollTo(0, 0);
+}
+function addKid() {
+  const id = uid(); S.kids[id] = { name: '', birth: '', sex: '', u: now(), at: now() }; save(); mark('kid:' + id, S.kids[id].u);
+  UI.tab = 'now'; setKid(id);
+}
+// удалить ребёнка (не первого): пометкой, вместе с его записями — так же исчезнет и у второго родителя
+function removeKid(id, ask) {
+  const k = S.kids[id]; if (!k) return;
+  const n = withKid(id, () => evs().filter(e => !SHARED.has(e.t)).length);
+  if (ask && !confirm('Удалить ' + (k.name || 'этого малыша') + (n ? ' и ' + n + ' ' + pl(n, 'запись', 'записи', 'записей') : '') + '? Вернуть можно только из сохранённой копии.')) return;
+  for (const e of S.events) if (!e.del && kidOf(e) === id) upd(e, { del: true });
+  Object.assign(k, { del: true, u: now() }); save(); mark('kid:' + id, k.u);
+  setKid('baby');
+}
 function welcomeCard() {
+  if (KID !== 'baby') return `<div class="card welcome"><h3>👶 Новый малыш</h3>
+    <p class="hint">У каждого ребёнка свой дневник: кормления, сон, рост, прививки, альбом. Переключаться — вверху, одним касанием.</p>
+    <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off" value="${esc(baby().name)}"></label>
+    <div class="f"><span>Пол</span><input type="hidden" id="f_wsex" value="${esc(baby().sex || '')}">${chipsHtml('wsex', [['f', '👧 Девочка'], ['m', '👦 Мальчик']], baby().sex)}</div>
+    <label class="f"><span>Дата рождения</span><input id="wBirth" type="date"></label>
+    <div class="err" id="wErr"></div>
+    <div class="btns"><button class="b ghost" onclick="removeKid(KID)">Отмена</button><button class="b main" onclick="saveWelcome()">Начать дневник</button></div></div></div>`;
   const me = devName(DEV);
   return `<div class="card welcome"><h3>👋 Давайте познакомимся</h3>
     <p class="hint">Возраст нужен, чтобы показывать нормы сна, роста и веса ВОЗ, прививки и вехи — всё под вашего малыша.</p>
-    <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off" value="${esc(S.baby.name)}"></label>
-    <div class="f"><span>Пол</span><input type="hidden" id="f_wsex" value="${esc(S.baby.sex || '')}">${chipsHtml('wsex', [['f', '👧 Девочка'], ['m', '👦 Мальчик']], S.baby.sex)}</div>
+    <div style="margin-top:12px"><label class="f"><span>Имя малыша</span><input id="wName" placeholder="Например, Маша" autocomplete="off" value="${esc(baby().name)}"></label>
+    <div class="f"><span>Пол</span><input type="hidden" id="f_wsex" value="${esc(baby().sex || '')}">${chipsHtml('wsex', [['f', '👧 Девочка'], ['m', '👦 Мальчик']], baby().sex)}</div>
     <label class="f"><span>Дата рождения</span><input id="wBirth" type="date"></label>
     <div class="f"><span>Кто вы малышу</span>${roleChips('wrole', me)}</div>
     <div class="err" id="wErr"></div>
@@ -892,7 +970,7 @@ function saveWelcome() {
   if (!parseDay(b)) return err('Укажите дату рождения');
   if (parseDay(b) > new Date(now() + 864e5 * 280)) return err('Проверьте дату рождения');
   setBaby({ name, birth: b, sex });
-  const r = roleVal('wrole'); if (r && r !== devName(DEV)) setMe({ name: r });
+  const r = $('#f_wrole') ? roleVal('wrole') : ''; if (r && r !== devName(DEV)) setMe({ name: r });
   render();
 }
 
@@ -977,7 +1055,7 @@ function rowHtml(e) {
 }
 
 /* ───────── окна: бутылочка, запись задним числом, правка ───────── */
-function openSheet(html) { const sh = $('#sheet'); sh.innerHTML = html; $('#sheetWrap').hidden = false; sh.scrollTop = 0; }
+function openSheet(html) { const sh = $('#sheet'); sh.innerHTML = html; $('#sheetWrap').hidden = false; sh.scrollTop = 0; if (html.includes('data-ph')) hydratePhotos(); }
 function closeSheet() { $('#sheetWrap').hidden = true; $('#sheet').innerHTML = ''; }
 const last = () => lsJson(LASTKEY, {});
 function chipsHtml(name, opts, val) { return `<div class="chips" data-name="${name}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" class="${String(v) === String(val) ? 'on' : ''}" onclick="chip(this)">${t}</button>`).join('')}</div>`; }
@@ -1102,8 +1180,9 @@ function medalsBlock() {
 }
 // новая медаль — поздравление (первый раз — просто запоминаем, что уже есть)
 function medalCheck() {
-  const got = medals().filter(m => m.at).map(m => m.id), was = lsJson('babydiary.medals.v1', null);
-  lsSet('babydiary.medals.v1', JSON.stringify(got));
+  const mk = 'babydiary.medals.v1' + (KID === 'baby' ? '' : '.' + KID);
+  const got = medals().filter(m => m.at).map(m => m.id), was = lsJson(mk, null);
+  lsSet(mk, JSON.stringify(got));
   if (!was) return;
   // поздравляем только со свежим (за 2 дня): после входа на новом телефоне старые медали приходят тихо
   const fresh = new Set(medals().filter(m => m.at && m.at >= now() - 2 * 864e5).map(m => m.id));
@@ -1122,24 +1201,38 @@ function showAward(m, more) {
 }
 function awardClose() { const w = $('#award'); w.hidden = true; w.innerHTML = ''; }
 function openProfile() {
-  const b = S.baby, born = b.birth ? parseDay(b.birth) : null;
+  const b = baby(), born = b.birth ? parseDay(b.birth) : null;
   openSheet(`<div class="shead"><h2>Профиль малыша</h2><button class="icon-btn" onclick="closeSheet()" aria-label="Закрыть">✕</button></div>
-    <div class="prof"><span class="ava big" aria-hidden="true">${b.sex === 'f' ? '👧' : b.sex === 'm' ? '👦' : '👶'}</span><div><div class="pname">${esc(b.name || 'Малыш')}</div>
-      <div class="hint" style="margin:2px 0 0">${born ? esc(ageText()) + ' · родил' + (b.sex === 'f' ? 'ась' : 'ся') + ' ' + dayShort(+born) : 'Укажите дату рождения'}</div></div></div>
+    <div class="prof"><button type="button" class="ava big pick" onclick="$('#p_ava').click()" aria-label="Фото малыша">${kidAva(b)}<i class="cam" aria-hidden="true">📷</i></button>
+      <input type="file" id="p_ava" accept="image/*,image/heic,image/heif,.heic,.heif,application/octet-stream" hidden onchange="setKidPhoto(this.files[0])"><div><div class="pname">${esc(b.name || 'Малыш')}</div>
+      <div class="hint" style="margin:2px 0 0">${b.ph ? '' : 'Нажмите на значок — поставить фото. '}${born ? esc(ageText()) + ' · родил' + (b.sex === 'f' ? 'ась' : 'ся') + ' ' + dayShort(+born) : 'Укажите дату рождения'}</div></div></div>
     ${medalsBlock()}
+    <section class="sgroup"><h4>Дети</h4>
+      <div class="kids-l">${kidList().map(k => `<button class="krow ${k.id === KID ? 'on' : ''}" onclick="setKid('${k.id}')"><span class="ava" aria-hidden="true">${kidAva(k)}</span><span><b>${esc(k.name || 'Малыш')}</b><small>${k.id === KID ? 'открыт сейчас' : esc(withKid(k.id, ageText) || 'нажмите, чтобы открыть')}</small></span></button>`).join('')}</div>
+      <div class="btns" style="margin-top:10px"><button class="b" onclick="closeSheet();addKid()">＋ Добавить ребёнка</button></div>
+      <p class="hint" style="margin:8px 0 0">Двойня или погодки — у каждого свой дневник, профиль, рост, прививки и альбом. Чат — общий для семьи.</p></section>
     <section class="sgroup"><h4>Данные</h4>
       <label class="f"><span>Имя</span><input id="p_name" value="${esc(b.name)}" autocomplete="off"></label>
       <label class="f"><span>Дата рождения</span><input id="p_birth" type="date" value="${esc(b.birth)}"></label>
       <div class="f" style="margin-bottom:0"><span>Пол — для норм роста и веса ВОЗ</span><input type="hidden" id="f_psex" value="${esc(b.sex || '')}">${chipsHtml('psex', [['f', 'Девочка'], ['m', 'Мальчик']], b.sex)}</div></section>
+    ${b.ph ? `<div class="btns" style="margin:4px 0 6px"><button class="b ghost" onclick="dropKidPhoto()">Убрать фото</button></div>` : ''}
+    ${KID !== 'baby' ? `<div class="btns" style="margin:4px 0 10px"><button class="b ghost" style="color:var(--bad)" onclick="removeKid(KID, true)">Удалить этого малыша</button></div>` : ''}
     <div class="err" id="p_err"></div>
     <div class="acts stick"><button class="b ghost" onclick="closeSheet()">Закрыть</button><button class="b main" onclick="saveProfile()">Сохранить</button></div>`);
 }
+// фото малыша на аватар: сразу сохраняется (как имя — через setBaby), видно в шапке и в полоске детей
+async function setKidPhoto(file) {
+  if (!file) return;
+  try { const id = await savePhoto(file); setBaby({ ph: id }); openProfile(); render(); toast('📷 Фото поставлено'); }
+  catch (e) { toast('Не получилось открыть фото' + (e && e.message ? ': ' + e.message : '')); }
+}
+function dropKidPhoto() { setBaby({ ph: '' }); phGc(); openProfile(); render(); }
 function saveProfile() {
   const bd = $('#p_birth').value, err = m => { $('#p_err').textContent = m; };
   if (bd && !parseDay(bd)) return err('Неверная дата рождения');
   if (bd && parseDay(bd) > new Date(now() + 864e5 * 280)) return err('Проверьте дату рождения');
   const name = $('#p_name').value.trim(), sex = $('#f_psex').value;
-  if (name !== S.baby.name || bd !== S.baby.birth || sex !== (S.baby.sex || '')) setBaby({ name, birth: bd, sex });
+  if (name !== baby().name || bd !== baby().birth || sex !== (baby().sex || '')) setBaby({ name, birth: bd, sex });
   closeSheet(); render(); toast('Профиль сохранён');
 }
 
@@ -1147,7 +1240,7 @@ function saveProfile() {
 function openSettings() {
   const p = nightPref(), me = S.devs[DEV] || {};
   openSheet(`<div class="shead"><h2>Настройки</h2><button class="icon-btn" onclick="closeSheet()" aria-label="Закрыть">✕</button></div>
-    <button class="setrow" onclick="closeSheet();openProfile()"><span class="ava" aria-hidden="true">👶</span><span><b>${esc(S.baby.name || 'Профиль малыша')}</b><small>имя, дата рождения, пол, медали</small></span><span class="chev">›</span></button>
+    <button class="setrow" onclick="closeSheet();openProfile()"><span class="ava" aria-hidden="true">${kidAva(baby())}</span><span><b>${esc(baby().name || 'Профиль малыша')}</b><small>${multiKid() ? 'дети, имя, дата рождения, пол, медали' : 'имя, дата рождения, пол, медали · добавить ребёнка'}</small></span><span class="chev">›</span></button>
     <section class="sgroup">${settingsShare(me)}</section>
     <section class="sgroup"><h4>🌙 Ночной режим</h4>
       <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
@@ -1205,13 +1298,15 @@ function importState(d) {
   S.events = mergeEvents(S.events, d.events);
   for (const e of S.events) if (before.get(e.id) !== e.u) mark(e.id, e.u);
   save();
-  if (!S.baby.birth && d.baby.birth) setBaby({ name: d.baby.name, birth: d.baby.birth });
+  if (!S.baby.birth && d.baby.birth) { Object.assign(S.baby, { name: d.baby.name, birth: d.baby.birth, sex: d.baby.sex || S.baby.sex || '', u: now() }); save(); mark('baby', S.baby.u); }
+  for (const [k, x] of Object.entries(d.kids)) if (!S.kids[k] || (x.u || 0) > (S.kids[k].u || 0)) { S.kids[k] = x; mark('kid:' + k, x.u || 0); }
+  save();
 }
 // удаляем пометкой — тогда запись исчезнет и у второго родителя
 function wipeData() {
   if (!confirm(REMOTE ? 'Удалить все записи общего дневника — у вас и у второго родителя? Вернуть их можно только из сохранённой копии.'
     : 'Удалить все записи дневника на этом устройстве? Вернуть их можно только из сохранённой копии.')) return;
-  for (const e of evs()) upd(e, { del: true });
+  for (const e of S.events.filter(e => !e.del)) upd(e, { del: true });
   closeSheet(); render();
 }
 
@@ -1241,14 +1336,14 @@ function lmsAt(k, sex, m) {
 const valAt = ([L, M, S], z) => L ? M * Math.pow(1 + L * S * z, 1 / L) : M * Math.exp(S * z);
 const zOf = (x, [L, M, S]) => L ? (Math.pow(x / M, L) - 1) / (L * S) : Math.log(x / M) / S;
 function phi(z) { const t = 1 / (1 + 0.2316419 * Math.abs(z)), d = 0.3989423 * Math.exp(-z * z / 2), p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return z > 0 ? 1 - p : p; }
-const birthTs = () => { const b = parseDay(S.baby.birth); return b ? +b : null; };
+const birthTs = () => { const b = parseDay(baby().birth); return b ? +b : null; };
 const monthsAt = ts => { const b = birthTs(); return b == null ? null : (sod(ts) - b) / 864e5 / 30.4375; };
 const numRu = (v, d) => String(+(+v).toFixed(d)).replace('.', ',');
 const parseNum = v => { const n = parseFloat(String(v || '').replace(',', '.').replace(/[^\d.]/g, '')); return isFinite(n) ? n : null; };
 function growthTxt(e) { return [e.w ? numRu(e.w, 3) + ' кг' : '', e.h ? numRu(e.h, 1) + ' см' : '', e.hc ? 'голова ' + numRu(e.hc, 1) + ' см' : ''].filter(Boolean).join(', '); }
 // перцентиль замера и мягкая оценка
 function pctOf(k, e) {
-  const sex = S.baby.sex, m = monthsAt(e.s), x = e[k];
+  const sex = baby().sex, m = monthsAt(e.s), x = e[k];
   if (!sex || m == null || m < 0 || m > 12.5 || !x) return null;
   const p = Math.round(phi(zOf(x, lmsAt(k, sex, m))) * 100);
   const lvl = p < 3 ? 'low' : p > 97 ? 'high' : 'ok';
@@ -1265,7 +1360,7 @@ function needBirth(what) { return `<div class="card"><h3>Нужна дата р�
 function viewGrowth() {
   if (!birthTs()) return needBirth('сравнивать рост и вес с нормами ВОЗ');
   let h = '';
-  if (!S.baby.sex) h += `<div class="card"><h3>Девочка или мальчик?</h3><p class="hint">Нормы ВОЗ для девочек и мальчиков разные.</p>
+  if (!baby().sex) h += `<div class="card"><h3>Девочка или мальчик?</h3><p class="hint">Нормы ВОЗ для девочек и мальчиков разные.</p>
     <div class="btns" style="margin-top:10px"><button class="b" onclick="setBaby({sex:'f'});render()">👧 Девочка</button><button class="b" onclick="setBaby({sex:'m'});render()">👦 Мальчик</button></div></div>`;
   const list = growths(), k = UI.gkind, last = [...list].reverse().find(e => e[k]);
   h += `<div class="card"><div class="seg" style="margin-bottom:10px">${['w', 'h'].map(x => `<button class="${k === x ? 'on' : ''}" onclick="UI.gkind='${x}';render()">${GK[x].name}</button>`).join('')}</div>`;
@@ -1276,7 +1371,7 @@ function viewGrowth() {
       <div class="s">${dayShort(last.s)}${diff != null && days > 0 ? ` · ${diff >= 0 ? '+' : '−'}${k === 'w' ? Math.round(Math.abs(diff) * 1000) + ' г' : numRu(Math.abs(diff), 1) + ' см'} за ${days} ${pl(days, 'день', 'дня', 'дней')}` : ''}</div>
       ${p ? `<div class="pct ${p.lvl}">${p.p}-й перцентиль — ${p.txt}</div>` : ''}</div>`;
   } else h += `<p class="hint" style="margin:0 0 6px">Добавьте первый замер — из роддома или с приёма у педиатра.</p>`;
-  if (S.baby.sex) h += growthChart(k, list);
+  if (baby().sex) h += growthChart(k, list);
   h += `<div class="btns" style="margin-top:12px"><button class="b main" onclick="editGrowth()">+ Добавить замер</button></div></div>`;
   if (list.length) h += `<div class="card"><h3>Замеры</h3><ul class="list">${[...list].reverse().map(e => `<li onclick="editGrowth('${e.id}')"><span class="tm">${dayShort(e.s)}</span><span class="ic" style="--c:var(--accent)">📏</span><span class="tx"><div>${esc(growthTxt(e))}</div><small>${esc([ageAt(e.s), e.note].filter(Boolean).join(' · '))}</small></span></li>`).join('')}</ul></div>`;
   h += `<p class="hint" style="margin:0 0 12px">Коридор на графике — от 3-го до 97-го перцентиля: так растут 94 из 100 здоровых малышей; тёмная полоса — 15–85, линия — середина. Важнее не одна точка, а то, что малыш растёт вдоль своей линии. Источник: стандарты роста детей ВОЗ (WHO Child Growth Standards).</p>`;
@@ -1291,7 +1386,7 @@ function ageAt(ts) {
   return m + ' мес.' + (r ? ' ' + r + ' дн.' : '');
 }
 function growthChart(k, list) {
-  const sex = S.baby.sex, W = 340, H = 230, L = 34, R = 8, T = 10, B = 24;
+  const sex = baby().sex, W = 340, H = 230, L = 34, R = 8, T = 10, B = 24;
   const pts = list.filter(e => e[k]).map(e => [monthsAt(e.s), e[k]]).filter(([m]) => m >= 0 && m <= 12.5);
   const curve = z => { const o = []; for (let m = 0; m <= 12.001; m += 0.25) o.push([m, valAt(lmsAt(k, sex, m), z)]); return o; };
   const c3 = curve(PCT[0][1]), c97 = curve(PCT[4][1]), c15 = curve(PCT[1][1]), c85 = curve(PCT[3][1]), c50 = curve(0);
@@ -1565,7 +1660,8 @@ const DOCS = ['Педиатр', 'Невролог', 'Хирург', 'Ортоп�
 const WHY = { plan: 'Плановый осмотр', ill: 'Заболел', other: 'Другое' };
 const checkTitle = c => c.age === 0 ? 'Новорождённый' : c.age + ' ' + pl(c.age, 'месяц', 'месяца', 'месяцев');
 const checkDue = c => { const b = birthTs(); if (b == null) return null; const d = new Date(b); d.setMonth(d.getMonth() + c.age); return +d; };
-const checkRec = c => evById('chk:' + c.id);
+const chkId = cid => 'chk:' + (KID === 'baby' ? '' : KID + ':') + cid;
+const checkRec = c => evById(chkId(c.id));
 const checkItems = c => [...c.docs, ...c.tests];
 function checkState(c) { const r = checkRec(c), n = checkItems(c).length, k = r && !r.del ? (r.done || []).length : 0; return { k, n, all: k >= n }; }
 const visits = () => evs().filter(e => e.t === 'visit').sort(byStart);
@@ -1605,7 +1701,7 @@ function toggleCheck(cid, i) {
   const c = CHECKS.find(x => x.id === cid), r = checkRec(c), done = new Set(r && !r.del ? r.done || [] : []);
   if (done.has(i)) done.delete(i); else done.add(i);
   const p = { done: [...done].sort((a, b) => a - b), del: false };
-  if (r) upd(r, p); else add(Object.assign({ id: 'chk:' + cid, t: 'check', cid, s: checkDue(c), e: checkDue(c) }, p));
+  if (r) upd(r, p); else add(Object.assign({ id: chkId(cid), t: 'check', cid, s: checkDue(c), e: checkDue(c) }, p));
   buzz(); render();
   if (checkState(c).all) toast('Осмотр ' + checkTitle(c).toLowerCase() + ' пройден 👍');
 }
@@ -1913,7 +2009,7 @@ function reportLines(r) {
   return L;
 }
 function reportHead(r) {
-  return `${S.baby.name || 'Малыш'}${ageText() ? ', ' + ageText().replace(/\.$/, '') : ''}. Дневник за ${dayShort(r.from)} — ${dayShort(r.to)} (${r.k} ${pl(r.k, 'день', 'дня', 'дней')} с записями)`;
+  return `${baby().name || 'Малыш'}${ageText() ? ', ' + ageText().replace(/\.$/, '') : ''}. Дневник за ${dayShort(r.from)} — ${dayShort(r.to)} (${r.k} ${pl(r.k, 'день', 'дня', 'дней')} с записями)`;
 }
 function viewReport() {
   const r = reportData(), L = reportLines(r);
@@ -2252,7 +2348,7 @@ function saveFirst() {
 }
 function delFirst() { const e = evById(AEDIT.id); upd(e, { del: true }); closeSheet(); toast('Удалено из альбома', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } }); render(); }
 // фото, на которые больше не ссылается ни одна запись (даже удалённая), — стираем
-const phOrphans = keys => { const keep = new Set(S.events.flatMap(e => e.ph || [])); return (keys || []).filter(k => !keep.has(k) && !(AEDIT && AEDIT.ph.includes(k))); };
+const phOrphans = keys => { const keep = new Set([...S.events.flatMap(e => e.ph || []), ...kidPhs()]); return (keys || []).filter(k => !keep.has(k) && !(AEDIT && AEDIT.ph.includes(k))); };
 async function phGc() {
   try {
     for (const k of phOrphans(await phTx('readonly', st => st.getAllKeys()))) await phDel(k);
@@ -2285,7 +2381,7 @@ function demoAlbum() {
 function widgetState() {
   const f = activeOf('feed'), g = f && openSeg(f), sl = activeOf('sleep'), lf = lastOf('feed', e => e.e != null), ld = lastOf('diaper');
   return { feed: f && f.kind === 'breast' ? { id: f.id, s: f.s, side: g ? g.side : '', segs: f.segs, by: f.by || '', note: f.note || '' } : null, lastFeed: lf ? lf.s : 0, next: nextSide() || 'L',
-    sleep: sl ? { id: sl.id, s: sl.s, by: sl.by || '', note: sl.note || '' } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: S.baby.name || '' };
+    sleep: sl ? { id: sl.id, s: sl.s, by: sl.by || '', note: sl.note || '' } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: baby().name || '', kid: KID === 'baby' ? '' : KID };
 }
 function pushWidget() {
   if (!NATIVE || typeof NATIVE.setWidget !== 'function') return;
@@ -2303,13 +2399,16 @@ function applyInbox() {
   const done = [];
   for (const o of q) {
     try {
-      const ev = o.ev || {};
+      const ev = o.ev || {}, k = o.kid || 'baby';
+      if (!kidAlive(k)) { done.push(o.id); continue; }
+      withKid(k, () => {
       if (o.skip) { /* виджет уже выяснил: отметил другой родитель */ }
       else if (o.op === 'feed' && !evById(ev.id) && !activeOf('feed')) add({ id: ev.id, t: 'feed', kind: 'breast', s: ev.s, e: null, segs: [{ side: ev.side === 'R' ? 'R' : 'L', s: ev.s, e: null }] });
       else if (o.op === 'feedStop') { const f = evById(o.ref); if (f && f.e == null) { const sg = openSeg(f); if (sg) sg.e = Math.max(sg.s, o.at); upd(f, { e: Math.max(f.s, o.at), segs: f.segs }); } }
       else if (o.op === 'sleep' && !evById(ev.id) && !activeOf('sleep') && !evs().some(e => e.t === 'sleep' && e.s <= ev.s && e.e > ev.s + 60000)) add({ id: ev.id, t: 'sleep', s: ev.s, e: null });
       else if (o.op === 'sleepStop') { const s = evById(o.ref); if (s && s.e == null) upd(s, { e: Math.max(s.s + 60000, o.at) }); }
       else if (o.op === 'diaper' && !evById(ev.id)) add({ id: ev.id, t: 'diaper', s: ev.s, e: ev.s, wet: !!ev.wet, dirty: !!ev.dirty });
+      });
     } catch (e) {}
     done.push(o.id);
   }
@@ -2397,7 +2496,7 @@ window.addEventListener('scroll', () => { if (UI.tab === 'chat') CHAT.stick = wi
 const PHOUT = 'babydiary.phout.v1', GS_PH = 'Фото', PH_CHUNK = 45000;
 const PHX = { idx: null, idxAt: 0, wait: new Map(), tab: false };
 function phQueue(id) { const q = lsJson(PHOUT, []); if (!q.some(x => x.id === id)) { q.push({ id, at: Date.now() }); lsSet(PHOUT, JSON.stringify(q)); } }
-const phUsed = id => S.events.some(e => !e.del && (e.ph || []).includes(id));
+const phUsed = id => kidPhs().includes(id) || S.events.some(e => !e.del && (e.ph || []).includes(id));
 function blobB64(b) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(b); }); }
 function b64Blob(s, type) { const bin = atob(s), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], { type: type || 'image/jpeg' }); }
 async function photoRow(id, blob) { const s = await blobB64(blob), parts = []; for (let i = 0; i < s.length; i += PH_CHUNK) parts.push(s.slice(i, i + PH_CHUNK)); return [id, parts.length, ...parts]; }
@@ -2453,6 +2552,12 @@ function phFetch(id) {
 const NOTIFKEY = 'babydiary.notif.v1';
 const notifPref = () => Object.assign({ eve: true, before: true, vax: true }, lsJson(NOTIFKEY, {}));
 function notifPlan() {
+  if (!multiKid()) return notifKid();
+  const out = [];
+  for (const k of kidList()) withKid(k.id, () => { for (const n of notifKid()) out.push(Object.assign(n, { id: n.id + '@' + k.id, title: (k.name || 'Малыш') + ': ' + n.title, action: n.action + '@' + k.id })); });
+  return out.sort((a, b) => a.at - b.at);
+}
+function notifKid() {
   const p = notifPref(), t = now(), out = [], nq = qs().filter(q => !q.done).length;
   for (const v of visits()) {
     if (v.concl || v.s <= t || v.s > t + 45 * 864e5) continue;
@@ -2491,9 +2596,9 @@ function pushNotif() {
    На экране страницы уменьшаются (zoom), при печати — в натуральную величину; всё остальное при печати скрыто (@media print). */
 function bookItems() { return UI.demo ? demoAlbum() : albumItems(); }
 function viewBook() {
-  const list = bookItems(), name = S.baby.name || 'Малыш', b = birthTs();
+  const list = bookItems(), name = baby().name || 'Малыш', b = birthTs();
   const cover = list.find(e => (e.ph || []).length);
-  const born = b ? (S.baby.sex === 'f' ? 'Родилась ' : S.baby.sex === 'm' ? 'Родился ' : 'День рождения — ') + new Date(b).getDate() + ' ' + MONTHS[new Date(b).getMonth()] + ' ' + new Date(b).getFullYear() : '';
+  const born = b ? (baby().sex === 'f' ? 'Родилась ' : baby().sex === 'm' ? 'Родился ' : 'День рождения — ') + new Date(b).getDate() + ' ' + MONTHS[new Date(b).getMonth()] + ' ' + new Date(b).getFullYear() : '';
   let pg = 1, h = `<div class="noprint bookbar"><button class="b ghost" onclick="UI.tab='dev';UI.dev='album';render()">← Альбом</button><button class="b main" onclick="printBook()">🖨 Печать или PDF</button></div>
     <p class="hint noprint" style="margin:0 0 12px">Формат A5 — половина обычного листа. В окне печати можно выбрать принтер или «Сохранить как PDF», а потом заказать печать фотокниги.</p>
     <div class="book" id="book">`;
@@ -2524,7 +2629,7 @@ async function printBook() {
   hydratePhotos();
   // дождаться всех фото, иначе в PDF будут пустые места
   for (let i = 0; i < 50; i++) { const imgs = [...document.querySelectorAll('#book img')]; if (imgs.every(x => x.complete && x.naturalWidth || x.closest('.ph,.bph').classList.contains('miss'))) break; await new Promise(r => setTimeout(r, 100)); }
-  const title = 'Наш первый год — ' + (S.baby.name || 'малыш');
+  const title = 'Наш первый год — ' + (baby().name || 'малыш');
   if (NATIVE && typeof NATIVE.print === 'function') { NATIVE.print(title); return; }
   const t = document.title; document.title = title; window.print(); document.title = t;
 }
@@ -2921,7 +3026,7 @@ function foodWays(fid) {
    Запись 'mphoto' {m (1–12), s, ph:[id], note} — одна на месяц (новая заменяет). В альбоме — отдельная вкладка (UI.alb='months'),
    в книжке — страница «Месяц за месяцем». На главной в первые 3 дня после «месячного дня рождения» — напоминание. */
 const mphotos = () => { const o = {}; for (const e of evs()) if (e.t === 'mphoto') o[e.m] = e; return o; };
-const monthDay = m => { const b = parseDay(S.baby.birth); if (!b) return null; const d = new Date(b.getFullYear(), b.getMonth() + m, 1), dim = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); d.setDate(Math.min(b.getDate(), dim)); return +d; };
+const monthDay = m => { const b = parseDay(baby().birth); if (!b) return null; const d = new Date(b.getFullYear(), b.getMonth() + m, 1), dim = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); d.setDate(Math.min(b.getDate(), dim)); return +d; };
 function viewMonths() {
   if (!birthTs()) return needBirth('собирать фото по месяцам');
   const mp = UI.demo ? demoMonths() : mphotos(), a = age(), cur = a ? a.m : 0;
@@ -2951,7 +3056,7 @@ function saveMonth() {
 function delMonth() { const e = mphotos()[MPEDIT]; upd(e, { del: true }); closeSheet(); toast('Удалено', { label: 'Вернуть', fn: () => { upd(e, { del: false }); render(); } }); render(); }
 function monthReminder() {
   const a = age(); if (!a || a.m < 1 || a.m > 12 || a.days > 3 || mphotos()[a.m]) return '';
-  return `<div class="card mrem" onclick="UI.tab='dev';UI.dev='album';UI.alb='months';render()" style="cursor:pointer"><h3>📸 ${esc(S.baby.name || 'Малышу')} — ${a.m} ${pl(a.m, 'месяц', 'месяца', 'месяцев')}!</h3><p class="hint">Сделайте фото месяца — нажмите сюда.</p></div>`;
+  return `<div class="card mrem" onclick="UI.tab='dev';UI.dev='album';UI.alb='months';render()" style="cursor:pointer"><h3>📸 ${esc(baby().name || 'Малышу')} — ${a.m} ${pl(a.m, 'месяц', 'месяца', 'месяцев')}!</h3><p class="hint">Сделайте фото месяца — нажмите сюда.</p></div>`;
 }
 function demoMonths() {
   const o = {}, cols = [['#ffe1ea', '#e8f3ff'], ['#e2f7e4', '#fff3d6'], ['#e6e0ff', '#ffe8f0']];
@@ -3055,16 +3160,18 @@ async function gsApi(url, o = {}, again) {
 
 // записи для таблицы: события + 'baby' + 'dev:<устройство>'
 function recOf(id) {
-  if (id === 'baby') return { id, t: 'baby', name: S.baby.name, birth: S.baby.birth, sex: S.baby.sex || '', u: S.baby.u || 0 };
+  if (id === 'baby') return { id, t: 'baby', name: S.baby.name, birth: S.baby.birth, sex: S.baby.sex || '', ph: S.baby.ph || '', u: S.baby.u || 0 };
   if (id.startsWith('dev:')) { const d = S.devs[id.slice(4)]; return d ? Object.assign({ id, t: 'dev' }, d) : null; }
+  if (id.startsWith('kid:')) { const k = S.kids[id.slice(4)]; return k ? Object.assign({ id, t: 'kid' }, k) : null; }
   return evById(id) || null;
 }
-const allIds = () => ['baby', ...Object.keys(S.devs).map(k => 'dev:' + k), ...S.events.map(e => e.id)];
+const allIds = () => ['baby', ...Object.keys(S.devs).map(k => 'dev:' + k), ...Object.keys(S.kids).map(k => 'kid:' + k), ...S.events.map(e => e.id)];
 const dRu = ts => { const d = new Date(ts); return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + hm(ts); };
 function rowOf(r) {
   const data = Object.assign({}, r); delete data.id; delete data.u;
   let when = '', what = '', who = '';
   if (r.t === 'baby') what = 'Малыш: ' + (r.name || '') + (r.birth ? ', родился ' + r.birth.split('-').reverse().join('.') : '');
+  else if (r.t === 'kid') what = (r.del ? '[удалено] ' : '') + 'Ребёнок: ' + (r.name || '') + (r.birth ? ', родился ' + r.birth.split('-').reverse().join('.') : '');
   else if (r.t === 'dev') what = 'Родитель: ' + (r.name || '—') + (r.email ? ' (' + r.email + ')' : '');
   else { const i = evInfo(r); when = dRu(r.s); what = (r.del ? '[удалено] ' : '') + i.tx + (i.sub ? ' — ' + i.sub : '') + (r.note ? ' — ' + r.note : ''); who = devName(r.by); }
   return [r.id, r.u || 0, JSON.stringify(data), when, what, who];
@@ -3085,7 +3192,8 @@ function applyRemote(list) {
   let ch = false; const old = now() - DEL_DAYS * 864e5, at = new Map(S.events.map((e, i) => [e.id, i]));
   for (const r of list) {
     if (!r || !r.id || !r.t) continue;
-    if (r.t === 'baby') { if ((r.u || 0) > (S.baby.u || 0)) { S.baby = { name: r.name || '', birth: r.birth || '', sex: r.sex || '', u: r.u }; ch = true; } continue; }
+    if (r.t === 'baby') { if ((r.u || 0) > (S.baby.u || 0)) { S.baby = { name: r.name || '', birth: r.birth || '', sex: r.sex || '', ph: r.ph || '', u: r.u }; ch = true; } continue; }
+    if (r.t === 'kid') { const k = r.id.slice(4), o = S.kids[k]; if (k && (!o || (r.u || 0) > (o.u || 0))) { S.kids[k] = { name: r.name || '', birth: r.birth || '', sex: r.sex || '', ph: r.ph || '', u: r.u || 0, at: r.at || 0, del: !!r.del }; ch = true; } continue; }
     if (r.t === 'dev') { const k = r.id.slice(4), o = S.devs[k]; if (!o || (r.u || 0) > (o.u || 0)) { S.devs[k] = { name: r.name || '', email: r.email || '', u: r.u }; ch = true; } continue; }
     if (!isFinite(r.s) || (r.del && r.u < old)) continue;
     const i = at.has(r.id) ? at.get(r.id) : -1;
@@ -3100,6 +3208,7 @@ function applyRemote(list) {
 // Идущая запись, которая началась внутри уже законченной (её закончили на другом телефоне), — тоже лишняя.
 function fixDupes() {
   let msg = '';
+  for (const k of kidList().map(x => x.id)) withKid(k, () => {
   for (const t of ['sleep', 'feed']) {
     const all = evs().filter(e => e.t === t), act = all.filter(e => e.e == null).sort((a, b) => a.s - b.s);
     for (let i = 0; i < act.length; i++) {
@@ -3109,6 +3218,7 @@ function fixDupes() {
       if (y.by === DEV && x.by !== DEV) msg = (t === 'sleep' ? '😴 Сон' : '🍼 Кормление') + ' уже отметили на другом телефоне' + byWho(x) + ' в ' + hm(x.s) + ' — оставили эту запись';
     }
   }
+  });
   if (msg) toast(msg);
   return !!msg;
 }
@@ -3422,7 +3532,9 @@ function settingsShare(me) {
 
 /* ───────── запуск ───────── */
 function launch(act) {
-  const q = new URLSearchParams(location.search), a = act || q.get('action'), j = act ? null : q.get('join');
+  const q = new URLSearchParams(location.search), j = act ? null : q.get('join');
+  let a = act || q.get('action');
+  if (a && a.includes('@')) { const k = a.split('@')[1]; a = a.split('@')[0]; if (kidAlive(k) && k !== KID) setKid(k, true); }
   if (!a && !j) return;
   if (!act) history.replaceState(null, '', location.pathname);
   if (j) { if (REMOTE && REMOTE.sheet === j) toast('Вы уже ведёте этот общий дневник'); else openJoin(j); return; }

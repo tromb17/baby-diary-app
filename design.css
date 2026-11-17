@@ -160,3 +160,82 @@ main.ds-in{animation:dsTabIn 180ms var(--ds-ease)}
   main.ds-in,.sheet-wrap:not([hidden]) .sheet{animation:none}
   .b,.seg button,.chips button,.fchips button,.tabs svg{transition:none}
 }
+
+/* ═══════════ 5. «Скандинавская детская» (ноябрь 2026) ═══════════
+   Тёплый бежевый фон, терракота, шалфей, пыльно-голубой, горчичный — как в детской комнате; заголовки — округлый Nunito;
+   тонкие рамки вместо теней; на главной — радуга из дуг внизу (только днём). Ночной режим ([data-night]) не трогаем.
+   Контраст текста и цветов дел на фоне карточки ≥ 4.5:1. */
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700 900;font-display:swap;
+  src:url(fonts/nunito-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700 900;font-display:swap;
+  src:url(fonts/nunito-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{
+  --ds-head:'Nunito','Nunito Sans',system-ui,sans-serif;
+  --page:#F5EFE6; --bg:#F5EFE6;
+  --surface:#FCF9F4; --solid:#FCF9F4; --surface-2:#EFE6D9; --line:#E3D6C4;
+  --text:#3A3128; --text-2:#55493D; --muted:#6E6153;
+  --accent:#A65233; --on-accent:#FFFFFF; --good:#4E7448; --warn:#8C6416; --bad:#A93A2C;
+  --c-feed:#AE4E43; --c-sleep:#4A6A86; --c-diaper:#4F7149; --c-pump:#8D6416; --c-food:#66762A;
+  --shadow:0 1px 0 rgba(90,64,40,.04); --ds-shadow-up:0 -1px 0 var(--line);
+  --ds-r-card:20px; --ds-r-ctl:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]):not([data-night]){
+    --page:#1C1814; --bg:#1C1814;
+    --surface:#26211B; --solid:#26211B; --surface-2:#312A22; --line:#3D352B;
+    --text:#EFE6DA; --text-2:#D3C7B8; --muted:#B0A291;
+    --accent:#E39A78; --on-accent:#2A160D; --good:#9CC392; --warn:#E3B565; --bad:#EE907F;
+    --c-feed:#EBA196; --c-sleep:#A2BBD2; --c-diaper:#A9C7A1; --c-pump:#DDB66A; --c-food:#C3D184;
+    --shadow:none; --ds-shadow-up:0 -1px 0 var(--line);
+  }
+}
+:root[data-theme="dark"]:not([data-night]){
+  --page:#1C1814; --bg:#1C1814;
+  --surface:#26211B; --solid:#26211B; --surface-2:#312A22; --line:#3D352B;
+  --text:#EFE6DA; --text-2:#D3C7B8; --muted:#B0A291;
+  --accent:#E39A78; --on-accent:#2A160D; --good:#9CC392; --warn:#E3B565; --bad:#EE907F;
+  --c-feed:#EBA196; --c-sleep:#A2BBD2; --c-diaper:#A9C7A1; --c-pump:#DDB66A; --c-food:#C3D184;
+  --shadow:none; --ds-shadow-up:0 -1px 0 var(--line);
+}
+
+/* заголовки — округлые */
+.who h1,.card h3,.sheet h2,.daynav h2,.aw-t,.pname,.timer,.sum .v{font-family:var(--ds-head)}
+.who h1{font-weight:900;font-size:22px}
+.card h3{font-weight:800}
+.sec-t{text-transform:uppercase;color:var(--muted)}
+
+/* фон: радуга из дуг справа внизу (над вкладками, видна в свободном месте), мягкое пятно слева — только днём */
+:root:not([data-night]) body{background-image:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cg fill='none' stroke-linecap='round' stroke-width='11'%3E%3Cpath d='M30 110a70 70 0 0 1 140 0' stroke='%23D9A285' opacity='.55'/%3E%3Cpath d='M48 110a52 52 0 0 1 104 0' stroke='%23E5C987' opacity='.55'/%3E%3Cpath d='M66 110a34 34 0 0 1 68 0' stroke='%23B5C2A6' opacity='.6'/%3E%3C/g%3E%3C/svg%3E"),
+  radial-gradient(circle at 0 100%,color-mix(in srgb,var(--c-diaper) 9%,transparent) 0 140px,transparent 141px);
+  background-repeat:no-repeat;background-position:right -30px bottom calc(env(safe-area-inset-bottom) + 70px),left bottom;background-size:210px auto,100% 100%;background-attachment:fixed}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]):not([data-night]) body{background-image:none}}
+:root[data-theme="dark"] body{background-image:none}
+
+/* шапка и полоска детей — сплошной фон под цвет страницы */
+.top,.kidbar{background:color-mix(in srgb,var(--page) 92%,transparent)}
+.ava{background:color-mix(in srgb,var(--accent) 12%,var(--surface-2));border:2px solid var(--surface)}
+
+/* карточки: плоские, тонкая тёплая рамка */
+.card{border:1px solid var(--line);box-shadow:var(--shadow)}
+.card.feed,.card.sleep,.card.diaper{background:color-mix(in srgb,var(--c) 7%,var(--surface))}
+.live{border-color:color-mix(in srgb,var(--c) 40%,var(--line));background:color-mix(in srgb,var(--c) 9%,var(--surface))}
+
+/* кнопки: главная — заливка цветом дела, остальные — мягкая заливка без яркого контура */
+.b{border:1.5px solid color-mix(in srgb,var(--c,var(--accent)) 30%,var(--line));background:var(--surface)}
+.b.main{box-shadow:none}
+.b.ghost{border-color:var(--line)}
+
+/* нижние вкладки и переключатели */
+.tabs{background:var(--surface)}
+.tabs button.on svg{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.seg{background:var(--surface-2)}
+.seg button.on{background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.chips button.on{background:var(--accent);color:var(--on-accent)}
+
+/* поля и списки */
+.f input,.f select,.f textarea,input.own{background:var(--surface-2)}
+.list .ic{border-radius:50%}
+.kidbar button{background:var(--surface);border-color:var(--line)}
+.kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.kids-l .krow{background:var(--surface)}
