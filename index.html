@@ -235,6 +235,7 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .gchart .dot{fill:var(--c-feed);stroke:var(--solid);stroke-width:2}
 /* прививки: обязательные — сплошные, группы риска — серые, по желанию — пунктир и свой цвет */
 .vleg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.teeth{display:block;width:100%;max-width:320px;margin:4px auto 0}.tth{cursor:pointer}.tth ellipse{fill:var(--surface);stroke:var(--line);stroke-width:2}.tth.now ellipse{stroke:var(--accent);stroke-dasharray:4 3}.tth.ok ellipse{fill:var(--accent);stroke:var(--accent)}.tth.ok path{stroke:var(--on-accent)}.tjaw{font-size:13px;fill:var(--text-2);font-weight:600}.tsd{font-size:11px;fill:var(--muted)}.tleg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--text-2);margin-top:6px;justify-content:center}.tleg i{display:inline-block;width:11px;height:14px;border-radius:50%;border:2px solid var(--line);background:var(--surface);vertical-align:-3px;margin-right:5px}.tleg i.ok{background:var(--accent);border-color:var(--accent)}.tleg i.now{border-color:var(--accent);border-style:dashed}ul.plain{margin:0;padding-left:20px}ul.plain li{margin:3px 0}
 .vtag{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap;flex:none}
 .vtag.all{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
 .vtag.risk{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
@@ -958,6 +959,7 @@ function evInfo(e) {
   if (e.t === 'visit') return { c: '', ic: '🩺', tx: 'Врач: ' + (e.doc || '') + (e.concl ? ' — ' + e.concl : ''), sub: rxList(e.rx).join('; ') };
   if (e.t === 'q') return { c: '', ic: '❓', tx: 'Вопрос к врачу: ' + e.text + (e.done ? ' (спросили)' : ''), sub: e.ans || '' };
   if (e.t === 'check') { const c = CHECKS.find(x => x.id === e.cid); return { c: '', ic: '📋', tx: 'Осмотр ' + (c ? checkTitle(c) : e.cid) + ': отмечено ' + (e.done || []).length + (c ? ' из ' + checkItems(c).length : ''), sub: '' }; }
+  if (e.t === 'tooth') { const x = TEETH.find(o => o.id === e.tid); return { c: '', ic: '🦷', tx: 'Зуб: ' + (x ? toothName(x) : e.tid), sub: '' }; }
   if (e.t === 'mile') { const m = MILES.find(x => x.id === e.mid); return { c: '', ic: '⭐', tx: m ? m.name : e.mid, sub: '' }; }
   if (e.t === 'food') return { c: 'food', ic: foodIc(e.fid), tx: foodName(e.fid, e.name) + (e.amt ? ' — ' + e.amt : ''), sub: e.react && e.react !== 'none' ? '⚠ ' + REACT[e.react] : '' };
   if (e.t === 'mphoto') return { c: '', ic: '📅', tx: 'Фото месяца: ' + e.m, sub: '' };
@@ -1151,9 +1153,10 @@ function openSettings() {
       <p class="hint" style="margin:0 0 10px">Почти чёрный экран, неяркий тёплый свет и крупные кнопки — не слепит ночью и не будит малыша. Луна вверху включает и выключает его в любой момент.</p>
       <label class="chk"><input type="checkbox" id="s_auto" ${p.auto ? 'checked' : ''} onchange="nightInputs()"> Включать по расписанию</label>
       <div class="two" id="s_ntimes"><label class="f"><span>Включать в</span><input id="s_nfrom" type="time" value="${esc(p.from)}"></label><label class="f"><span>Выключать в</span><input id="s_nto" type="time" value="${esc(p.to)}"></label></div></section>
-    ${NATIVE && typeof NATIVE.schedule === 'function' ? `<section class="sgroup"><h4>🔔 Напоминания о приёме врача</h4>
+    ${NATIVE && typeof NATIVE.schedule === 'function' ? `<section class="sgroup"><h4>🔔 Напоминания</h4><p class="hint" style="margin:0 0 6px">О приёме врача:</p>
       <label class="chk"><input type="checkbox" id="s_neve" ${notifPref().eve ? 'checked' : ''}> Накануне в 20:00</label>
-      <label class="chk"><input type="checkbox" id="s_nbef" ${notifPref().before ? 'checked' : ''}> За 2 часа до приёма</label></section>` : ''}
+      <label class="chk"><input type="checkbox" id="s_nbef" ${notifPref().before ? 'checked' : ''}> За 2 часа до приёма</label>
+      <label class="chk" style="margin-top:6px"><input type="checkbox" id="s_nvax" ${notifPref().vax ? 'checked' : ''}> О прививках — за неделю и в день срока</label></section>` : ''}
     <section class="sgroup"><h4>🎨 Оформление</h4>
       <div class="chips" role="group" aria-label="Оформление" style="margin-top:0"><button class="${designOn() ? 'on' : ''}" onclick="designSet('new')">Новое</button><button class="${designOn() ? '' : 'on'}" onclick="designSet('old')">Прежнее</button></div>
       <p class="hint" style="margin:6px 0 0">Меняется сразу и только на этом устройстве.</p></section>
@@ -1176,7 +1179,7 @@ function saveSettings() {
   const meName = $('#s_me') ? $('#s_me').value.trim() : null;
   if (meName != null && meName !== devName(DEV)) setMe({ name: meName });
   const p = nightPref(); Object.assign(p, { auto, from: from || p.from, to: to || p.to }); delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
-  if ($('#s_neve')) lsSet(NOTIFKEY, JSON.stringify({ eve: $('#s_neve').checked, before: $('#s_nbef').checked }));
+  if ($('#s_neve')) lsSet(NOTIFKEY, JSON.stringify({ eve: $('#s_neve').checked, before: $('#s_nbef').checked, vax: $('#s_nvax').checked }));
   closeSheet(); render();
 }
 function exportData() {
@@ -1255,8 +1258,8 @@ function pctOf(k, e) {
 const growths = () => evs().filter(e => e.t === 'growth').sort((a, b) => a.s - b.s);
 
 function viewHealth() {
-  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост и вес'], ['vax', 'Прививки'], ['docs', 'Врачи'], ['report', 'Сводка']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
-  return seg + (UI.health === 'vax' ? viewVax() : UI.health === 'docs' ? viewDocs() : UI.health === 'report' ? viewReport() : viewGrowth());
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['growth', 'Рост'], ['vax', 'Прививки'], ['teeth', 'Зубы'], ['docs', 'Врачи'], ['report', 'Сводка']].map(([k, t]) => `<button class="${UI.health === k ? 'on' : ''}" onclick="UI.health='${k}';render()">${t}</button>`).join('')}</div>`;
+  return seg + (UI.health === 'vax' ? viewVax() : UI.health === 'teeth' ? viewTeeth() : UI.health === 'docs' ? viewDocs() : UI.health === 'report' ? viewReport() : viewGrowth());
 }
 function needBirth(what) { return `<div class="card"><h3>Нужна дата рождения</h3><p class="hint">Чтобы ${what}, укажите дату рождения малыша.</p><div class="btns" style="margin-top:10px"><button class="b main" onclick="openSettings()">Открыть настройки</button></div></div>`; }
 function viewGrowth() {
@@ -1415,6 +1418,70 @@ function saveVax() {
   closeSheet(); buzz(); render();
 }
 function unVax() { const o = vaxDone()[VEDIT]; if (o) upd(o, { del: true }); closeSheet(); render(); }
+
+/* ───────── зубы ─────────
+   20 молочных зубов, сроки прорезывания — таблица Американской стоматологической ассоциации (ADA, MouthHealthy «Eruption Charts»).
+   id: u|l (верх/низ) + r|l (правая/левая сторона малыша) + номер от центра 1–5. Отметка — событие tooth {tid, s, note}.
+   Схема — как если смотреть малышу в лицо: его правая сторона — слева на картинке. */
+const TOOTH_KIND = [['Центральный резец', 'центральный резец'], ['Боковой резец', 'боковой резец'], ['Клык', 'клык'], ['Первый моляр', 'первый коренной (моляр)'], ['Второй моляр', 'второй коренной (моляр)']];
+const TOOTH_AGE = { u: [[8, 12], [9, 13], [16, 22], [13, 19], [25, 33]], l: [[6, 10], [10, 16], [17, 23], [14, 18], [23, 31]] };
+const TEETH = []; for (const j of ['u', 'l']) for (const sd of ['r', 'l']) for (let n = 1; n <= 5; n++) TEETH.push({ id: j + sd + n, j, sd, n, lo: TOOTH_AGE[j][n - 1][0], hi: TOOTH_AGE[j][n - 1][1] });
+const toothName = x => (x.j === 'u' ? 'Верхний ' : 'Нижний ') + TOOTH_KIND[x.n - 1][1] + ', ' + (x.sd === 'r' ? 'справа' : 'слева');
+const teethDone = () => { const m = {}; for (const e of evs()) if (e.t === 'tooth') m[e.tid] = e; return m; };
+function teethSvg(done, m) {
+  const W = 300, cx = 150, A = [7, 22, 38, 56, 77], RX = [10, 9, 10, 15, 16], RY = [13, 12, 12, 14, 15];
+  let g = '';
+  for (const x of TEETH) {
+    const k = x.n - 1, a = A[k] * Math.PI / 180, s = x.sd === 'r' ? -1 : 1, up = x.j === 'u';
+    const px = cx + s * 118 * Math.sin(a), py = up ? 140 - 112 * Math.cos(a) : 182 + 112 * Math.cos(a);
+    const rot = s * A[k] * (up ? 1 : -1), d = done[x.id], st = d ? 'ok' : m != null && m >= x.lo - 1 && m <= x.hi ? 'now' : '';
+    g += `<g class="tth ${st}" onclick="editTooth('${x.id}')" role="button" aria-label="${esc(toothName(x))}${d ? ', прорезался' : ''}"><title>${esc(toothName(x))}</title>
+      <ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="${RX[k]}" ry="${RY[k]}" transform="rotate(${rot} ${px.toFixed(1)} ${py.toFixed(1)})"/>
+      ${d ? `<path d="M${(px - 5).toFixed(1)} ${py.toFixed(1)}l3.5 3.5 6.5-7" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ''}</g>`;
+  }
+  return `<svg class="teeth" viewBox="0 10 ${W} 302" role="group" aria-label="Схема зубов">
+    <text x="${cx}" y="96" text-anchor="middle" class="tjaw">Верхние</text><text x="${cx}" y="236" text-anchor="middle" class="tjaw">Нижние</text>
+    <text x="10" y="165" class="tsd">справа</text><text x="${W - 10}" y="165" text-anchor="end" class="tsd">слева</text>${g}</svg>`;
+}
+function viewTeeth() {
+  if (!birthTs()) return needBirth('показать, когда обычно режутся зубы');
+  const done = teethDone(), m = monthsAt(now()), n = TEETH.filter(x => done[x.id]).length;
+  const soon = TEETH.filter(x => !done[x.id] && m >= x.lo - 1 && m <= x.hi), seen = new Set();
+  const soonTxt = soon.filter(x => { const k = x.j + x.n; if (seen.has(k)) return false; seen.add(k); return true; })
+    .map(x => (x.j === 'u' ? 'верхние ' : 'нижние ') + TOOTH_KIND[x.n - 1][1].replace('резец', 'резцы').replace('клык', 'клыки').replace('коренной', 'коренные').replace('центральный', 'центральные').replace('боковой', 'боковые').replace('первый', 'первые').replace('второй', 'вторые') + ' (' + x.lo + '–' + x.hi + ' мес.)');
+  let h = `<div class="card"><div class="vhead"><h3>🦷 Зубы</h3><span class="vdate">${n} из 20</span></div>
+    <p class="hint" style="margin:0 0 6px">Нажмите на зуб, когда он прорежется. Схема — как если смотреть малышу в лицо.</p>
+    ${teethSvg(done, m)}
+    <div class="tleg"><span><i class="ok"></i>прорезался</span><span><i class="now"></i>обычно режется в этом возрасте</span><span><i></i>позже</span></div></div>`;
+  if (soonTxt.length && n < 20) h += `<div class="card"><h3>Сейчас могут появиться</h3><ul class="plain">${soonTxt.map(t => `<li>${esc(t[0].toUpperCase() + t.slice(1))}</li>`).join('')}</ul></div>`;
+  const list = TEETH.filter(x => done[x.id]).sort((a, b) => done[b.id].s - done[a.id].s);
+  if (list.length) h += `<div class="card"><h3>Прорезались</h3><ul class="list">${list.map(x => { const d = done[x.id]; return `<li onclick="editTooth('${x.id}')"><span class="tm">${dayShort(d.s)}</span><span class="ic" style="--c:var(--accent)">🦷</span><span class="tx"><div>${esc((x.j === 'u' ? 'Верхний ' : 'Нижний ') + TOOTH_KIND[x.n - 1][1])}</div><small>${esc([x.sd === 'r' ? 'справа' : 'слева', ageAt(d.s), d.note].filter(Boolean).join(' · '))}</small></span></li>`; }).join('')}</ul></div>`;
+  h += `<p class="hint" style="margin:0 0 12px">Сроки — обычные диапазоны по таблице Американской стоматологической ассоциации (ADA). У каждого малыша свой темп: первый зуб может появиться и в 4, и в 12 месяцев, порядок тоже бывает другим. Если к 15–18 месяцам нет ни одного зуба — спокойно обсудите с педиатром. Не заменяет консультацию врача.</p>`;
+  return h;
+}
+let TEDIT = null;
+function editTooth(tid) {
+  const x = TEETH.find(o => o.id === tid), d = teethDone()[tid]; if (!x) return; TEDIT = tid;
+  openSheet(`<h2>🦷 ${esc(toothName(x))}</h2>
+    <p class="hint" style="margin:0 0 12px">Обычно режется в ${x.lo}–${x.hi} мес.</p>
+    <label class="f"><span>Когда прорезался</span><input id="t_d" type="date" value="${toInput(d ? d.s : now()).slice(0, 10)}"></label>
+    <label class="f"><span>Заметка</span><input id="t_note" value="${esc(d ? d.note || '' : '')}" placeholder="Как прошло, что помогало…"></label>
+    <div class="err" id="t_err"></div>
+    <div class="acts">${d ? '<button class="b del" onclick="unTooth()">Снять отметку</button>' : ''}<button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" onclick="saveTooth()">${d ? 'Сохранить' : 'Прорезался'}</button></div>`);
+}
+function saveTooth() {
+  const d = parseDay($('#t_d').value); if (!d) return $('#t_err').textContent = 'Укажите дату';
+  const s = +d + 12 * 3600e3; if (sod(s) > sod(now())) return $('#t_err').textContent = 'Эта дата ещё не наступила';
+  const b = birthTs(); if (b != null && sod(s) < b) return $('#t_err').textContent = 'Дата раньше дня рождения';
+  const p = { s, e: s, note: $('#t_note').value.trim() }, old = teethDone()[TEDIT];
+  if (old) upd(old, p); else add(Object.assign({ t: 'tooth', tid: TEDIT }, p));
+  // первый зуб — это и веха развития (она же попадает в альбом «Первые разы»)
+  let mile = false;
+  if (!milesDone().tooth) { const first = Math.min(...Object.values(teethDone()).map(e => e.s)); add({ t: 'mile', mid: 'tooth', s: first, e: first, note: '' }); mile = true; }
+  closeSheet(); buzz(); render();
+  if (mile) toast('⭐ Первый зуб — отметили и в вехах развития');
+}
+function unTooth() { const o = teethDone()[TEDIT]; if (o) upd(o, { del: true }); closeSheet(); render(); }
 
 /* ───────── вехи развития ─────────
    Двигательные — окна ВОЗ (WHO Multicentre Growth Reference Study, 2006: от 1-го до 99-го перцентиля);
@@ -2384,7 +2451,7 @@ function phFetch(id) {
    План на 45 дней: накануне в 20:00 и за 2 часа (настройка — babydiary.notif.v1, на устройстве).
    Телефон ставит будильник на ближайшее (Notifier.java), после перезагрузки — заново. В браузере уведомлений нет. */
 const NOTIFKEY = 'babydiary.notif.v1';
-const notifPref = () => Object.assign({ eve: true, before: true }, lsJson(NOTIFKEY, {}));
+const notifPref = () => Object.assign({ eve: true, before: true, vax: true }, lsJson(NOTIFKEY, {}));
 function notifPlan() {
   const p = notifPref(), t = now(), out = [], nq = qs().filter(q => !q.done).length;
   for (const v of visits()) {
@@ -2395,7 +2462,21 @@ function notifPlan() {
     const bf = v.s - 2 * 3600e3;
     if (p.before && bf > t) out.push({ id: 'vb:' + v.id, at: bf, title: 'Через 2 часа — ' + (v.doc || 'врач'), text: where + '.' + qtxt + ' Не забудьте полис и прививочный сертификат.', action: 'docs' });
   }
+  if (p.vax) out.push(...vaxNotif(t));
   return out.sort((a, b) => a.at - b.at);
+}
+/* прививки по нацкалендарю (не отмеченные): за неделю — записаться, в день срока и, если ещё не сделали, через неделю после — в 10:00.
+   Срок, прошедший раньше, не напоминаем (о нём — карточка на главной). id — vx:<возраст>:<w|d|l>; нажатие открывает «Прививки». */
+function vaxNotif(t) {
+  const done = vaxDone(), out = [], ages = [...new Set(VAX.filter(v => v.need === 'all').map(v => v.age))];
+  for (const a of ages) {
+    const due = vaxDue(a), left = VAX.filter(v => v.age === a && v.need === 'all' && !done[v.id]); if (due == null || !left.length) continue;
+    const names = left.map(v => v.name).join(', '), at = d => sod(addDays(due, d)) + 10 * 3600e3;
+    for (const [k, d, title, text] of [['w', -7, 'Через неделю — прививки', names + '. Запишитесь в поликлинику заранее.'],
+      ['d', 0, 'Сегодня срок прививок', names + '.'], ['l', 7, 'Прививки ещё не отмечены', names + '. Если уже сделали — отметьте в «Прививках»; если отложили — обсудите новый график с педиатром.']])
+      if (at(d) > t && at(d) <= t + 45 * 864e5) out.push({ id: 'vx:' + a + ':' + k, at: at(d), title, text, action: 'vax' });
+  }
+  return out;
 }
 function pushNotif() {
   if (!NATIVE || typeof NATIVE.schedule !== 'function') return;
@@ -3348,7 +3429,7 @@ function launch(act) {
   if (a === 'sleep') toggleSleep();
   else if (a === 'feed') { const n = nextSide() || 'L'; if (!activeOf('feed')) breast(n); }
   else if (a === 'day') go('day');
-  else if (a === 'docs') { UI.health = 'docs'; go('health'); }
+  else if (a === 'docs' || a === 'vax') { UI.health = a; go('health'); }
   else if (a === 'chat') go('chat');
 }
 // ярлык Android, когда приложение уже открыто
