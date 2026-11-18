@@ -1,7 +1,7 @@
 /* ═══════════ Новое оформление (визуальный слой) ═══════════
    Подключается после встроенных стилей index.html и переопределяет только вид: структура экранов, порядок
-   и логика не меняются. Выключить — в «Настройки → Оформление → Прежнее» (link#designCss.disabled)
-   или убрать <link id="designCss"> из index.html. Ночной режим ([data-night]) оставлен своим: тёплый и тусклый.
+   и логика не меняются. Части 1–4 — общая основа и стиль «Классика» (base). Остальные стили — части 5–7, только при
+   <html data-style="scandi|toys|sky"> (выбор — «Настройки → Оформление», по умолчанию toys). Ночной режим ([data-night]) оставлен своим: тёплый и тусклый.
 
    1. Токены: цвета, шрифт, размеры текста, отступы (сетка 8px), скругления, тени, движение.
    2. Основа: фон, шрифт, иконки.
@@ -161,7 +161,7 @@ main.ds-in{animation:dsTabIn 180ms var(--ds-ease)}
   .b,.seg button,.chips button,.fchips button,.tabs svg{transition:none}
 }
 
-/* ═══════════ 5. «Скандинавская детская» (ноябрь 2026) ═══════════
+/* ═══════════ 5. «Скандинавская детская» — data-style="scandi" ═══════════
    Тёплый бежевый фон, терракота, шалфей, пыльно-голубой, горчичный — как в детской комнате; заголовки — округлый Nunito;
    тонкие рамки вместо теней; на главной — радуга из дуг внизу (только днём). Ночной режим ([data-night]) не трогаем.
    Контраст текста и цветов дел на фоне карточки ≥ 4.5:1. */
@@ -169,7 +169,7 @@ main.ds-in{animation:dsTabIn 180ms var(--ds-ease)}
   src:url(fonts/nunito-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:'Nunito';font-style:normal;font-weight:700 900;font-display:swap;
   src:url(fonts/nunito-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-:root{
+:root[data-style="scandi"]:not([data-night]){
   --ds-head:'Nunito','Nunito Sans',system-ui,sans-serif;
   --page:#F5EFE6; --bg:#F5EFE6;
   --surface:#FCF9F4; --solid:#FCF9F4; --surface-2:#EFE6D9; --line:#E3D6C4;
@@ -180,7 +180,7 @@ main.ds-in{animation:dsTabIn 180ms var(--ds-ease)}
   --ds-r-card:20px; --ds-r-ctl:14px;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]):not([data-night]){
+  :root[data-style="scandi"]:not([data-theme="light"]):not([data-night]){
     --page:#1C1814; --bg:#1C1814;
     --surface:#26211B; --solid:#26211B; --surface-2:#312A22; --line:#3D352B;
     --text:#EFE6DA; --text-2:#D3C7B8; --muted:#B0A291;
@@ -189,7 +189,7 @@ main.ds-in{animation:dsTabIn 180ms var(--ds-ease)}
     --shadow:none; --ds-shadow-up:0 -1px 0 var(--line);
   }
 }
-:root[data-theme="dark"]:not([data-night]){
+:root[data-style="scandi"][data-theme="dark"]:not([data-night]){
   --page:#1C1814; --bg:#1C1814;
   --surface:#26211B; --solid:#26211B; --surface-2:#312A22; --line:#3D352B;
   --text:#EFE6DA; --text-2:#D3C7B8; --muted:#B0A291;
@@ -199,43 +199,156 @@ main.ds-in{animation:dsTabIn 180ms var(--ds-ease)}
 }
 
 /* заголовки — округлые */
-.who h1,.card h3,.sheet h2,.daynav h2,.aw-t,.pname,.timer,.sum .v{font-family:var(--ds-head)}
-.who h1{font-weight:900;font-size:22px}
-.card h3{font-weight:800}
-.sec-t{text-transform:uppercase;color:var(--muted)}
+[data-style="scandi"] .who h1,[data-style="scandi"] .card h3,[data-style="scandi"] .sheet h2,[data-style="scandi"] .daynav h2,[data-style="scandi"] .aw-t,[data-style="scandi"] .pname,[data-style="scandi"] .timer,[data-style="scandi"] .sum .v{font-family:var(--ds-head)}
+[data-style="scandi"] .who h1{font-weight:900;font-size:22px}
+[data-style="scandi"] .card h3{font-weight:800}
+[data-style="scandi"] .sec-t{text-transform:uppercase;color:var(--muted)}
 
 /* фон: радуга из дуг справа внизу (над вкладками, видна в свободном месте), мягкое пятно слева — только днём */
-:root:not([data-night]) body{background-image:
+:root[data-style="scandi"]:not([data-night]) body{background-image:
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cg fill='none' stroke-linecap='round' stroke-width='11'%3E%3Cpath d='M30 110a70 70 0 0 1 140 0' stroke='%23D9A285' opacity='.55'/%3E%3Cpath d='M48 110a52 52 0 0 1 104 0' stroke='%23E5C987' opacity='.55'/%3E%3Cpath d='M66 110a34 34 0 0 1 68 0' stroke='%23B5C2A6' opacity='.6'/%3E%3C/g%3E%3C/svg%3E"),
   radial-gradient(circle at 0 100%,color-mix(in srgb,var(--c-diaper) 9%,transparent) 0 140px,transparent 141px);
   background-repeat:no-repeat;background-position:right -30px bottom calc(env(safe-area-inset-bottom) + 70px),left bottom;background-size:210px auto,100% 100%;background-attachment:fixed}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]):not([data-night]) body{background-image:none}}
-:root[data-theme="dark"] body{background-image:none}
+@media (prefers-color-scheme: dark){:root[data-style="scandi"]:not([data-theme="light"]):not([data-night]) body{background-image:none}}
+:root[data-style="scandi"][data-theme="dark"] body{background-image:none}
 
 /* шапка и полоска детей — сплошной фон под цвет страницы */
-.top,.kidbar{background:color-mix(in srgb,var(--page) 92%,transparent)}
-.ava{background:color-mix(in srgb,var(--accent) 12%,var(--surface-2));border:2px solid var(--surface)}
+[data-style="scandi"] .top,[data-style="scandi"] .kidbar{background:color-mix(in srgb,var(--page) 92%,transparent)}
+[data-style="scandi"] .ava{background:color-mix(in srgb,var(--accent) 12%,var(--surface-2));border:2px solid var(--surface)}
 
 /* карточки: плоские, тонкая тёплая рамка */
-.card{border:1px solid var(--line);box-shadow:var(--shadow)}
-.card.feed,.card.sleep,.card.diaper{background:color-mix(in srgb,var(--c) 7%,var(--surface))}
-.live{border-color:color-mix(in srgb,var(--c) 40%,var(--line));background:color-mix(in srgb,var(--c) 9%,var(--surface))}
+[data-style="scandi"] .card{border:1px solid var(--line);box-shadow:var(--shadow)}
+[data-style="scandi"] .card.feed,[data-style="scandi"] .card.sleep,[data-style="scandi"] .card.diaper{background:color-mix(in srgb,var(--c) 7%,var(--surface))}
+[data-style="scandi"] .live{border-color:color-mix(in srgb,var(--c) 40%,var(--line));background:color-mix(in srgb,var(--c) 9%,var(--surface))}
 
 /* кнопки: главная — заливка цветом дела, остальные — мягкая заливка без яркого контура */
-.b{border:1.5px solid color-mix(in srgb,var(--c,var(--accent)) 30%,var(--line));background:var(--surface)}
-.b.main{box-shadow:none}
-.b.ghost{border-color:var(--line)}
+[data-style="scandi"] .b{border:1.5px solid color-mix(in srgb,var(--c,var(--accent)) 30%,var(--line));background:var(--surface)}
+[data-style="scandi"] .b.main{background:var(--c,var(--accent));border-color:transparent;color:var(--on-accent);box-shadow:none}
+[data-style="scandi"] .b.ghost,[data-style="scandi"] .b.del{background:transparent}
+[data-style="scandi"] .b.ghost{border-color:var(--line)}
 
 /* нижние вкладки и переключатели */
-.tabs{background:var(--surface)}
-.tabs button.on svg{background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.seg{background:var(--surface-2)}
-.seg button.on{background:var(--surface);box-shadow:0 0 0 1px var(--line)}
-.chips button.on{background:var(--accent);color:var(--on-accent)}
+[data-style="scandi"] .tabs{background:var(--surface)}
+[data-style="scandi"] .tabs button.on svg{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+[data-style="scandi"] .seg{background:var(--surface-2)}
+[data-style="scandi"] .seg button.on{background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+[data-style="scandi"] .chips button.on{background:var(--accent);color:var(--on-accent)}
 
 /* поля и списки */
-.f input,.f select,.f textarea,input.own{background:var(--surface-2)}
-.list .ic{border-radius:50%}
-.kidbar button{background:var(--surface);border-color:var(--line)}
-.kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
-.kids-l .krow{background:var(--surface)}
+[data-style="scandi"] .f input,[data-style="scandi"] .f select,[data-style="scandi"] .f textarea,[data-style="scandi"] input.own{background:var(--surface-2)}
+[data-style="scandi"] .list .ic{border-radius:50%}
+[data-style="scandi"] .kidbar button{background:var(--surface);border-color:var(--line)}
+[data-style="scandi"] .kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+[data-style="scandi"] .kids-l .krow{background:var(--surface)}
+
+/* ═══════════ 6. «Мягкие игрушки» — data-style="toys" (по умолчанию) ═══════════
+   Голубой фон с облаками, белые пухлые карточки, кнопки «как игрушки»: снизу полоска, при нажатии кнопка проседает.
+   Цвета дел — насыщенные (текст на белом ≥ 4.5:1), заливки — их светлые оттенки. Заголовки — Nunito 900. */
+:root[data-style="toys"]:not([data-night]){
+  --ds-head:'Nunito','Nunito Sans',system-ui,sans-serif;
+  --page:#EEF4FF; --bg:#EEF4FF;
+  --surface:#FFFFFF; --solid:#FFFFFF; --surface-2:#F0F4FD; --line:#DCE3F5;
+  --text:#26304A; --text-2:#3F4A66; --muted:#5F6B88;
+  --accent:#4A63E0; --on-accent:#FFFFFF; --good:#2B8048; --warn:#9A6200; --bad:#C2392E;
+  --c-feed:#C53A66; --c-sleep:#5B5BD6; --c-diaper:#12806A; --c-pump:#A35E00; --c-food:#4E7D12;
+  --shadow:0 2px 0 rgba(74,99,224,.06),0 8px 22px rgba(74,99,224,.08); --ds-shadow-up:0 -1px 0 var(--line),0 -6px 18px rgba(74,99,224,.06);
+  --ds-r-card:26px; --ds-r-ctl:18px; --ds-press:#C9D3F2;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-style="toys"]:not([data-theme="light"]):not([data-night]){
+    --page:#161A2C; --bg:#161A2C;
+    --surface:#20253B; --solid:#20253B; --surface-2:#2A3049; --line:#343B58;
+    --text:#EEF1FF; --text-2:#CDD3EE; --muted:#A9B1CF;
+    --accent:#9AACFF; --on-accent:#10173A; --good:#8FD9A6; --warn:#F2C46B; --bad:#FF9A8E;
+    --c-feed:#FF9DB5; --c-sleep:#B1B4FF; --c-diaper:#6FD6B8; --c-pump:#FFC46B; --c-food:#B9DB7A;
+    --shadow:none; --ds-shadow-up:0 -1px 0 var(--line); --ds-press:#0E1222;
+  }
+}
+:root[data-style="toys"][data-theme="dark"]:not([data-night]){
+  --page:#161A2C; --bg:#161A2C;
+  --surface:#20253B; --solid:#20253B; --surface-2:#2A3049; --line:#343B58;
+  --text:#EEF1FF; --text-2:#CDD3EE; --muted:#A9B1CF;
+  --accent:#9AACFF; --on-accent:#10173A; --good:#8FD9A6; --warn:#F2C46B; --bad:#FF9A8E;
+  --c-feed:#FF9DB5; --c-sleep:#B1B4FF; --c-diaper:#6FD6B8; --c-pump:#FFC46B; --c-food:#B9DB7A;
+  --shadow:none; --ds-shadow-up:0 -1px 0 var(--line); --ds-press:#0E1222;
+}
+:root[data-style="toys"]:not([data-night]) .who h1,:root[data-style="toys"]:not([data-night]) .card h3,:root[data-style="toys"]:not([data-night]) .sheet h2,:root[data-style="toys"]:not([data-night]) .daynav h2,:root[data-style="toys"]:not([data-night]) .aw-t,:root[data-style="toys"]:not([data-night]) .pname,:root[data-style="toys"]:not([data-night]) .timer,:root[data-style="toys"]:not([data-night]) .sum .v{font-family:var(--ds-head)}
+:root[data-style="toys"]:not([data-night]) .who h1{font-weight:900;font-size:22px}
+:root[data-style="toys"]:not([data-night]) .card h3{font-weight:900}
+/* фон: облака сверху справа и снизу слева, звёздочка — только днём */
+:root[data-style="toys"]:not([data-night]) body{background-image:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'%3E%3Cpath d='M28 54a16 16 0 0 1-2-32A22 22 0 0 1 68 14a16 16 0 0 1 24 12a14 14 0 0 1 0 28z' fill='%23fff' opacity='.95'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'%3E%3Cpath d='M28 54a16 16 0 0 1-2-32A22 22 0 0 1 68 14a16 16 0 0 1 24 12a14 14 0 0 1 0 28z' fill='%23fff' opacity='.9'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z' fill='%23FFD66B'/%3E%3C/svg%3E"),
+  radial-gradient(circle at 100% 0,#E3EBFF 0 160px,transparent 161px);
+  background-repeat:no-repeat;background-attachment:fixed;
+  background-position:right -40px top calc(env(safe-area-inset-top) + 64px),left -50px bottom calc(env(safe-area-inset-bottom) + 90px),right 26px bottom calc(env(safe-area-inset-bottom) + 160px),0 0;
+  background-size:190px auto,230px auto,26px 26px,100% 100%}
+@media (prefers-color-scheme: dark){:root[data-style="toys"]:not([data-theme="light"]):not([data-night]) body{background-image:none}}
+:root[data-style="toys"][data-theme="dark"] body{background-image:none}
+:root[data-style="toys"]:not([data-night]) .top,:root[data-style="toys"]:not([data-night]) .kidbar{background:color-mix(in srgb,var(--page) 90%,transparent)}
+:root[data-style="toys"]:not([data-night]) .ava{background:#FFE7A6;border:3px solid var(--surface);box-shadow:0 3px 0 var(--ds-press)}
+/* карточки: белые, пухлые, без рамки */
+:root[data-style="toys"]:not([data-night]) .card{border:0;box-shadow:var(--shadow)}
+:root[data-style="toys"]:not([data-night]) .card.feed,:root[data-style="toys"]:not([data-night]) .card.sleep,:root[data-style="toys"]:not([data-night]) .card.diaper{background:color-mix(in srgb,var(--c) 8%,var(--surface))}
+:root[data-style="toys"]:not([data-night]) .live{border:2px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 10%,var(--surface))}
+/* кнопки-игрушки: полоска снизу, при нажатии — проседают */
+:root[data-style="toys"]:not([data-night]) .b{border:2px solid color-mix(in srgb,var(--c,var(--accent)) 25%,var(--line));background:var(--surface);
+  box-shadow:0 4px 0 color-mix(in srgb,var(--c,var(--accent)) 30%,var(--ds-press))}
+:root[data-style="toys"]:not([data-night]) .b:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--c,var(--accent)) 30%,var(--ds-press))}
+:root[data-style="toys"]:not([data-night]) .b.main{background:var(--c,var(--accent));color:var(--on-accent);border-color:transparent;box-shadow:0 4px 0 color-mix(in srgb,var(--c,var(--accent)) 65%,#101530)}
+:root[data-style="toys"]:not([data-night]) .b.main:active{box-shadow:0 1px 0 color-mix(in srgb,var(--c,var(--accent)) 65%,#101530);filter:none}
+:root[data-style="toys"]:not([data-night]) .b.ghost,:root[data-style="toys"]:not([data-night]) .b.del{box-shadow:none;border-color:var(--line);background:transparent}
+/* вкладки и переключатели */
+:root[data-style="toys"]:not([data-night]) .tabs{background:var(--surface);border-radius:24px 24px 0 0}
+:root[data-style="toys"]:not([data-night]) .tabs button.on svg{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+:root[data-style="toys"]:not([data-night]) .seg{background:var(--surface-2);border-radius:var(--ds-r-ctl)}
+:root[data-style="toys"]:not([data-night]) .seg button{border-radius:14px}
+:root[data-style="toys"]:not([data-night]) .seg button.on{background:var(--surface);box-shadow:0 2px 0 var(--ds-press)}
+:root[data-style="toys"]:not([data-night]) .chips button.on{background:var(--accent);color:var(--on-accent)}
+:root[data-style="toys"]:not([data-night]) .f input,:root[data-style="toys"]:not([data-night]) .f select,:root[data-style="toys"]:not([data-night]) .f textarea,:root[data-style="toys"]:not([data-night]) input.own{background:var(--surface-2)}
+:root[data-style="toys"]:not([data-night]) .list .ic{border-radius:50%}
+:root[data-style="toys"]:not([data-night]) .kidbar button{background:var(--surface);border-color:var(--line);box-shadow:0 3px 0 var(--ds-press)}
+:root[data-style="toys"]:not([data-night]) .kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+
+/* ═══════════ 7. «Сонное небо» — data-style="sky" ═══════════
+   Всегда тёмный: ночное небо, звёзды и луна, мягкое золото. Карточки — чуть светлее неба. Ночной режим остаётся своим. */
+:root[data-style="sky"]:not([data-night]){
+  color-scheme:dark;
+  --ds-head:'Nunito','Nunito Sans',system-ui,sans-serif;
+  --page:#1F2347; --bg:#1F2347;
+  --surface:#2A2F5E; --solid:#2A2F5E; --surface-2:#343A70; --line:#41488A;
+  --text:#F1EEFF; --text-2:#D8D3F5; --muted:#B6B1DD;
+  --accent:#FFD98A; --on-accent:#2A2140; --good:#9EE3B0; --warn:#FFD27A; --bad:#FF9E94;
+  --c-feed:#FFB3C6; --c-sleep:#C9C2FF; --c-diaper:#9EE8DE; --c-pump:#FFCB8A; --c-food:#C8E59A;
+  --shadow:0 6px 20px rgba(8,10,40,.35); --ds-shadow-up:0 -1px 0 var(--line);
+  --ds-r-card:22px; --ds-r-ctl:16px;
+}
+:root[data-style="sky"]:not([data-night]) .who h1,:root[data-style="sky"]:not([data-night]) .card h3,:root[data-style="sky"]:not([data-night]) .sheet h2,:root[data-style="sky"]:not([data-night]) .daynav h2,:root[data-style="sky"]:not([data-night]) .aw-t,:root[data-style="sky"]:not([data-night]) .pname,:root[data-style="sky"]:not([data-night]) .timer,:root[data-style="sky"]:not([data-night]) .sum .v{font-family:var(--ds-head)}
+:root[data-style="sky"]:not([data-night]) .who h1{font-weight:900;font-size:22px}
+:root[data-style="sky"]:not([data-night]) .card h3{font-weight:800}
+/* небо: луна справа сверху, звёзды, светлее к низу */
+:root[data-style="sky"]:not([data-night]) body{background-image:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cpath d='M44 38a20 20 0 1 1-22-28a15 15 0 0 0 22 28z' fill='%23FFD98A' opacity='.85'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cg fill='%23FFF6D8'%3E%3Ccircle cx='20' cy='30' r='1.6'/%3E%3Ccircle cx='110' cy='14' r='1.1'/%3E%3Ccircle cx='180' cy='60' r='1.7' opacity='.8'/%3E%3Ccircle cx='60' cy='150' r='1.2' opacity='.7'/%3E%3Ccircle cx='250' cy='120' r='1.4'/%3E%3Ccircle cx='140' cy='210' r='1' opacity='.7'/%3E%3Ccircle cx='280' cy='250' r='1.5' opacity='.8'/%3E%3Ccircle cx='30' cy='270' r='1.3'/%3E%3Ccircle cx='210' cy='290' r='1' opacity='.6'/%3E%3C/g%3E%3C/svg%3E"),
+  linear-gradient(#1B1F42,#2A2D62);
+  background-repeat:no-repeat,repeat,no-repeat;background-attachment:fixed;
+  background-position:right 18px top calc(env(safe-area-inset-top) + 70px),0 0,0 0;background-size:54px 54px,300px 300px,100% 100%}
+:root[data-style="sky"]:not([data-night]) .top,:root[data-style="sky"]:not([data-night]) .kidbar{background:color-mix(in srgb,#1B1F42 90%,transparent)}
+:root[data-style="sky"]:not([data-night]) .ava{background:#3A3F78;border:2px solid var(--accent)}
+:root[data-style="sky"]:not([data-night]) .card{border:1px solid rgba(255,255,255,.07);box-shadow:var(--shadow)}
+:root[data-style="sky"]:not([data-night]) .card.feed,:root[data-style="sky"]:not([data-night]) .card.sleep,:root[data-style="sky"]:not([data-night]) .card.diaper{background:color-mix(in srgb,var(--c) 9%,var(--surface))}
+:root[data-style="sky"]:not([data-night]) .live{border-color:color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 12%,var(--surface))}
+:root[data-style="sky"]:not([data-night]) .b{border:1.5px solid color-mix(in srgb,var(--c,var(--accent)) 35%,var(--line));background:color-mix(in srgb,var(--c,var(--accent)) 6%,var(--surface))}
+:root[data-style="sky"]:not([data-night]) .b.main{background:var(--c,var(--accent));color:var(--on-accent);box-shadow:0 0 18px color-mix(in srgb,var(--c,var(--accent)) 30%,transparent)}
+:root[data-style="sky"]:not([data-night]) .b.ghost,:root[data-style="sky"]:not([data-night]) .b.del{border-color:var(--line);background:transparent}
+:root[data-style="sky"]:not([data-night]) .tabs{background:#232858}
+:root[data-style="sky"]:not([data-night]) .tabs button.on svg{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+:root[data-style="sky"]:not([data-night]) .seg{background:#232858}
+:root[data-style="sky"]:not([data-night]) .seg button.on{background:var(--surface-2);box-shadow:none}
+:root[data-style="sky"]:not([data-night]) .chips button.on{background:var(--accent);color:var(--on-accent)}
+:root[data-style="sky"]:not([data-night]) .f input,:root[data-style="sky"]:not([data-night]) .f select,:root[data-style="sky"]:not([data-night]) .f textarea,:root[data-style="sky"]:not([data-night]) input.own{background:var(--surface-2)}
+:root[data-style="sky"]:not([data-night]) .list .ic{border-radius:50%}
+:root[data-style="sky"]:not([data-night]) .kidbar button{background:var(--surface);border-color:var(--line)}
+:root[data-style="sky"]:not([data-night]) .kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+:root[data-style="sky"]:not([data-night]) .sheet-bg{background:rgba(6,8,30,.6)}
