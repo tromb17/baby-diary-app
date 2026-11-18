@@ -77,6 +77,15 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
 .kidbar button.add{padding:4px 12px;color:var(--muted);font-weight:600}
 .kids-l{display:flex;flex-direction:column;gap:8px}
+#pzoom{position:fixed;inset:0;z-index:200;background:#000;display:grid;place-items:center;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+#pzoom img{max-width:100vw;max-height:100vh;object-fit:contain;transform-origin:center;will-change:transform;pointer-events:none}
+#pzoom .pzx{position:absolute;top:calc(12px + env(safe-area-inset-top));right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:20px}
+.ph.big img,.ph.pick img{cursor:zoom-in}
+.fsn{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 12px;text-align:center}.fsn div{background:color-mix(in srgb,var(--c-food) 9%,var(--surface));border-radius:12px;padding:8px 2px}
+.fsn b{display:block;font-size:20px;font-weight:800;color:var(--c-food)}.fsn small{display:block;font-size:11px;line-height:1.2;color:var(--muted)}
+.fsbars{display:flex;flex-direction:column;gap:6px}.fsb{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr 38px;align-items:center;gap:8px;font-size:13px}
+.fsb span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fsb i{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}.fsb i b{display:block;height:100%;border-radius:99px;background:var(--c-food)}
+.fsb em{font-style:normal;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
 details.hx{margin:6px 0}details.hx>summary{list-style:none;cursor:pointer;margin:0}details.hx>summary::-webkit-details-marker{display:none}
 details.hx>summary span{color:var(--accent);font-weight:700;white-space:nowrap}details.hx[open]>summary{display:none}
 .sfold h3 .chev{display:inline-block;font-style:normal;margin-left:6px;transition:transform .15s}.sfold.open h3 .chev{transform:rotate(90deg)}
@@ -202,17 +211,18 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .prof{display:flex;align-items:center;gap:14px;margin:0 0 14px}.ava.big{width:72px;height:72px;font-size:40px;cursor:default}
 .ava,.kidbar .ke{overflow:hidden;position:relative}.ava img.kph,.kidbar .ke img.kph{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
 .ava.big.pick{cursor:pointer;overflow:visible}.ava.big.pick img.kph{border-radius:50%}
-.ava .cam{position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;font-size:12px!important;line-height:1;border:2px solid var(--page);z-index:2;border-radius:50%;display:grid;place-items:center;font-size:14px;font-style:normal;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.ava .cam{color:var(--accent);background:var(--surface);position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;font-size:12px!important;line-height:1;border:2px solid var(--page);z-index:2;border-radius:50%;display:grid;place-items:center;font-size:14px;font-style:normal;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .pname{font-size:22px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
 .medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:12px 8px}
 .medal{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding-top:10px}
-.medal i{position:relative;z-index:1;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:25px;font-style:normal;
+.medal i{position:relative;z-index:1;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:25px;font-style:normal;
   background:radial-gradient(circle,#FFFBEF 0 56%,transparent 57%),conic-gradient(from 210deg,#F4D27E,#E2AE45,#F9E4A8,#D9A13A,#F2CF78,#F4D27E);
   box-shadow:0 0 0 2px var(--surface),0 0 0 3px color-mix(in srgb,#E2AE45 45%,transparent),0 5px 12px rgba(150,100,20,.18)}
 .medal.got::before,.medal.got::after{content:'';position:absolute;top:0;width:12px;height:24px;z-index:0;clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%)}
 .medal.got::before{left:calc(50% - 15px);background:color-mix(in srgb,var(--c-sleep) 55%,#fff);transform:rotate(14deg)}.medal.got::after{left:calc(50% + 3px);background:color-mix(in srgb,var(--c-feed) 50%,#fff);transform:rotate(-14deg)}
 .medal i span{display:block;line-height:1;filter:drop-shadow(0 1px 1px rgba(120,80,10,.25))}
-.medal:not(.got) i span{filter:grayscale(1);opacity:.35}
+.medal:not(.got) i span,.medal:not(.got) .mart{filter:grayscale(1);opacity:.35}
+.medal .mart{width:40px;height:40px;display:block}.aw-medal .mart{width:62%;height:62%}
 .medal b{font-size:12.5px;line-height:1.25;font-weight:700}.medal small{font-size:11.5px;color:var(--muted)}
 .medal:not(.got) i{background:var(--surface-2);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted)}
 .medal:not(.got) b{color:var(--muted);font-weight:600}
@@ -863,6 +873,49 @@ function tidyHints(root) {
     p.parentNode.insertBefore(d, p); d.appendChild(sm); d.appendChild(p); p.style.cssText = 'margin:0';
   }
 }
+/* Фото на весь экран: нажатие на крупное фото (.ph.big) — просмотр; двумя пальцами — приблизить/отдалить,
+   одним — двигать приближенное, двойное касание — ×2,5 и обратно, ✕ или касание по чёрному полю — закрыть. */
+const PZ = { s: 1, x: 0, y: 0, pts: new Map(), d0: 0, s0: 1, c0: null, last: 0, moved: false };
+function photoView(src) {
+  if (!src) return;
+  let w = $('#pzoom');
+  if (!w) { w = document.createElement('div'); w.id = 'pzoom'; w.innerHTML = '<img alt=""><button class="pzx" aria-label="Закрыть">✕</button>'; document.body.appendChild(w);
+    w.querySelector('.pzx').onclick = e => { e.stopPropagation(); pzClose(); };
+    w.addEventListener('pointerdown', pzDown); w.addEventListener('pointermove', pzMove); w.addEventListener('pointerup', pzUp); w.addEventListener('pointercancel', pzUp);
+    w.addEventListener('wheel', e => { e.preventDefault(); pzZoom(PZ.s * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX, e.clientY); }, { passive: false }); }
+  Object.assign(PZ, { s: 1, x: 0, y: 0 }); PZ.pts.clear();
+  w.querySelector('img').src = src; w.hidden = false; pzApply();
+}
+function pzClose() { const w = $('#pzoom'); if (w) w.hidden = true; }
+function pzApply() { const i = $('#pzoom img'); if (i) i.style.transform = `translate(${PZ.x}px,${PZ.y}px) scale(${PZ.s})`; }
+// приблизить к точке (cx, cy) экрана: она остаётся под пальцами
+function pzZoom(ns, cx, cy) {
+  ns = Math.max(1, Math.min(6, ns)); const W = innerWidth / 2, H = innerHeight / 2, k = ns / PZ.s;
+  PZ.x = (cx - W) - (cx - W - PZ.x) * k; PZ.y = (cy - H) - (cy - H - PZ.y) * k; PZ.s = ns;
+  if (ns === 1) { PZ.x = 0; PZ.y = 0; } pzApply();
+}
+function pzDown(e) {
+  if (e.target.closest('.pzx')) return;
+  $('#pzoom').setPointerCapture(e.pointerId); PZ.pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); PZ.moved = false;
+  if (PZ.pts.size === 2) { const [a, b] = [...PZ.pts.values()]; PZ.d0 = Math.hypot(a.x - b.x, a.y - b.y); PZ.s0 = PZ.s; }
+}
+function pzMove(e) {
+  const p = PZ.pts.get(e.pointerId); if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y; if (Math.abs(dx) + Math.abs(dy) > 3) PZ.moved = true;
+  p.x = e.clientX; p.y = e.clientY;
+  if (PZ.pts.size === 2) { const [a, b] = [...PZ.pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (PZ.d0) pzZoom(PZ.s0 * d / PZ.d0, (a.x + b.x) / 2, (a.y + b.y) / 2); }
+  else if (PZ.s > 1) { PZ.x += dx; PZ.y += dy; pzApply(); }
+}
+function pzUp(e) {
+  const was = PZ.pts.size; PZ.pts.delete(e.pointerId); if (PZ.pts.size < 2) PZ.d0 = 0;
+  if (was !== 1 || PZ.moved) return;
+  const t = Date.now();
+  if (t - PZ.last < 300) { PZ.last = 0; pzZoom(PZ.s > 1 ? 1 : 2.5, e.clientX, e.clientY); return; }   // двойное касание
+  PZ.last = t;
+  if (PZ.s === 1 && e.target.id === 'pzoom') setTimeout(() => { if (PZ.last === t) pzClose(); }, 300);   // касание по полю — закрыть
+}
+document.addEventListener('click', e => { const i = e.target.closest && e.target.closest('.ph.big img,.ph.pick img'); if (i && i.src) photoView(i.src); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#pzoom') && !$('#pzoom').hidden) pzClose(); });
 function render() {
   if (!kidAlive(KID)) { KID = 'baby'; lsSet(KIDKEY, KID); }
   applyNight(); medalCheck(); kidBar();
@@ -1216,7 +1269,72 @@ function medalsAll() {
   for (const [n, ic, nm] of [[7, '📔', 'Неделя дневника'], [30, '📚', 'Месяц дневника'], [100, '🏆', '100 дней дневника']]) out.push({ id: 'd' + n, ic, name: nm, at: days[n - 1] });
   return out;
 }
-function medalHtml(m) { return `<div class="medal ${m.at ? 'got' : ''}" title="${esc(m.name)}"><i aria-hidden="true"><span>${m.ic}</span></i><b>${esc(m.name)}</b>${m.at ? `<small>${dayShort(m.at)}</small>` : ''}</div>`; }
+
+/* Рисунки медалей: свои маленькие картинки (SVG 48×48) вместо эмодзи. Палитра мягкая, контур — тёмно-сливовый.
+   medalArt(id) — по id медали (m:<веха>, f<N>, vax1, gr1, sl6, fd100, d<N>); нет рисунка — эмодзи как раньше. */
+const MA = { k: '#FFD6B5', ch: '#F7A8B8', ink: '#4A3B52', bl: '#8DB3F2', pk: '#F49AB4', mt: '#78CFB4', yl: '#FFCF5C', br: '#B9835A', wh: '#FFFFFF', pe: '#F7B58C', lv: '#B7A6EE' };
+const maFace = (x, y, r, mouth, eyes) => {
+  const ex = r * .38, ey = y - r * .12, m = {
+    smile: 'M' + (x - r * .32) + ' ' + (y + r * .25) + 'q' + r * .32 + ' ' + r * .32 + ' ' + r * .64 + ' 0',
+    laugh: 'M' + (x - r * .36) + ' ' + (y + r * .18) + 'h' + r * .72 + 'q0 ' + r * .5 + ' -' + r * .36 + ' ' + r * .5 + 'q-' + r * .36 + ' 0 -' + r * .36 + ' -' + r * .5 + 'z',
+    o: '', calm: 'M' + (x - r * .2) + ' ' + (y + r * .3) + 'q' + r * .2 + ' ' + r * .14 + ' ' + r * .4 + ' 0' }[mouth || 'smile'];
+  const eye = eyes === 'happy'
+    ? '<path d="M' + (x - ex - r * .14) + ' ' + ey + 'q' + r * .14 + ' -' + r * .2 + ' ' + r * .28 + ' 0M' + (x + ex - r * .14) + ' ' + ey + 'q' + r * .14 + ' -' + r * .2 + ' ' + r * .28 + ' 0" fill="none" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linecap="round"/>'
+    : '<circle cx="' + (x - ex) + '" cy="' + ey + '" r="' + r * .1 + '" fill="' + MA.ink + '"/><circle cx="' + (x + ex) + '" cy="' + ey + '" r="' + r * .1 + '" fill="' + MA.ink + '"/>';
+  return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + MA.k + '"/>'
+    + '<path d="M' + (x - r * .2) + ' ' + (y - r * .95) + 'q' + r * .25 + ' -' + r * .3 + ' ' + r * .35 + ' 0" fill="none" stroke="' + MA.br + '" stroke-width="1.6" stroke-linecap="round"/>'
+    + '<circle cx="' + (x - r * .6) + '" cy="' + (y + r * .18) + '" r="' + r * .16 + '" fill="' + MA.ch + '" opacity=".8"/><circle cx="' + (x + r * .6) + '" cy="' + (y + r * .18) + '" r="' + r * .16 + '" fill="' + MA.ch + '" opacity=".8"/>' + eye
+    + (mouth === 'o' ? '<circle cx="' + x + '" cy="' + (y + r * .36) + '" r="' + r * .14 + '" fill="' + MA.ink + '"/>'
+      : mouth === 'laugh' ? '<path d="' + m + '" fill="#C2566F"/>' : '<path d="' + m + '" fill="none" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linecap="round"/>');
+};
+const maBub = (x, y, w, txt, c) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="13" rx="6.5" fill="' + (c || MA.wh) + '" stroke="' + MA.ink + '" stroke-width="1.2"/><path d="M' + (x + 5) + ' ' + (y + 12.4) + 'l-2 4 5-3.6" fill="' + (c || MA.wh) + '" stroke="' + MA.ink + '" stroke-width="1.2" stroke-linejoin="round"/>'
+  + (txt ? '<text x="' + (x + w / 2) + '" y="' + (y + 9.6) + '" text-anchor="middle" font-size="8" font-weight="800" font-family="Nunito,system-ui,sans-serif" fill="' + MA.ink + '">' + txt + '</text>' : '');
+const maNum = (x, y, n, c) => '<circle cx="' + x + '" cy="' + y + '" r="8.5" fill="' + (c || MA.pk) + '" stroke="' + MA.wh + '" stroke-width="1.6"/><text x="' + x + '" y="' + (y + 3.3) + '" text-anchor="middle" font-size="' + (String(n).length > 2 ? 7 : 9) + '" font-weight="900" font-family="Nunito,system-ui,sans-serif" fill="#fff">' + n + '</text>';
+const maStar = (x, y, r, c) => { let d = ''; for (let i = 0; i < 10; i++) { const a = Math.PI / 5 * i - Math.PI / 2, q = i % 2 ? r * .45 : r; d += (i ? 'L' : 'M') + (x + q * Math.cos(a)).toFixed(1) + ' ' + (y + q * Math.sin(a)).toFixed(1); } return '<path d="' + d + 'Z" fill="' + (c || MA.yl) + '"/>'; };
+const maHeart = (x, y, r, c) => '<path d="M' + x + ' ' + (y + r) + 'C' + (x - r * 1.6) + ' ' + y + ' ' + (x - r) + ' ' + (y - r * 1.1) + ' ' + x + ' ' + (y - r * .35) + 'C' + (x + r) + ' ' + (y - r * 1.1) + ' ' + (x + r * 1.6) + ' ' + y + ' ' + x + ' ' + (y + r) + 'Z" fill="' + (c || MA.pk) + '"/>';
+const maBody = (x, y, w, h, c) => '<rect x="' + (x - w / 2) + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + Math.min(w, h) / 2.2 + '" fill="' + (c || MA.bl) + '"/>';
+const ST = 'fill="none" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
+const MEDAL_ART = {
+  'm:smile': () => maFace(24, 26, 13, 'smile') + maHeart(39, 11, 4.5) + maHeart(9, 14, 3, MA.lv),
+  'm:laugh': () => maFace(24, 27, 13, 'laugh', 'happy') + '<text x="38" y="12" font-size="9" font-weight="900" font-family="Nunito,system-ui" fill="' + MA.pk + '">ха</text>',
+  'm:coo': () => maFace(19, 29, 12, 'o') + maBub(23, 7, 22, 'агу'),
+  'm:babble': () => maFace(16, 31, 11, 'o') + maBub(17, 6, 28, 'ма-ма', '#FFF4D6'),
+  'm:word': () => maFace(16, 31, 11, 'smile') + maBub(22, 6, 22, '') + maHeart(33, 12.6, 3.6),
+  'm:name': () => maFace(20, 26, 13, 'smile') + '<path d="M36 18q4 6 0 12M40 15q6 9 0 18" ' + ST + '/>',
+  'm:head': () => maBody(24, 31, 22, 15, MA.mt) + maFace(24, 20, 11, 'smile') + '<path d="M8 12v-5m-2 2 2-2 2 2M40 12v-5m-2 2 2-2 2 2" ' + ST + '/>',
+  'm:headup': () => '<rect x="6" y="34" width="36" height="6" rx="3" fill="' + MA.yl + '" opacity=".7"/>' + maBody(29, 25, 24, 11, MA.bl) + maFace(14, 22, 10, 'smile') + '<path d="M12 33l4-2" ' + ST + '/>',
+  'm:grab': () => '<circle cx="31" cy="20" r="11" fill="' + MA.br + '"/><circle cx="23" cy="11" r="4" fill="' + MA.br + '"/><circle cx="39" cy="11" r="4" fill="' + MA.br + '"/><circle cx="31" cy="23" r="4.5" fill="#E8C7A8"/>'
+    + '<circle cx="27.5" cy="18" r="1.2" fill="' + MA.ink + '"/><circle cx="34.5" cy="18" r="1.2" fill="' + MA.ink + '"/><circle cx="31" cy="22" r="1.2" fill="' + MA.ink + '"/>'
+    + '<path d="M6 42c3-7 7-9 12-9 3 0 4 2 2 3l-4 1 7-1c2 0 3 2 1 3l-8 3" fill="' + MA.k + '" stroke="' + MA.ink + '" stroke-width="1.4" stroke-linejoin="round"/>',
+  'm:roll': () => maFace(24, 24, 11, 'smile') + '<path d="M9 18a16 16 0 0 1 25-9" ' + ST + '/><path d="M31 6l4 3-4 3" ' + ST + '/><path d="M39 30a16 16 0 0 1-25 9" ' + ST + '/><path d="M17 42l-4-3 4-3" ' + ST + '/>',
+  'm:sit': () => '<ellipse cx="24" cy="40" rx="15" ry="3" fill="' + MA.yl + '" opacity=".6"/><path d="M15 39c0-10 4-15 9-15s9 5 9 15z" fill="' + MA.pk + '"/><path d="M14 39h-4M34 39h4" stroke="' + MA.k + '" stroke-width="4" stroke-linecap="round"/>' + maFace(24, 16, 9.5, 'smile'),
+  'm:tooth': () => '<path d="M14 12c3-3 7-2 10 0 3-2 7-3 10 0 3 3 2 9 0 14-1 4-1 10-4 11-3 1-3-7-6-7s-3 8-6 7c-3-1-3-7-4-11-2-5-3-11 0-14z" fill="#fff" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/>'
+    + '<circle cx="19.5" cy="20" r="1.3" fill="' + MA.ink + '"/><circle cx="28.5" cy="20" r="1.3" fill="' + MA.ink + '"/><path d="M21.5 24q2.5 2 5 0" ' + ST + '/>' + maStar(39, 9, 4) + maStar(9, 33, 2.6, MA.lv),
+  'm:standh': () => '<path d="M6 16h36M10 16v26M38 16v26M18 16v26M30 16v26" stroke="' + MA.br + '" stroke-width="2.4" stroke-linecap="round"/>' + maBody(24, 27, 12, 13, MA.mt) + maFace(24, 19, 7.5, 'smile') + '<path d="M18 26l-3-8M30 26l3-8" stroke="' + MA.k + '" stroke-width="3" stroke-linecap="round"/>',
+  'm:crawl': () => '<ellipse cx="24" cy="41" rx="17" ry="2.6" fill="' + MA.mt + '" opacity=".6"/>' + maBody(27, 22, 20, 11, MA.lv) + '<path d="M20 32v7M33 32l3 7" stroke="' + MA.k + '" stroke-width="3.4" stroke-linecap="round"/>' + maFace(13, 22, 9, 'smile'),
+  'm:walkh': () => '<path d="M5 30c4-8 9-12 15-12h6c2 0 2 3 0 3h-5l8 1c2 0 2 3 0 3l-9 1" fill="#E7B48F" stroke="' + MA.ink + '" stroke-width="1.4" stroke-linejoin="round"/><path d="M43 34c-3-5-7-8-11-8h-4c-2 0-2 2 0 2h3l-5 1c-2 0-2 2 0 2h6" fill="' + MA.k + '" stroke="' + MA.ink + '" stroke-width="1.4" stroke-linejoin="round"/>' + maHeart(24, 10, 4.5),
+  'm:stand': () => maBody(24, 24, 13, 12, MA.bl) + '<path d="M21 35v7M27 35v7" stroke="' + MA.k + '" stroke-width="3.4" stroke-linecap="round"/><path d="M18 27l-5-4M30 27l5-4" stroke="' + MA.k + '" stroke-width="3" stroke-linecap="round"/>' + maFace(24, 15, 8, 'smile') + maStar(40, 9, 5) + maStar(8, 12, 3),
+  'm:pincer': () => '<circle cx="28" cy="21" r="4.5" fill="' + MA.pk + '"/><path d="M27 17l2-3" stroke="' + MA.mt + '" stroke-width="2" stroke-linecap="round"/><path d="M8 40c2-9 6-14 12-16l6-1c2 0 2 3 0 3l-4 1M20 31c4-3 9-5 13-4 2 1 1 3-1 3l-6 1" fill="' + MA.k + '" stroke="' + MA.ink + '" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>',
+  'm:walk': () => '<g fill="' + MA.pk + '"><ellipse cx="17" cy="33" rx="5" ry="7.5" transform="rotate(-12 17 33)"/><circle cx="12" cy="23.5" r="1.6"/><circle cx="15" cy="22.5" r="1.6"/><circle cx="18" cy="22.6" r="1.6"/><circle cx="20.8" cy="23.6" r="1.4"/></g>'
+    + '<g fill="' + MA.bl + '"><ellipse cx="31" cy="20" rx="5" ry="7.5" transform="rotate(12 31 20)"/><circle cx="27.6" cy="10.4" r="1.4"/><circle cx="30.4" cy="9.4" r="1.6"/><circle cx="33.4" cy="9.6" r="1.6"/><circle cx="36.2" cy="10.8" r="1.6"/></g>',
+  'm:bye': () => '<path d="M17 40c-5-3-7-8-6-14l2-9c0-2 3-2 3 0v8l1-13c0-2 3-2 3 0v12l1-14c0-2 3-2 3 0v14l1-11c0-2 3-2 3 0v15l3-5c1-2 4-1 3 1l-4 9c-2 5-7 8-13 7z" fill="' + MA.k + '" stroke="' + MA.ink + '" stroke-width="1.4" stroke-linejoin="round"/><path d="M38 10q4 3 3 8M41 6q6 5 4 12" ' + ST + '/>',
+  f1: () => '<ellipse cx="18" cy="17" rx="10" ry="8" fill="#E9EEF5" stroke="' + MA.ink + '" stroke-width="1.6"/><ellipse cx="18" cy="16" rx="7" ry="4.5" fill="' + MA.pe + '"/><path d="M25 23l15 17" stroke="' + MA.ink + '" stroke-width="4" stroke-linecap="round"/><path d="M25 23l15 17" stroke="#E9EEF5" stroke-width="1.8" stroke-linecap="round"/>' + maHeart(39, 12, 4),
+  bowl: n => '<path d="M17 9q-2 3 0 6M24 7q-2 3 0 6M31 9q-2 3 0 6" ' + ST + ' opacity=".6"/><path d="M6 20h36c0 11-8 18-18 18S6 31 6 20z" fill="' + MA.mt + '" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="24" cy="20" rx="18" ry="3.6" fill="' + MA.pe + '" stroke="' + MA.ink + '" stroke-width="1.6"/>' + maNum(38, 37, n, MA.pk),
+  vax1: () => '<path d="M24 5l15 5v11c0 10-7 17-15 21C16 38 9 31 9 21V10z" fill="' + MA.bl + '" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><rect x="13" y="19" width="22" height="9" rx="4.5" fill="#F7D9B9" transform="rotate(-30 24 23.5)"/><rect x="20" y="20" width="8" height="7" fill="#EBC39C" transform="rotate(-30 24 23.5)"/>' + maStar(38, 8, 3.4),
+  gr1: () => '<rect x="9" y="6" width="11" height="36" rx="3" fill="' + MA.yl + '" stroke="' + MA.ink + '" stroke-width="1.6"/><path d="M9 12h5M9 18h7M9 24h5M9 30h7M9 36h5" stroke="' + MA.ink + '" stroke-width="1.3" stroke-linecap="round"/><path d="M25 38l5-9 5 3 6-14" ' + ST + '/><circle cx="41" cy="18" r="2.4" fill="' + MA.pk + '"/>',
+  sl6: () => '<path d="M31 9a14 14 0 1 0 8 25 11 11 0 0 1-8-25z" fill="' + MA.yl + '"/>' + maStar(11, 10, 3.6, MA.lv) + maStar(39, 13, 2.6, MA.lv) + '<text x="20" y="31" text-anchor="middle" font-size="12" font-weight="900" font-family="Nunito,system-ui" fill="' + MA.ink + '">6ч</text>',
+  fd100: () => '<rect x="15" y="16" width="16" height="25" rx="6" fill="#fff" stroke="' + MA.ink + '" stroke-width="1.6"/><rect x="16" y="27" width="14" height="13" rx="5" fill="#FFF0C7"/><path d="M18 16v-4h10v4M20 12q3-7 6 0" fill="' + MA.pk + '" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><path d="M19 22h4M19 26h3" stroke="' + MA.ink + '" stroke-width="1.2" stroke-linecap="round"/>' + maNum(37, 36, 100, MA.bl),
+  book: (n, c) => '<path d="M6 12q9-4 18 1v28q-9-5-18-1z" fill="#fff" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><path d="M42 12q-9-4-18 1v28q9-5 18-1z" fill="' + c + '" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 19q5-2 10 0M10 25q5-2 10 0" stroke="' + MA.ink + '" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>' + maNum(34, 25, n, MA.pk),
+  d100: () => '<path d="M14 8h20v8c0 7-4 12-10 12S14 23 14 16z" fill="' + MA.yl + '" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 11H8c0 6 3 9 7 9M34 11h6c0 6-3 9-7 9" ' + ST + '/><path d="M24 28v6M16 41h16l-2-7H18z" fill="' + MA.br + '" stroke="' + MA.ink + '" stroke-width="1.6" stroke-linejoin="round"/><text x="24" y="20" text-anchor="middle" font-size="8" font-weight="900" font-family="Nunito,system-ui" fill="' + MA.ink + '">100</text>',
+};
+function medalArt(id) {
+  let f = MEDAL_ART[id], out = '';
+  if (f) out = f();
+  else if (/^f\d+$/.test(id)) out = MEDAL_ART.bowl(id.slice(1));
+  else if (id === 'd7') out = MEDAL_ART.book(7, MA.mt); else if (id === 'd30') out = MEDAL_ART.book(30, MA.bl); else if (id === 'd100') out = MEDAL_ART.d100();
+  return out ? '<svg viewBox="0 0 48 48" class="mart" aria-hidden="true">' + out + '</svg>' : '';
+}
+function medalHtml(m) { return `<div class="medal ${m.at ? 'got' : ''}" title="${esc(m.name)}"><i aria-hidden="true">${medalArt(m.id) || `<span>${m.ic}</span>`}</i><b>${esc(m.name)}</b>${m.at ? `<small>${dayShort(m.at)}</small>` : ''}</div>`; }
 function medalsBlock() {
   const all = medals(), got = all.filter(m => m.at).sort((a, b) => b.at - a.at), left = all.filter(m => !m.at);
   return `<section class="sgroup"><h4>🏅 Медали · ${got.length} из ${all.length}</h4>
@@ -1239,7 +1357,7 @@ function showAward(m, more) {
   const w = $('#award'); buzz();
   const conf = Array.from({ length: 18 }, (_, i) => `<i style="--x:${Math.round(Math.cos(i / 18 * 6.283) * (90 + i % 3 * 30))}px;--y:${Math.round(Math.sin(i / 18 * 6.283) * (90 + i % 3 * 30))}px;--d:${(i % 6) * 40}ms;background:${['#f3c95a', '#e58bae', '#7dc3ae', '#a89bee', '#f08a5a', '#5b8fd8'][i % 6]}"></i>`).join('');
   w.innerHTML = `<div class="aw-box" role="dialog" aria-label="Новая медаль"><div class="aw-rays"></div><div class="aw-conf" aria-hidden="true">${conf}</div>
-    <div class="medal got aw-medal"><i aria-hidden="true">${m.ic}</i></div>
+    <div class="medal got aw-medal"><i aria-hidden="true">${medalArt(m.id) || m.ic}</i></div>
     <div class="aw-t">Новая медаль!</div><div class="aw-n">${esc(m.name)}</div>${more > 1 ? `<div class="hint">и ещё ${more - 1} — в профиле</div>` : ''}
     <div class="acts"><button class="b ghost" onclick="awardClose()">Ура!</button><button class="b main" onclick="awardClose();openProfile()">В профиль</button></div></div>`;
   w.hidden = false;
@@ -1248,7 +1366,7 @@ function awardClose() { const w = $('#award'); w.hidden = true; w.innerHTML = ''
 function openProfile() {
   const b = baby(), born = b.birth ? parseDay(b.birth) : null;
   openSheet(`<div class="shead"><h2>Профиль малыша</h2><button class="icon-btn" onclick="closeSheet()" aria-label="Закрыть">✕</button></div>
-    <div class="prof"><button type="button" class="ava big pick" onclick="$('#p_ava').click()" aria-label="Фото малыша">${kidAva(b)}<i class="cam" aria-hidden="true">📷</i></button>
+    <div class="prof"><button type="button" class="ava big pick" onclick="$('#p_ava').click()" aria-label="Фото малыша">${kidAva(b)}<i class="cam" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></i></button>
       <input type="file" id="p_ava" accept="image/*,image/heic,image/heif,.heic,.heif,application/octet-stream" hidden onchange="setKidPhoto(this.files[0])"><div><div class="pname">${esc(b.name || 'Малыш')}</div>
       <div class="hint" style="margin:2px 0 0">${b.ph ? '' : 'Нажмите на значок — поставить фото. '}${born ? esc(ageText()) + ' · родил' + (b.sex === 'f' ? 'ась' : 'ся') + ' ' + dayShort(+born) : 'Укажите дату рождения'}</div></div></div>
     ${medalsBlock()}
@@ -1312,7 +1430,9 @@ function saveSettings() {
   if (auto && from === to) return err('Время включения и выключения совпадает');
   const meName = $('#s_me') ? $('#s_me').value.trim() : null;
   if (meName != null && meName !== devName(DEV)) setMe({ name: meName });
-  const p = nightPref(); Object.assign(p, { auto, from: from || p.from, to: to || p.to }); delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
+  // ночь, включённую луной, не сбрасываем — только если поменяли расписание
+  const p = nightPref(), ch = p.auto !== auto || (auto && (p.from !== (from || p.from) || p.to !== (to || p.to)));
+  Object.assign(p, { auto, from: from || p.from, to: to || p.to }); if (ch) delete p.force; lsSet(NIGHTKEY, JSON.stringify(p));
   if ($('#s_neve')) lsSet(NOTIFKEY, JSON.stringify({ eve: $('#s_neve').checked, before: $('#s_nbef').checked, vax: $('#s_nvax').checked }));
   closeSheet(); render();
 }
@@ -1924,6 +2044,20 @@ function foodStat() {
   for (const x of Object.values(m)) { x.day = Math.round((t - sod(x.first)) / 864e5) + 1; x.st = x.react ? 'react' : x.day <= FOOD_DAYS ? 'intro' : 'ok'; }
   return m;
 }
+// сводка: сколько продуктов попробовали (всего и по группам), сколько дней с прикормом за неделю, любимое, аллергены
+function foodSummary(st) {
+  const recs = foodRecs(); if (!recs.length) return '';
+  const xs = Object.values(st), n = xs.length, cat = FOODS.flatMap(g => g.items), first = recs[0].s, days = Math.round((sod(now()) - sod(first)) / 864e5) + 1;
+  const wk = new Set(recs.filter(e => e.s >= addDays(sod(now()), -6)).map(e => sod(e.s))).size;
+  const fav = xs.filter(x => !x.react).sort((a, b) => b.n - a.n).slice(0, 3);
+  const algAll = ALG.length, algIn = ALG.filter(([k]) => cat.some(it => it[3] === k && st[it[0]])).length;
+  const bars = Object.entries(FSEC).map(([sk, [ic, t]]) => { const all = FOODS.filter(g => g.sec === sk).flatMap(g => g.items), d = all.filter(it => st[it[0]]).length;
+    return `<div class="fsb"><span>${ic} ${t}</span><i><b style="width:${all.length ? Math.round(d / all.length * 100) : 0}%"></b></i><em>${d}/${all.length}</em></div>`; }).join('');
+  return `<div class="card fsum"><h3>📊 Прикорм в цифрах</h3>
+    <div class="fsn"><div><b class="num">${n}</b><small>${pl(n, 'продукт', 'продукта', 'продуктов')}</small></div><div><b class="num">${days}</b><small>${pl(days, 'день', 'дня', 'дней')} прикорма</small></div><div><b class="num">${wk}/7</b><small>дней на неделе</small></div><div><b class="num">${algIn}/${algAll}</b><small>аллергенов</small></div></div>
+    <div class="fsbars">${bars}</div>
+    ${fav.length ? `<p class="hint" style="margin:10px 0 0">Чаще всего: ${fav.map(x => foodIc(x.fid) + ' ' + esc(foodName(x.fid, x.name)) + ' — ' + x.n).join(' · ')}</p>` : ''}</div>`;
+}
 function viewFood() {
   const st = foodStat(), am = monthsAt(now()), intro = Object.values(st).filter(x => x.st === 'intro'), reacts = Object.values(st).filter(x => x.react);
   let h = '';
@@ -1942,6 +2076,7 @@ function viewFood() {
       <p class="hint">${Object.keys(st).length ? 'Новый продукт — по одному, начиная с ½–1 чайной ложки, и несколько дней наблюдаем.' : 'Обычно начинают с овощного пюре из одного овоща (кабачок, цветная капуста, брокколи) или безмолочной каши — с ½–1 чайной ложки.'}</p>
       ${nxt ? `<div class="btns" style="margin-top:10px"><button class="b main" onclick="editFood(null,'${nxt}')">Попробовать: ${esc(foodName(nxt))}</button></div>` : ''}</div>`;
   }
+  h += foodSummary(st);
   if (reacts.length) h += `<div class="card adv alarm"><h3>⚠ Была реакция</h3><ul class="list">${reacts.map(x => `<li onclick="editFood(null,'${esc(x.fid)}')"><span class="ic">${foodIc(x.fid)}</span><span class="tx"><div>${esc(foodName(x.fid, x.name))}</div><small>${dayShort(x.react.s)} — ${esc(REACT[x.react.react] || '')}${x.react.note ? ' · ' + esc(x.react.note) : ''}</small></span></li>`).join('')}</ul>
     <p class="hint">Расскажите педиатру. Отёк лица, губ, затруднённое дыхание — сразу 103 или 112.</p></div>`;
   const tag = id => { const x = st[id]; return x ? x.st : ''; };
@@ -1950,8 +2085,8 @@ function viewFood() {
   const tries = id => { const x = st[id], n = x ? Math.min(3, x.n) : 0; return `<i class="tr${x && x.react ? ' bad' : ''}">${[0, 1, 2].map(i => `<b class="${i < n ? 'on' : ''}"></b>`).join('')}</i>`; };
   for (const [sk, [ic, title]] of Object.entries(FSEC)) {
     const gs = FOODS.filter(g => g.sec === sk), all = gs.flatMap(g => g.items), done = all.filter(it => st[it[0]]).length;
-    const open = am == null || gs.some(g => g.lo <= am + 1 && g.items.some(it => !st[it[0]]));
-    h += `<details class="fsec"${open ? ' open' : ''}><summary><b>${ic} ${title}</b><span class="vdate">${done} из ${all.length}</span></summary>`;
+    const open = !!(UI.fsec && UI.fsec[sk]);
+    h += `<details class="fsec"${open ? ' open' : ''} ontoggle="(UI.fsec||(UI.fsec={}))['${sk}']=this.open"><summary><b>${ic} ${title}</b><span class="vdate">${done} из ${all.length}</span></summary>`;
     for (const g of gs) {
       const early = am != null && am < g.lo;
       h += `<div class="fgrp${early ? ' early' : ''}"><div class="vhead"><b>${g.lab}</b></div>${g.note ? `<div class="hint" style="margin:0">${g.note}</div>` : ''}
@@ -2436,7 +2571,7 @@ function demoAlbum() {
 function widgetState() {
   const f = activeOf('feed'), g = f && openSeg(f), sl = activeOf('sleep'), lf = lastOf('feed', e => e.e != null), ld = lastOf('diaper');
   return { feed: f && f.kind === 'breast' ? { id: f.id, s: f.s, side: g ? g.side : '', segs: f.segs, by: f.by || '', note: f.note || '' } : null, lastFeed: lf ? lf.s : 0, next: nextSide() || 'L',
-    sleep: sl ? { id: sl.id, s: sl.s, by: sl.by || '', note: sl.note || '' } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: baby().name || '', kid: KID === 'baby' ? '' : KID };
+    sleep: sl ? { id: sl.id, s: sl.s, by: sl.by || '', note: sl.note || '' } : null, awake: lastAwake() || 0, diaper: ld ? ld.s : 0, name: baby().name || '', kid: KID === 'baby' ? '' : KID, style: styleNow() };
 }
 function pushWidget() {
   if (!NATIVE || typeof NATIVE.setWidget !== 'function') return;
