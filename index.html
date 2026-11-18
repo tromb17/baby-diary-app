@@ -77,6 +77,10 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .kidbar button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
 .kidbar button.add{padding:4px 12px;color:var(--muted);font-weight:600}
 .kids-l{display:flex;flex-direction:column;gap:8px}
+details.hx{margin:6px 0}details.hx>summary{list-style:none;cursor:pointer;margin:0}details.hx>summary::-webkit-details-marker{display:none}
+details.hx>summary span{color:var(--accent);font-weight:700;white-space:nowrap}details.hx[open]>summary{display:none}
+.sfold h3 .chev{display:inline-block;font-style:normal;margin-left:6px;transition:transform .15s}.sfold.open h3 .chev{transform:rotate(90deg)}
+.sfold h3 .more{color:var(--muted)}.sfold:not(.open){padding-top:14px;padding-bottom:14px}.sfold.open h3{margin-bottom:8px}
 .stpick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .stpick button{display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:6px 6px 8px;border:2px solid var(--line);border-radius:16px;background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-align:center}
 .stpick button.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -198,16 +202,19 @@ table.norm{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
 .prof{display:flex;align-items:center;gap:14px;margin:0 0 14px}.ava.big{width:72px;height:72px;font-size:40px;cursor:default}
 .ava,.kidbar .ke{overflow:hidden;position:relative}.ava img.kph,.kidbar .ke img.kph{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
 .ava.big.pick{cursor:pointer;overflow:visible}.ava.big.pick img.kph{border-radius:50%}
-.ava .cam{position:absolute;right:-4px;bottom:-4px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-style:normal;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.ava .cam{position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;font-size:12px!important;line-height:1;border:2px solid var(--page);z-index:2;border-radius:50%;display:grid;place-items:center;font-size:14px;font-style:normal;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .pname{font-size:22px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
 .medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:12px 8px}
 .medal{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding-top:10px}
-.medal i{position:relative;z-index:1;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-style:normal;
-  background:radial-gradient(circle at 35% 30%,#fff7da,#f3c95a 58%,#c99328);box-shadow:inset 0 0 0 3px #f8e09a,0 3px 8px rgba(120,80,10,.25)}
-.medal.got::before,.medal.got::after{content:'';position:absolute;top:0;width:13px;height:22px;z-index:0;border-radius:2px}
-.medal.got::before{left:calc(50% - 16px);background:#5b8fd8;transform:skewX(14deg)}.medal.got::after{left:calc(50% + 3px);background:#d85b7a;transform:skewX(-14deg)}
+.medal i{position:relative;z-index:1;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:25px;font-style:normal;
+  background:radial-gradient(circle,#FFFBEF 0 56%,transparent 57%),conic-gradient(from 210deg,#F4D27E,#E2AE45,#F9E4A8,#D9A13A,#F2CF78,#F4D27E);
+  box-shadow:0 0 0 2px var(--surface),0 0 0 3px color-mix(in srgb,#E2AE45 45%,transparent),0 5px 12px rgba(150,100,20,.18)}
+.medal.got::before,.medal.got::after{content:'';position:absolute;top:0;width:12px;height:24px;z-index:0;clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%)}
+.medal.got::before{left:calc(50% - 15px);background:color-mix(in srgb,var(--c-sleep) 55%,#fff);transform:rotate(14deg)}.medal.got::after{left:calc(50% + 3px);background:color-mix(in srgb,var(--c-feed) 50%,#fff);transform:rotate(-14deg)}
+.medal i span{display:block;line-height:1;filter:drop-shadow(0 1px 1px rgba(120,80,10,.25))}
+.medal:not(.got) i span{filter:grayscale(1);opacity:.35}
 .medal b{font-size:12.5px;line-height:1.25;font-weight:700}.medal small{font-size:11.5px;color:var(--muted)}
-.medal:not(.got) i{background:var(--surface);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted);font-size:22px}
+.medal:not(.got) i{background:var(--surface-2);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted)}
 .medal:not(.got) b{color:var(--muted);font-weight:600}
 :root[data-night] .medal.got i{filter:brightness(.6) sepia(.4)}
 .award{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:rgba(20,16,10,.5);padding:24px}
@@ -845,6 +852,17 @@ function fitName() {
   while (el.scrollWidth > el.clientWidth + 1 && f > 12) { f -= 1; el.style.fontSize = f + 'px'; }
 }
 window.addEventListener('resize', () => fitName()); if (document.fonts) document.fonts.ready.then(() => fitName());
+// пояснение длиннее ~110 знаков (без кнопок и полей внутри) сворачивается: первое предложение + «ещё»
+function tidyHints(root) {
+  for (const p of root.querySelectorAll('p.hint:not([data-hx])')) {
+    p.setAttribute('data-hx', '1');
+    const t = p.textContent.trim(); if (t.length <= 110 || p.querySelector('button,input,select,textarea')) continue;
+    const m = /^(.{12,90}?[.!?:])\s/.exec(t), first = m ? m[1] : t.slice(0, 70).replace(/\s\S*$/, '') + '…';
+    const d = document.createElement('details'); d.className = 'hx'; d.style.cssText = p.style.cssText;
+    const sm = document.createElement('summary'); sm.className = 'hint'; sm.textContent = first + ' '; const more = document.createElement('span'); more.textContent = 'ещё'; sm.appendChild(more);
+    p.parentNode.insertBefore(d, p); d.appendChild(sm); d.appendChild(p); p.style.cssText = 'margin:0';
+  }
+}
 function render() {
   if (!kidAlive(KID)) { KID = 'baby'; lsSet(KIDKEY, KID); }
   applyNight(); medalCheck(); kidBar();
@@ -860,7 +878,7 @@ function render() {
   v.dataset.scr = scr;
   v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : UI.tab === 'sleep' ? viewSleep() : UI.tab === 'feeds' ? viewFeeds() : viewNow();
   if (was) for (const d of v.querySelectorAll('details')) { const o = was.get(dk(d)); if (o != null) d.open = o; }
-  tick(); hydratePhotos(); chatShow(); sndBar(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
+  tidyHints($('#view')); tick(); hydratePhotos(); chatShow(); sndBar(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
 }
 
 // живые цифры: data-base (уже набежало, мс) + data-from (идёт с …); data-ago — «… назад»
@@ -1082,7 +1100,7 @@ function rowHtml(e) {
 }
 
 /* ───────── окна: бутылочка, запись задним числом, правка ───────── */
-function openSheet(html) { const sh = $('#sheet'); sh.innerHTML = html; $('#sheetWrap').hidden = false; sh.scrollTop = 0; if (html.includes('data-ph')) hydratePhotos(); }
+function openSheet(html) { const sh = $('#sheet'); sh.innerHTML = html; $('#sheetWrap').hidden = false; sh.scrollTop = 0; tidyHints(sh); if (html.includes('data-ph')) hydratePhotos(); }
 function closeSheet() { $('#sheetWrap').hidden = true; $('#sheet').innerHTML = ''; }
 const last = () => lsJson(LASTKEY, {});
 function chipsHtml(name, opts, val) { return `<div class="chips" data-name="${name}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" class="${String(v) === String(val) ? 'on' : ''}" onclick="chip(this)">${t}</button>`).join('')}</div>`; }
@@ -1198,7 +1216,7 @@ function medalsAll() {
   for (const [n, ic, nm] of [[7, '📔', 'Неделя дневника'], [30, '📚', 'Месяц дневника'], [100, '🏆', '100 дней дневника']]) out.push({ id: 'd' + n, ic, name: nm, at: days[n - 1] });
   return out;
 }
-function medalHtml(m) { return `<div class="medal ${m.at ? 'got' : ''}" title="${esc(m.name)}"><i aria-hidden="true">${m.at ? m.ic : '?'}</i><b>${esc(m.name)}</b>${m.at ? `<small>${dayShort(m.at)}</small>` : ''}</div>`; }
+function medalHtml(m) { return `<div class="medal ${m.at ? 'got' : ''}" title="${esc(m.name)}"><i aria-hidden="true"><span>${m.ic}</span></i><b>${esc(m.name)}</b>${m.at ? `<small>${dayShort(m.at)}</small>` : ''}</div>`; }
 function medalsBlock() {
   const all = medals(), got = all.filter(m => m.at).sort((a, b) => b.at - a.at), left = all.filter(m => !m.at);
   return `<section class="sgroup"><h4>🏅 Медали · ${got.length} из ${all.length}</h4>
@@ -1815,13 +1833,13 @@ function homeHealth() {
 
 /* ───────── советы ───────── */
 function viewMore() {
-  const seg = `<div class="seg" style="margin-bottom:12px">${[['sounds', 'Звуки и колыбельные'], ['tips', 'Советы']].map(([k, t]) => `<button class="${UI.more === k ? 'on' : ''}" onclick="UI.more='${k}';render()">${t}</button>`).join('')}</div>`;
+  const seg = `<div class="seg" style="margin-bottom:12px">${[['sounds', 'Звуки'], ['tips', 'Советы']].map(([k, t]) => `<button class="${UI.more === k ? 'on' : ''}" onclick="UI.more='${k}';render()">${t}</button>`).join('')}</div>`;
   return seg + (UI.more === 'tips' ? viewTips() : viewSounds());
 }
 function viewTips() {
   const m = ageM(), wk = m != null ? pick(WAKE, m) : null, sl = m != null ? pick(SLEEP, m) : null;
   const C = (title, body, src, cls) => `<div class="card adv ${cls || ''}"><h3>${title}</h3>${body}${src ? `<div class="src">Источник: ${src}</div>` : ''}</div>`;
-  let h = `<p class="hint" style="margin:0 0 12px">Коротко о главном по рекомендациям ВОЗ, Американской академии педиатрии и Союза педиатров России. Это не заменяет консультацию врача.</p>`;
+  let h = `<p class="hint" style="margin:0 0 12px">По ВОЗ, AAP и Союзу педиатров. Не заменяет врача.</p>`;
   h += C('🚑 Когда срочно к врачу', `<p class="hint" style="color:var(--text-2)">Звоните <b>103</b> или <b>112</b>, если:</p><ul>
     <li>температура <b>38,0 °C и выше у малыша до 3 месяцев</b>;</li>
     <li>трудно дышать, губы или кожа синеют, долгие паузы в дыхании;</li>
@@ -2113,7 +2131,7 @@ function sndBuffer(ctx, id) {
     let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, br = 0;
     for (let i = 0; i < a.length; i++) {
       const w = Math.random() * 2 - 1;
-      if (id === 'white') a[i] = w * 0.35;
+      if (id === 'white') a[i] = w * 0.3;
       else if (id === 'pink') { b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.969 * b2 + w * 0.153852; b3 = 0.8665 * b3 + w * 0.3104856; b4 = 0.55 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.016898; a[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.09; b6 = w * 0.115926; }
       else { br = (br + 0.02 * w) / 1.02; a[i] = br * 2.6; }
     }
@@ -2139,6 +2157,11 @@ function sndPlay(id) {
     src.connect(wave); out = wave; SND.lfo = lfo;
   }
   if (id === 'heart') { const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 180; src.connect(lp); out = lp; }
+  // шумы — мягче: два фильтра срезают резкое шипение сверху и гул в самом низу
+  const SOFT = { white: 3200, pink: 2000, brown: 900, sea: 1100 };
+  if (SOFT[id]) { const lp = ctx.createBiquadFilter(), lp2 = ctx.createBiquadFilter(), hp = ctx.createBiquadFilter();
+    lp.type = lp2.type = 'lowpass'; lp.frequency.value = lp2.frequency.value = SOFT[id]; lp.Q.value = lp2.Q.value = 0.5; hp.type = 'highpass'; hp.frequency.value = 35;
+    out.connect(hp).connect(lp).connect(lp2); out = lp2; }
   out.connect(g).connect(ctx.destination);
   SND.src = src; SND.gain = g; SND.id = id; SND.until = p.timer ? Date.now() + p.timer * 60000 : 0;
   sndGain(p.vol, true);
@@ -2193,18 +2216,20 @@ function sndMini() {
 }
 function viewSounds() {
   const p = sndPref(), left = sndLeft();
-  let h = `<div class="card"><h3>🎵 Звуки для сна</h3><p class="hint">Шум похож на то, что малыш слышал в животике, и заглушает бытовые звуки. Ставьте телефон <b>не ближе 2 метров</b> от кроватки и на небольшую громкость — так советуют педиатры.</p>
+  let h = `<div class="card"><h3>🎵 Звуки для сна</h3><p class="hint">Телефон — <b>не ближе 2 м</b> от кроватки, громкость небольшая.</p>
     <div class="f" style="margin:12px 0 4px"><span>Выключить через</span>${chipsHtml('stimer', [[15, '15 мин'], [30, '30 мин'], [45, '45 мин'], [60, '1 час'], [0, 'не выключать']], p.timer)}</div>
     <label class="f" style="margin:10px 0 0"><span>Громкость</span><input type="range" id="snd_vol" min="0.05" max="1" step="0.05" value="${p.vol}" oninput="sndSet('vol',+this.value)" style="padding:0;min-height:32px;border:0;background:transparent"></label>
     ${SND.id ? `<p class="st" style="margin:6px 0 0">${SND.paused ? 'На паузе' : left != null ? 'Выключится через <b class="num" data-left="1">' + fmtMin(left) + '</b>, в конце — плавно' : 'Играет без таймера'}</p>
       <div class="btns" style="margin-top:8px"><button class="b" onclick="sndPause()">${SND.paused ? '▶ Продолжить' : '❚❚ Пауза'}</button><button class="b" onclick="sndStop()">■ Стоп</button></div>` : ''}</div>`;
   const row = s => `<li class="${SND.id === s.id ? 'on' : ''}" onclick="sndPlay('${s.id}')"><span class="ic">${s.ic}</span><span class="tx"><div>${esc(s.name)}</div><small>${esc(s.sub)}</small></span><span class="play">${SND.id === s.id ? (SND.paused ? '❚❚' : '■') : '▶'}</span></li>`;
-  h += `<div class="card"><h3>Шум</h3><ul class="list snds">${SOUNDS.filter(s => s.kind === 'noise').map(row).join('')}</ul></div>`;
-  h += `<div class="card"><h3>Колыбельные</h3><ul class="list snds">${SOUNDS.filter(s => s.kind === 'tune').map(row).join('')}</ul></div>`;
+  // разделы свёрнуты; открытые — UI.sopen (раздел с играющим звуком открыт сам)
+  const op = UI.sopen || (UI.sopen = {}), playing = SND.id ? (SOUNDS.find(x => x.id === SND.id) || {}).kind : '';
+  const fold = (k, title, n, body) => { const o = op[k] || playing === k; return `<div class="card sfold ${o ? 'open' : ''}"><h3 class="tap" onclick="UI.sopen['${k}']=!${o};render()">${title}<span class="more">${o ? '' : n}<i class="chev" aria-hidden="true">›</i></span></h3>${o ? body : ''}</div>`; };
+  h += fold('noise', '🌫️ Шум', SOUNDS.filter(s => s.kind === 'noise').length, `<ul class="list snds">${SOUNDS.filter(s => s.kind === 'noise').map(row).join('')}</ul>`);
+  h += fold('tune', '🎶 Колыбельные', SOUNDS.filter(s => s.kind === 'tune').length, `<ul class="list snds">${SOUNDS.filter(s => s.kind === 'tune').map(row).join('')}</ul>`);
   const txt = l => `<details class="ckp"><summary><b>${l.name}</b>${l.by ? `<span class="vdate">${esc(l.by)}</span>` : ''}</summary><p class="lyr">${l.text.map(esc).join('<br>')}</p></details>`;
-  h += `<div class="card"><h3>📖 Спеть самим</h3><p class="hint">Голос мамы и папы малышу милее любой записи. Народные колыбельные и стихи классиков:</p>${LULLABIES.map(txt).join('')}</div>`;
-  h += `<div class="card"><h3>📚 Сказки на ночь</h3><p class="hint">Короткие народные сказки — рассказывайте медленно и тихо, с одинаковыми словами каждый раз: повторение успокаивает.</p>${TALES.map(t => `<details class="ckp"><summary><b>${t.ic} ${t.name}</b></summary><p class="lyr tale">${t.text.map(esc).join('</p><p class="lyr tale">')}</p></details>`).join('')}</div>`;
-  h += `<p class="hint" style="margin:0 0 12px">Звук играет, пока приложение открыто или свёрнуто. Если телефон «усыпляет» приложения в фоне, оставьте его открытым — в ночном режиме экран почти чёрный.</p>`;
+  h += fold('sing', '📖 Спеть самим', LULLABIES.length, LULLABIES.map(txt).join(''));
+  h += fold('tales', '📚 Сказки на ночь', TALES.length, TALES.map(t => `<details class="ckp"><summary><b>${t.ic} ${t.name}</b></summary><p class="lyr tale">${t.text.map(esc).join('</p><p class="lyr tale">')}</p></details>`).join(''));
   return h;
 }
 const LULLABIES = [
