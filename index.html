@@ -135,6 +135,7 @@ main{max-width:640px;margin:0 auto;padding:0 16px 24px}
 .strip{position:relative;height:34px;background:var(--surface-2);border-radius:9px;overflow:hidden;margin:10px 0 4px}
 .strip i{position:absolute;top:0;bottom:0;background:var(--c);opacity:.85}
 .strip i.feed{top:55%;opacity:1;min-width:3px}
+.strip.fd i.feed{top:15%;height:70%;border-radius:3px;background:var(--c-feed)}.strip.fd i.feed.bt,.lleg i.btk{background:color-mix(in srgb,var(--c-feed) 45%,#ffc861)}
 .strip i.diaper{top:auto;bottom:0;height:5px;width:5px;border-radius:50%;opacity:1;transform:translateX(-50%)}
 .strip i.nowl{background:var(--text);width:1.5px;opacity:.6}
 .strip-ax{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
@@ -800,12 +801,12 @@ function isNight() {
 function toggleNight() { const p = nightPref(); p.force = isNight() ? 'off' : 'on'; p.at = now(); lsSet(NIGHTKEY, JSON.stringify(p)); applyNight(); }
 // оформление: один из стилей design.css — на этом устройстве
 const STYLEKEY = 'babydiary.style.v1';
-// id, название, цвета для образца: фон, карточка, три цвета дел; theme — цвет полосы телефона (светлая, тёмная)
+// id, название, цвета для образца: фон, карточка, три цвета дел; theme — цвет полосы телефона (светлая, тёмная, ночной режим)
 const STYLES = [
-  ['toys', 'Мягкие игрушки', ['#EEF4FF', '#FFFFFF', '#FF9DB5', '#8FA6FF', '#6FD6B8'], ['#EEF4FF', '#161A2C']],
-  ['scandi', 'Скандинавская', ['#F5EFE6', '#FCF9F4', '#AE4E43', '#4A6A86', '#4F7149'], ['#F5EFE6', '#1C1814']],
-  ['sky', 'Сонное небо', ['#1F2347', '#2A2F5E', '#FFB3C6', '#C9C2FF', '#9EE8DE'], ['#1F2347', '#1F2347']],
-  ['base', 'Классика', ['#FAF8F5', '#FFFFFF', '#B9466F', '#6553C2', '#0B7C88'], ['#FAF8F5', '#141414']],
+  ['toys', 'Мягкие игрушки', ['#EEF4FF', '#FFFFFF', '#FF9DB5', '#8FA6FF', '#6FD6B8'], ['#EEF4FF', '#161A2C', '#05060E']],
+  ['scandi', 'Скандинавская', ['#F5EFE6', '#FCF9F4', '#AE4E43', '#4A6A86', '#4F7149'], ['#F5EFE6', '#1C1814', '#0A0806']],
+  ['sky', 'Сонное небо', ['#1F2347', '#2A2F5E', '#FFB3C6', '#C9C2FF', '#9EE8DE'], ['#1B1F42', '#1B1F42', '#03040F']],
+  ['base', 'Классика', ['#FAF8F5', '#FFFFFF', '#B9466F', '#6553C2', '#0B7C88'], ['#FAF8F5', '#141414', '#070605']],
 ];
 const styleNow = () => document.documentElement.getAttribute('data-style') || 'toys';
 function styleSet(v) { if (!STYLES.some(x => x[0] === v)) return; lsSet(STYLEKEY, v); document.documentElement.setAttribute('data-style', v); applyNight(); render(); openSettings(); }
@@ -819,7 +820,7 @@ function applyNight() {
   const on = isNight();
   if (on) document.documentElement.setAttribute('data-night', ''); else document.documentElement.removeAttribute('data-night');
   $('#nightBtn').classList.toggle('on', on);
-  const m = document.querySelector('meta[name=theme-color]'); if (m) { const t = (STYLES.find(x => x[0] === styleNow()) || STYLES[0])[3]; m.content = on ? '#070605' : darkOS() ? t[1] : t[0]; }
+  const m = document.querySelector('meta[name=theme-color]'); if (m) { const t = (STYLES.find(x => x[0] === styleNow()) || STYLES[0])[3]; m.content = on ? t[2] : darkOS() ? t[1] : t[0]; }
 }
 
 /* ───────── экраны ───────── */
@@ -857,7 +858,7 @@ function render() {
   const scr = [UI.tab, UI.more, UI.dev, UI.health, UI.alb].join('|'), dk = d => { const s = d.querySelector('summary'); return s ? (s.querySelector('b') || s).textContent.trim() : ''; };
   const was = v.dataset.scr === scr ? new Map([...v.querySelectorAll('details')].map(d => [dk(d), d.open])) : null;
   v.dataset.scr = scr;
-  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : UI.tab === 'sleep' ? viewSleep() : viewNow();
+  v.innerHTML = UI.tab === 'day' ? viewDay() : UI.tab === 'tips' ? viewMore() : UI.tab === 'health' ? viewHealth() : UI.tab === 'dev' ? viewDev() : UI.tab === 'chat' ? viewChat() : UI.tab === 'book' ? viewBook() : UI.tab === 'sleep' ? viewSleep() : UI.tab === 'feeds' ? viewFeeds() : viewNow();
   if (was) for (const d of v.querySelectorAll('details')) { const o = was.get(dk(d)); if (o != null) d.open = o; }
   tick(); hydratePhotos(); chatShow(); sndBar(); if (UI.tab === 'book') bookZoom(); pushWidget(); pushNotif();
 }
@@ -883,7 +884,7 @@ function viewNow() {
   if (!f) {
     const lf = lastOf('feed'), ns = nextSide();
     const st = lf ? `Последнее — <b data-ago="${lf.s}"></b>, в ${hm(lf.s)}${lf.kind === 'breast' && lf.segs ? ' (' + feedSides(lf) + ')' : ''}` : 'Пока нет записей';
-    h += `<div class="card feed"><h3><span class="dot"></span>Кормление</h3><div class="st">${st}</div>
+    h += `<div class="card feed"><h3 class="tap" onclick="go('feeds')"><span class="dot"></span>Кормление<span class="more">график →</span></h3><div class="st tap" onclick="go('feeds')">${st}</div>
       <div class="btns">
         ${['L', 'R'].map(s => `<button class="b ${ns === s ? 'main' : ''}" onclick="breast('${s}')">${SIDE[s]}<small>${ns === s ? 'следующая' : 'грудь'}</small></button>`).join('')}
         <button class="b" onclick="openBottle()"><span class="e">🍼</span><small>бутылочка</small></button>
@@ -930,7 +931,7 @@ function liveFeed(f) {
     const og = g && g.side === s;
     return `<span class="${og ? 'cur' : ''}">${SIDE[s]}: <span class="num" data-from="${og ? g.s : ''}" data-base="${og ? segsDur(f, s) - (now() - g.s) : segsDur(f, s)}"></span></span>`;
   }).join('');
-  return `<div class="card feed live"><h3><span class="dot"></span>Кормит${cur ? ' · ' + SIDE[cur].toLowerCase() + ' грудь' : ' · пауза'}</h3>
+  return `<div class="card feed live"><h3 class="tap" onclick="go('feeds')"><span class="dot"></span>Кормит${cur ? ' · ' + SIDE[cur].toLowerCase() + ' грудь' : ' · пауза'}<span class="more">график →</span></h3>
     <div class="timer" data-from="${g ? g.s : ''}" data-base="${base}"></div>
     <div class="sides">${sideLine}</div>
     <div class="btns">
@@ -2558,7 +2559,7 @@ function phFetch(id) {
   if (!REMOTE) return Promise.resolve(null);
   if (PHX.wait.has(id)) return PHX.wait.get(id);
   const p = (async () => {
-    if (isY()) { const full = await yPhoto(id); if (!full) return null;
+    if (isS() || isY()) { const full = await (isS() ? sPhoto(id) : yPhoto(id)); if (!full) return null;
       (async () => { try { const thumb = await shrink(await loadImage(full), 480, 0.78); await phPut(id, { full, thumb, at: Date.now(), remote: 1 }); } catch (e) {} })();
       const u = URL.createObjectURL(full); PH.url.set(id + ':full', u); PH.url.set(id + ':thumb', u); return u; }
     if (!PHX.idx || (!PHX.idx.has(id) && Date.now() - PHX.idxAt > 60000)) {
@@ -2734,6 +2735,65 @@ function viewSleep() {
     return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WDS[new Date(r.d).getDay()] + ' ' + new Date(r.d).getDate()}</span><div class="strip sm">${r.list.map(e => `<i class="sleep ${isNightNap(e) ? 'nt' : 'dy'}${e.e == null ? ' live' : ''}" style="left:${p(e.s)};width:calc(${p(e.e ?? now())} - ${p(e.s)})"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? fmtMin(r.tot).replace(' мин', 'м') : '—'}</span></div>`;
   }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div><div class="lleg" style="margin:6px 0 0"><span><i style="background:var(--c-sleep)"></i>ночной сон</span><span><i class="dyk"></i>дневной сон</span></div></div>`;
   return h;
+}
+
+/* ───────── кормления: страница с графиком и средними ─────────
+   Открывается с карточки «Кормление» на главной (UI.tab='feeds'). Полные дни до сегодня (UI.fdays 7|14).
+   Ориентир числа кормлений в сутки по возрасту — AAP / ВОЗ (на грудном вскармливании — по требованию, это примерно). */
+const FEEDN = [[0, 1, '8–12', 8, 12], [1, 3, '7–9', 7, 9], [3, 6, '6–8', 6, 8], [6, 9, '5–6 + прикорм', 4, 6], [9, 99, '4–5 + прикорм', 3, 5]];
+const feedMs = e => e.kind === 'breast' ? (e.segs && e.segs.length ? segsDur(e) : (e.e ?? now()) - e.s) : 0;
+function feedStats(n) {
+  const today = sod(now()), b = birthTs(); let from = addDays(today, -n); if (b != null && from < sod(b)) from = sod(b);
+  const all = evs().filter(e => e.t === 'feed'), rows = [];
+  for (let d = from; d < today; d = addDays(d, 1)) {
+    const l = all.filter(e => e.s >= d && e.s < addDays(d, 1));
+    rows.push({ d, list: l, n: l.length, br: l.filter(e => e.kind === 'breast').reduce((x, e) => x + feedMs(e), 0),
+      ml: l.filter(e => e.kind === 'bottle').reduce((x, e) => x + (+e.ml || 0), 0), L: l.reduce((x, e) => x + (e.kind === 'breast' ? segsDur(e, 'L') : 0), 0), R: l.reduce((x, e) => x + (e.kind === 'breast' ? segsDur(e, 'R') : 0), 0), has: l.length > 0 });
+  }
+  const w = rows.filter(r => r.has), k = w.length, avg = f => k ? w.reduce((x, r) => x + f(r), 0) / k : 0;
+  const ss = all.filter(e => e.s >= from && e.s < today).sort((x, y) => x.s - y.s), gaps = [];
+  for (let i = 1; i < ss.length; i++) { const g = ss[i].s - ss[i - 1].s; if (g > 20 * 60000 && g < 8 * 3600e3) gaps.push(g); }
+  const brs = ss.filter(e => e.kind === 'breast'), L = brs.reduce((x, e) => x + segsDur(e, 'L'), 0), R = brs.reduce((x, e) => x + segsDur(e, 'R'), 0);
+  return { rows, k, n: avg(r => r.n), br: avg(r => r.br), ml: avg(r => r.ml), gap: gaps.length ? gaps.reduce((x, y) => x + y, 0) / gaps.length : 0,
+    one: brs.length ? brs.reduce((x, e) => x + feedMs(e), 0) / brs.length : 0, L, R };
+}
+function viewFeeds() {
+  const n = UI.fdays || 7, st = feedStats(n), m = ageM(), norm = m != null ? FEEDN.find(x => m >= x[0] && m < x[1]) : null;
+  let h = `<div class="daynav"><button onclick="go('now')" aria-label="Назад">‹</button><h2>Кормления</h2><span style="width:44px"></span></div>`;
+  const f = activeOf('feed');
+  if (f) h += liveFeed(f).replace(` class="tap" onclick="go('feeds')"`, '').replace('<span class="more">график →</span>', '');
+  else { const lf = lastOf('feed'), ns = nextSide();
+    h += `<div class="card feed"><h3><span class="dot"></span>Кормление</h3><p class="st">${lf ? `Последнее — <b data-ago="${lf.s}"></b>, в ${hm(lf.s)}${lf.kind === 'breast' && lf.segs ? ' (' + feedSides(lf) + ')' : ''}` : 'Записей пока нет.'}</p>
+    <div class="btns">${['L', 'R'].map(x => `<button class="b ${ns === x ? 'main' : ''}" onclick="breast('${x}')">${SIDE[x]}<small>${ns === x ? 'следующая' : 'грудь'}</small></button>`).join('')}<button class="b" onclick="openBottle()"><span class="e">🍼</span><small>бутылочка</small></button></div>
+    <div class="btns" style="margin-top:8px"><button class="b ghost" onclick="addKind('breast',now())">+ Кормление задним числом</button></div></div>`; }
+  h += `<div class="seg" style="margin-bottom:12px">${[7, 14].map(x => `<button class="${n === x ? 'on' : ''}" onclick="UI.fdays=${x};render()">${x} дней</button>`).join('')}</div>`;
+  if (!st.k) return h + `<div class="card"><div class="empty">За эти дни средних и графика ещё нет</div></div>` + allFeeds();
+  const inNorm = norm ? (st.n < norm[3] ? 'low' : st.n > norm[4] + 1 ? 'high' : 'ok') : '';
+  const lr = st.L + st.R ? Math.round(st.L / (st.L + st.R) * 100) : 0;
+  h += `<div class="card"><h3>В среднем за сутки</h3>
+    <div class="snorm"><div class="v num">${r1(st.n)} ${pl(Math.round(st.n), 'кормление', 'кормления', 'кормлений')}</div>${norm ? `<div class="pct ${inNorm}">${inNorm === 'ok' ? 'в пределах ориентира' : inNorm === 'low' ? 'реже ориентира' : 'чаще ориентира'} ${norm[2]}</div>` : ''}</div>
+    <table class="norm" style="margin-top:10px">${st.gap ? `<tr><td>Перерыв между кормлениями</td><td><b>${fmtMin(st.gap)}</b></td></tr>` : ''}
+    ${st.br ? `<tr><td>Грудью за сутки</td><td><b>${fmtMin(st.br)}</b></td></tr><tr><td>Одно кормление грудью</td><td><b>${fmtMin(st.one)}</b></td></tr>` : ''}
+    ${st.ml ? `<tr><td>Из бутылочки за сутки</td><td><b>${Math.round(st.ml)} мл</b></td></tr>` : ''}
+    ${st.L + st.R ? `<tr><td>Левая / правая грудь</td><td><b>${lr}% / ${100 - lr}%</b></td></tr>` : ''}</table>
+    <p class="hint">Считаются дни с записями (${st.k} из ${st.rows.length}). На грудном вскармливании кормят по требованию — ориентир примерный (AAP, ВОЗ).</p></div>`;
+  const T0 = sod(now()), tl = evs().filter(e => e.t === 'feed' && e.s >= T0 && e.s < now()).sort((x, y) => x.s - y.s);
+  const rowsV = [{ d: T0, list: tl, n: tl.length, has: tl.length > 0, today: true }, ...st.rows.slice().reverse()];
+  h += `<div class="card"><h3>График</h3><div class="sgrid">${rowsV.map(r => {
+    const p = x => ((Math.max(r.d, Math.min(addDays(r.d, 1), x)) - r.d) / 864e5 * 100).toFixed(2) + '%';
+    return `<div class="srow${r.today ? ' today' : ''}"><span class="sd">${r.today ? 'Сегодня' : WDS[new Date(r.d).getDay()] + ' ' + new Date(r.d).getDate()}</span><div class="strip sm fd">${r.list.map(e => `<i class="feed ${e.kind === 'breast' ? 'br' : 'bt'}" style="left:${p(e.s)};width:max(4px,calc(${p(e.kind === 'breast' ? (e.e ?? now()) : e.s + 10 * 60000)} - ${p(e.s)}))"></i>`).join('')}${r.today ? `<i class="nowl" style="left:${p(now())}"></i>` : ''}</div><span class="st2">${r.has ? r.n + ' ' + pl(r.n, 'раз', 'раза', 'раз') : '—'}</span></div>`;
+  }).join('')}<div class="srow ax"><span class="sd"></span><div class="strip-ax" style="flex:1"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><span class="st2"></span></div></div>
+  <div class="lleg" style="margin:6px 0 0"><span><i style="background:var(--c-feed)"></i>грудь</span><span><i class="btk"></i>бутылочка</span></div></div>`;
+  return h + allFeeds();
+}
+// все кормления по дням, свежие сверху
+function allFeeds() {
+  const by = new Map(); for (const e of evs().filter(e => e.t === 'feed' && e.s < now()).sort((a, b) => b.s - a.s)) { const k = sod(e.s); if (!by.has(k)) by.set(k, []); by.get(k).push(e); }
+  let h = '', n = 0;
+  for (const [d, l] of by) { if (++n > (UI.fAll ? 60 : 7)) break;
+    h += `<div class="sday"><div class="sday-h"><b>${esc(dayTitle(d))}</b><span>${l.length} ${pl(l.length, 'кормление', 'кормления', 'кормлений')}</span></div><ul class="list">${l.map(rowHtml).join('')}</ul></div>`; }
+  if (!h) return '';
+  return `<div class="card"><h3>Все кормления</h3>${h}${by.size > 7 && !UI.fAll ? `<button class="link" onclick="UI.fAll=1;render()">Показать больше</button>` : ''}</div>`;
 }
 
 /* ───────── прогноз сна по истории ─────────
@@ -3134,6 +3194,7 @@ function gsDropTok() { GTOK = null; try { localStorage.removeItem(GTOK_KEY); } c
   try { localStorage.removeItem(GAUTH_KEY); } catch (e) {}
   history.replaceState(null, '', location.pathname + location.search);
   if (!st || p.get('state') !== st.n) return;
+  if (st.srv) { GAUTH_RET = { srv: st.p === 'y' ? 'yandex' : 'google', tok: p.get('access_token') || '', err: p.get('error') || '' }; return; }
   if (st.p === 'y') { if (p.get('access_token')) { YTOK = { t: p.get('access_token'), exp: Date.now() + (+p.get('expires_in') || 31536000) * 1000 }; lsSet(YTOK_KEY, JSON.stringify(YTOK)); GAUTH_RET = { ok: true, first: st.first, p: 'y' }; }
     else GAUTH_RET = { err: p.get('error') || 'ошибка', first: st.first, p: 'y' }; return; }
   if (p.get('access_token')) { gsSetTok(p.get('access_token'), +p.get('expires_in') || 3600); GAUTH_RET = { ok: true, first: st.first, join: st.join }; }
@@ -3155,9 +3216,9 @@ function nativeAuth(interactive) {
 // переход на страницу входа Google (страница перезагрузится; всё уже лежит на устройстве)
 function gsRedirect(o) {
   const n = uid();
-  lsSet(GAUTH_KEY, JSON.stringify({ n, first: !!o.first, join: o.join || '' }));
+  lsSet(GAUTH_KEY, JSON.stringify({ n, first: !!o.first, join: o.join || '', srv: !!o.srv }));
   if (!o.interactive) lsSet(GAUTO_KEY, String(Date.now()));
-  const q = new URLSearchParams({ client_id: G_CLIENT, redirect_uri: gRedirectUri(), response_type: 'token', scope: G_SCOPE, state: n, include_granted_scopes: 'true' });
+  const q = new URLSearchParams({ client_id: G_CLIENT, redirect_uri: gRedirectUri(), response_type: 'token', scope: o.srv ? 'openid email' : G_SCOPE, state: n, include_granted_scopes: 'true' });
   if (o.first) q.set('prompt', 'select_account'); else if (!o.interactive) q.set('prompt', 'none');
   if (!o.first && REMOTE && REMOTE.email) q.set('login_hint', REMOTE.email);
   location.assign('https://accounts.google.com/o/oauth2/v2/auth?' + q);
@@ -3255,6 +3316,11 @@ const SYNC = { st: 'off', msg: '', busy: null, again: false, timer: null };
 function setSync(st, msg) { SYNC.st = st; SYNC.msg = msg || ''; syncShow(); }
 function syncShow() { const b = $('#syncBtn'); if (!b) return; b.hidden = !REMOTE; $('#syncDot').className = 'syncdot ' + SYNC.st; }
 function syncInfo() {
+  if (isS()) {
+    const t = { ok: 'Дневник сохранён на сервере', busy: 'Сохраняю…', pending: 'Нет связи — записи на телефоне, отправлю позже', err: SYNC.msg || 'Ошибка связи с сервером',
+      need: 'Нужно снова войти — записи сохранены на телефоне' }[SYNC.st] || 'Подключаюсь…';
+    return toast(t, SYNC.st === 'need' ? { label: 'Войти', fn: () => openSettings() } : null);
+  }
   const y = isY(), w = y ? 'Яндекс' : 'Google', d = y ? 'на Яндекс Диск' : 'в Google';
   const t = { ok: 'Дневник сохранён ' + (y ? 'на Яндекс Диске' : 'в Google'), busy: 'Сохраняю ' + d + '…', pending: 'Нет связи — записи на телефоне, отправлю позже',
     err: SYNC.msg || 'Ошибка связи с ' + w, need: 'Нужно снова войти в ' + w + ' — записи сохранены на телефоне' }[SYNC.st] || 'Подключаюсь к ' + w + '…';
@@ -3269,12 +3335,13 @@ async function sync() {
     setSync('busy');
     try {
       let ch;
-      if (isY()) ch = await ySync();
+      if (isS()) ch = await sSync();
+      else if (isY()) ch = await ySync();
       else { await push(); await pushPhotos().catch(() => {}); ch = await pull(); }
       setSync('ok');
       if (ch) fixDupes();
       if (ch && $('#sheetWrap').hidden) render();
-    } catch (e) { setSync(e.need ? 'need' : e.net ? 'pending' : 'err', e.need || e.net ? '' : (isY() ? 'Яндекс Диск: ' : 'Google: ') + e.message); }
+    } catch (e) { setSync(e.need ? 'need' : e.net ? 'pending' : 'err', e.need || e.net ? '' : (isS() ? 'Сервер: ' : isY() ? 'Яндекс Диск: ' : 'Google: ') + e.message); }
   })();
   await SYNC.busy; SYNC.busy = null;
   if (SYNC.again) { SYNC.again = false; return sync(); }
@@ -3433,6 +3500,176 @@ function shareLink() {
   if (navigator.share) navigator.share({ title: 'Дневник малыша', text: inviteText() }).catch(() => {});
   else { try { navigator.clipboard.writeText(l); } catch (e) {} toast('Ссылка скопирована'); }
 }
+
+/* ───────── свой сервер (server/server.js): вход по почте, через Яндекс или Google; дневник — на сервере ─────────
+   REMOTE = { s: 1, email, diary, tok }. Записи — те же, что в таблице: { id, u, … }; сервер принимает только более новые
+   и ничего не стирает (удаление — пометка del, плюс история версий и копия базы раз в сутки). Обмен — POST /api/sync
+   { diary, since, recs } → { recs, cursor, more }: отправляем неотправленное (OUTKEY), получаем всё новое после cursor
+   (babydiary.scur.v1 — {d, c}). При входе (и переходе с Google Таблицы / Яндекс Диска) всё, что есть на телефоне,
+   отправляется на сервер и сливается с тем, что там уже есть, — ничего не заменяется. Фото — PUT/GET /api/photo.
+   SRV_URL пуст — кнопок входа на сервер нет (работают прежние способы). */
+const SRV_URL = '';   // адрес сервера, например https://api.example.ru (без / в конце)
+const srvUrl = () => window.__srv || SRV_URL;
+const srvOK = () => !!srvUrl();
+const isS = () => !!(REMOTE && REMOTE.s);
+const SCUR_KEY = 'babydiary.scur.v1', SJOIN_KEY = 'babydiary.sjoin.v1';
+const sCur = () => { const c = lsJson(SCUR_KEY, null); return c && REMOTE && c.d === REMOTE.diary ? +c.c || 0 : 0; };
+function srvNeed() { const e = new Error('нужно снова войти'); e.need = true; return e; }
+async function srvApi(path, body, o = {}) {
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), o.timeout || 45000);
+  const tok = o.tok !== undefined ? o.tok : REMOTE && REMOTE.tok;
+  let r;
+  try { r = await fetch(srvUrl() + path, { method: o.method || (body !== undefined ? 'POST' : 'GET'), signal: ctl.signal, cache: 'no-store',
+    headers: Object.assign({}, tok ? { Authorization: 'Bearer ' + tok } : {}, o.raw ? {} : { 'Content-Type': 'application/json' }), body: o.raw || (body !== undefined ? JSON.stringify(body) : undefined) }); }
+  catch (e) { const x = new Error(e && e.name === 'AbortError' ? 'сервер не ответил' : 'нет связи'); x.net = true; throw x; }
+  finally { clearTimeout(tm); }
+  if (o.blob) { if (r.status === 404) return null; if (!r.ok) throw new Error('сервер ответил ошибкой ' + r.status); return r.blob(); }
+  let j = {}; try { j = await r.json(); } catch (e) {}
+  if (r.status === 401 && tok) throw srvNeed();
+  if (!r.ok) { const e = new Error(j.error || 'сервер ответил ошибкой ' + r.status); e.status = r.status; throw e; }
+  return j;
+}
+// один проход: отправить неотправленное, забрать новое (порциями, пока есть)
+async function sSync() {
+  const out = lsJson(OUTKEY, {}), ids = Object.keys(out);
+  const recs = ids.map(recOf).filter(r => r && !(r.t === 'baby' && !r.u));
+  let cur = sCur(), ch = false, i = 0, more = true;
+  while (more || i < recs.length) {
+    const part = recs.slice(i, i + 2000); i += 2000;
+    const j = await srvApi('/api/sync', { diary: REMOTE.diary, since: cur, recs: part });
+    if (applyRemote(j.recs || [])) ch = true;
+    cur = +j.cursor || cur; lsSet(SCUR_KEY, JSON.stringify({ d: REMOTE.diary, c: cur })); more = !!j.more;
+  }
+  const now_ = lsJson(OUTKEY, {}); for (const id of ids) if (now_[id] === out[id]) delete now_[id]; lsSet(OUTKEY, JSON.stringify(now_));
+  await sPushPhotos().catch(() => {});
+  return ch;
+}
+async function sPushPhotos() {
+  let q = lsJson(PHOUT, []); if (!q.length) return;
+  for (const it of q.slice(0, 4)) {
+    let drop = false;
+    if (phUsed(it.id)) {
+      const rec = await phGet(it.id).catch(() => null);
+      if (rec) {
+        const src = rec.full, img = await loadImage(src), mid = (img.naturalWidth > 1600 || img.naturalHeight > 1600) ? await shrink(img, 1600, 0.8) : src;
+        await srvApi('/api/photo?diary=' + encodeURIComponent(REMOTE.diary) + '&id=' + encodeURIComponent(it.id), undefined, { method: 'PUT', raw: mid });
+        drop = true;
+      } else if (Date.now() - it.at > 7 * 864e5) drop = true;   // фото нет на этом телефоне — ждём (может, ещё скачивается)
+    } else if (Date.now() - it.at > 3600e3) drop = true;
+    if (drop) { q = lsJson(PHOUT, []).filter(x => x.id !== it.id); lsSet(PHOUT, JSON.stringify(q)); }
+  }
+}
+const sPhoto = id => srvApi('/api/photo?diary=' + encodeURIComponent(REMOTE.diary) + '&id=' + encodeURIComponent(id), undefined, { blob: true });
+// все фото дневника, которых нет на телефоне, — скачать (перед переходом с Google / Яндекса: потом их будет неоткуда взять)
+async function pullAllPhotos() {
+  const ids = new Set([...kidPhs(), ...S.events.filter(e => !e.del).flatMap(e => e.ph || [])]);
+  let miss = 0;
+  for (const id of ids) {
+    if (await phGet(id).catch(() => null)) continue;
+    const u = await phFetch(id).catch(() => null);
+    if (!u) { miss++; continue; }
+    try { const b = await (await fetch(u)).blob(); await phPut(id, { full: b, thumb: b, at: Date.now(), remote: 1 }); } catch (e) { miss++; }
+  }
+  return miss;
+}
+// вход прошёл: выбрать дневник, перенести всё с телефона на сервер (слиянием), забрать то, что там уже есть
+async function srvSetup(j) {
+  setSync('busy');
+  const was = REMOTE, old = !!(REMOTE && !REMOTE.s);
+  let miss = 0;
+  if (old) { await sync().catch(() => {}); miss = await pullAllPhotos().catch(() => 0); }   // с Google / Яндекса — сначала забрать всё оттуда
+  const ds = j.diaries || [], joined = ds.filter(d => d.role !== 'owner');
+  const d = (joined[joined.length - 1] || ds[0] || {}).id;
+  if (!d) throw new Error('сервер не дал дневник');
+  REMOTE = { s: 1, email: j.email || '', diary: d, tok: j.token }; lsSet(RKEY, JSON.stringify(REMOTE));
+  try { localStorage.removeItem(SCUR_KEY); } catch (e) {}
+  if (REMOTE.email && (S.devs[DEV] || {}).email !== REMOTE.email) setMe({ email: REMOTE.email });
+  srvMarkAll();
+  closeSheet();
+  const inv = lsGet(SJOIN_KEY); if (inv) { try { localStorage.removeItem(SJOIN_KEY); } catch (e) {} return srvJoin(inv, true); }
+  await sync(); render();
+  if (SYNC.st === 'ok') toast(old ? '✅ Дневник перенесён на сервер приложения' + (miss ? '. Не удалось забрать фото: ' + miss : '') + '. Старая копия осталась на месте' : '✅ Готово: дневник сохраняется на сервере');
+  if (!devName(DEV)) askRole();
+}
+function srvMarkAll() {
+  const o = lsJson(OUTKEY, {}); for (const k of allIds()) { const r = recOf(k); if (r) o[k] = r.u; } lsSet(OUTKEY, JSON.stringify(o));
+  for (const id of [...kidPhs(), ...S.events.filter(e => !e.del).flatMap(e => e.ph || [])]) phQueue(id);
+}
+// вход по коду на почту
+function srvMail(step) {
+  const em = (S.devs[DEV] || {}).email || '';
+  openSheet(`<div class="shead"><h2>✉️ Вход по почте</h2><button class="icon-btn" onclick="closeSheet()" aria-label="Закрыть">✕</button></div>
+    <label class="f"><span>Ваша почта</span><input id="m_em" type="email" inputmode="email" autocomplete="email" value="${esc(/@/.test(em) && !/^yandex:/.test(em) ? em : '')}" placeholder="name@mail.ru"></label>
+    <div id="m_code" hidden><label class="f"><span>Код из письма</span><input id="m_c" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 цифр"></label></div>
+    <div class="err" id="m_err"></div>
+    <div class="acts"><button class="b ghost" onclick="closeSheet()">Отмена</button><button class="b main" id="m_go" onclick="srvMailGo()">Прислать код</button></div>`);
+}
+async function srvMailGo() {
+  const em = $('#m_em').value.trim(), err = m => { $('#m_err').textContent = m; }, b = $('#m_go'), codeOn = !$('#m_code').hidden;
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return err('Проверьте адрес почты');
+  err(''); b.disabled = true;
+  try {
+    if (!codeOn) {
+      const j = await srvApi('/api/auth/email', { email: em }, { tok: '' });
+      $('#m_code').hidden = false; b.textContent = 'Войти'; $('#m_c').focus(); if (j.code) $('#m_c').value = j.code;   // j.code — только на тестовом сервере
+      toast('Код отправлен на ' + em);
+    } else {
+      const c = $('#m_c').value.replace(/\D/g, ''); if (c.length !== 6) { err('Код — 6 цифр из письма'); return; }
+      await srvSetup(await srvApi('/api/auth/email/verify', { email: em, code: c }, { tok: '' }));
+    }
+  } catch (e) { err(e.net ? 'Нет связи с сервером' : e.message); }
+  finally { const x = $('#m_go'); if (x) x.disabled = false; }
+}
+// вход через Яндекс / Google: получаем пропуск у них, сервер проверяет, чей он
+function srvLoginY() { if (window.__ytest) return srvAuthWith('yandex', window.__ytest.tok); return ysRedirect({ first: true, srv: true }); }
+async function srvLoginG() {
+  if (window.__gtest) return srvAuthWith('google', window.__gtest.tok);
+  if (!NATIVE) return gsRedirect({ interactive: true, first: true, srv: true });
+  try { gsDropTok(); await srvAuthWith('google', await gsAuth(true)); } catch (e) { toast('Не удалось войти: ' + e.message); }
+}
+async function srvAuthWith(provider, token) {
+  try { await srvSetup(await srvApi('/api/auth/' + provider, { token }, { tok: '' })); }
+  catch (e) { setSync(REMOTE ? SYNC.st : 'off'); toast('Не удалось войти: ' + (e.net ? 'нет связи с сервером' : e.message)); }
+}
+function srvLoginBtns() {
+  return `<div class="btns" style="flex-direction:column;gap:8px"><button class="b" onclick="srvMail()">✉️ Войти по почте</button>
+    ${yOK() ? `<button class="b" onclick="srvLoginY()">${Y_ICON} Войти через Яндекс</button>` : ''}${gOK() ? `<button class="b" onclick="srvLoginG()">${G_ICON} Войти через Google</button>` : ''}</div>`;
+}
+// приглашение второго родителя: ссылка с кодом (14 дней)
+async function srvInvite() {
+  try {
+    const j = await srvApi('/api/invite', { diary: REMOTE.diary });
+    const l = (/^https:\/\/[^/]*github\.io\//.test(location.href) ? gRedirectUri() : SITE_URL) + '?invite=' + encodeURIComponent(j.code);
+    const t = 'Давай вести дневник малыша вместе! Открой ссылку и войди любым способом — по почте, через Яндекс или Google: ' + l + ' (ссылка работает 14 дней)';
+    if (NATIVE && typeof NATIVE.share === 'function') NATIVE.share(t);
+    else if (navigator.share) navigator.share({ title: 'Дневник малыша', text: t }).catch(() => {});
+    else { try { navigator.clipboard.writeText(l); } catch (e) {} toast('Ссылка-приглашение скопирована'); }
+    return l;
+  } catch (e) { toast('Не получилось: ' + (e.net ? 'нет связи с сервером' : e.message)); }
+}
+// открыли ссылку-приглашение: вошли — присоединяемся, нет — сначала вход
+function srvInvited(code) {
+  if (isS()) return srvJoin(code);
+  lsSet(SJOIN_KEY, code);
+  openSheet(`<h2>👪 Общий дневник</h2><p style="color:var(--text-2);margin:0 0 12px">Вас пригласили вести дневник малыша вместе. Войдите любым способом — дневник откроется сам. Записи с этого телефона добавятся в общий дневник.</p>
+    ${srvLoginBtns()}<div class="acts" style="margin-top:12px"><button class="b ghost" onclick="closeSheet()">Позже</button></div>`);
+}
+async function srvJoin(code, quiet) {
+  if (!quiet && !confirm('Перейти в общий дневник? Записи с этого телефона добавятся в него.')) return;
+  try {
+    const j = await srvApi('/api/join', { code });
+    REMOTE = Object.assign({}, REMOTE, { diary: j.diary }); lsSet(RKEY, JSON.stringify(REMOTE));
+    try { localStorage.removeItem(SCUR_KEY); } catch (e) {}
+    srvMarkAll(); closeSheet(); await sync(); render(); toast('✅ Вы в общем дневнике');
+    if (!devName(DEV)) askRole();
+  } catch (e) { toast('Не получилось: ' + (e.net ? 'нет связи с сервером' : e.message)); await sync(); render(); }
+}
+function srvLogout() {
+  if (!confirm('Выйти? Записи останутся на этом телефоне и на сервере, но перестанут сохраняться, пока вы не войдёте снова.')) return;
+  srvApi('/api/logout', {}).catch(() => {});
+  REMOTE = null; try { localStorage.removeItem(RKEY); localStorage.removeItem(SCUR_KEY); } catch (e) {} setSync('off'); closeSheet(); render();
+}
+
 /* ───────── Яндекс: вход и дневник на Яндекс Диске ─────────
    Без Google: дневник одним файлом app:/babydiary.json в папке приложения на Яндекс Диске (права cloud_api:disk.app_folder —
    приложение видит только свою папку). Файл = { v, recs: { id: запись } } — те же записи, что строки листа «Журнал»
@@ -3451,7 +3688,7 @@ function ysDropTok() { YTOK = null; try { localStorage.removeItem(YTOK_KEY); } c
 function ysNeed() { const e = new Error('нужно снова войти в Яндекс'); e.need = true; return e; }
 function ysRedirect(o) {
   const n = uid() + uid();
-  lsSet(GAUTH_KEY, JSON.stringify({ n, first: !!o.first, p: 'y' }));
+  lsSet(GAUTH_KEY, JSON.stringify({ n, first: !!o.first, p: 'y', srv: !!o.srv }));
   const q = new URLSearchParams({ response_type: 'token', client_id: Y_CLIENT, redirect_uri: yRedirectUri(), state: n });
   if (o.first) q.set('force_confirm', 'yes');
   location.assign('https://oauth.yandex.ru/authorize?' + q);
@@ -3538,6 +3775,18 @@ function gsLogout() {
 }
 function settingsShare(me) {
   const h = `<h4>👪 Общий дневник</h4>`;
+  if (srvOK()) {
+    if (isS()) { const others = otherPeople();
+      return h + `<p class="hint" style="margin:0 0 10px">Вы вошли как <b>${esc(REMOTE.email || '—')}</b>. Дневник сохраняется на сервере приложения.</p>
+      <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
+      ${others.length ? `<p class="hint" style="margin:0 0 10px">Ещё ведут дневник: <b>${others.map(esc).join(', ')}</b></p>` : ''}
+      <div class="btns"><button class="b" onclick="srvInvite()">Пригласить второго родителя</button></div>
+      <div class="btns" style="margin-top:10px"><button class="b ghost" onclick="srvLogout()">Выйти</button></div>`; }
+    if (!REMOTE) return h + `<p class="hint" style="margin:0 0 10px">Войдите — дневник не потеряется при смене телефона, и его можно будет вести вдвоём.</p>` + srvLoginBtns();
+    // старый способ (Google Таблица / Яндекс Диск) — предложить перенос, ничего не теряя
+    return h + `<p class="hint" style="margin:0 0 10px">Дневник сейчас ${isY() ? 'на вашем Яндекс Диске' : 'в Google Таблице'}. Перенесите его на сервер приложения — записи и фото переедут, старая копия останется на месте.</p>`
+      + srvLoginBtns() + `<div class="btns" style="margin-top:10px"><button class="b ghost" onclick="${isY() ? 'ysLogout()' : 'gsLogout()'}">Выйти из ${isY() ? 'Яндекса' : 'Google'}</button></div>`;
+  }
   if (isY()) return h + `<p class="hint" style="margin:0 0 10px">Вы вошли через Яндекс${REMOTE.login ? ' как <b>' + esc(REMOTE.login) + '</b>' : ''}. Дневник — на вашем Яндекс Диске.</p>
     <label class="f"><span>Как вас подписывать в дневнике</span><input id="s_me" value="${esc(me.name || '')}" placeholder="Мама, Папа, Бабушка…" autocomplete="off">${chipsHtml('me', [['Мама', 'Мама'], ['Папа', 'Папа']], me.name)}</label>
     <div class="btns"><button class="b ghost" onclick="ysLogout()">Выйти из Яндекса</button></div>`;
@@ -3558,7 +3807,8 @@ function settingsShare(me) {
 
 /* ───────── запуск ───────── */
 function launch(act) {
-  const q = new URLSearchParams(location.search), j = act ? null : q.get('join');
+  const q = new URLSearchParams(location.search), j = act ? null : q.get('join'), inv = act ? null : q.get('invite');
+  if (inv && srvOK()) { history.replaceState(null, '', location.pathname); return srvInvited(inv); }
   let a = act || q.get('action');
   if (a && a.includes('@')) { const k = a.split('@')[1]; a = a.split('@')[0]; if (kidAlive(k) && k !== KID) setKid(k, true); }
   if (!a && !j) return;
@@ -3593,7 +3843,8 @@ function boot() {
   if (NATIVE) { let a = null; try { a = NATIVE.takeAction(); } catch (e) {} if (a) launch(a); setTimeout(checkApk, 3000); }
   if (GAUTH_RET) {
     const g = GAUTH_RET; GAUTH_RET = null;
-    if (g.p === 'y') { if (g.ok && g.first) ysSetup().catch(e => { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось войти через Яндекс: ' + e.message); });
+    if (g.srv) { if (g.tok) srvAuthWith(g.srv, g.tok); else toast(g.err === 'access_denied' ? 'Вход отменён' : 'Не удалось войти'); }
+    else if (g.p === 'y') { if (g.ok && g.first) ysSetup().catch(e => { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось войти через Яндекс: ' + e.message); });
       else if (g.ok) sync(); else if (g.first) toast(g.err === 'access_denied' ? 'Вход отменён' : 'Не удалось войти через Яндекс'); else setSync('need'); }
     else if (g.ok && g.join) gsJoin(g.join);
     else if (g.ok && g.first) gsSetup().catch(e => { setSync(REMOTE ? 'err' : 'off'); toast('Не удалось войти: ' + e.message); });

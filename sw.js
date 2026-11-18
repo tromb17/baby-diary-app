@@ -1,7 +1,7 @@
 /* Работа без интернета: страница — свежая из сети, без связи — из памяти телефона; значки — из памяти, обновляются в фоне.
    Запросы к Google (другие адреса) не трогаем — их ведёт сама страница. */
-const CACHE = 'babydiary-v20';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './design.css', './fonts/nunitosans-cyrillic.woff2', './fonts/nunitosans-latin.woff2', './fonts/nunito-cyrillic.woff2', './fonts/nunito-latin.woff2', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE = 'babydiary-v21';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './design.css', './fonts/nunitosans-cyrillic.woff2', './fonts/nunitosans-latin.woff2', './fonts/nunito-cyrillic.woff2', './fonts/nunito-latin.woff2', './fonts/rubik-cyrillic.woff2', './fonts/rubik-latin.woff2', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
   // cache: 'reload' — мимо кэша браузера (GitHub Pages разрешает ему хранить файлы до 10 минут — иначе в «новую» версию попадала старая)
